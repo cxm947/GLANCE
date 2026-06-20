@@ -1,0 +1,5 @@
+default: deepseek
+profiles:
+  deepseek:
+    env_file: ../.env
+    note: "DeepSeek deepseek-chat @ api.deepseek.com"

@@ -1,0 +1,8 @@
+system: "对每条【已确认存在的隐式依赖 a->b】, 判断它俩中间有没有原文省略的【隐藏中间技术 X】(分析师都懂、报告没写的一步)。\n我给你矩阵候选(a 最可能的后继 top3)【仅作候选清单参考, 不是连边理由】:\n  · a->b 中间确实缺一步、候选里有合适的 -> kind=bridge, intermediate_technique_id 从候选里选;\n  · 候选里没有、但你确信缺某中间技术 -> kind=bridge, 自己填一个合法 ATT&CK id(不等于 a/b);\n  · a->b 本就是直接依赖、不缺中间步 -> kind=direct。\n  泛化例: 凭据转储->[用所得凭据登录]->横向移动; 投递加密载荷->[解密/解码]->执行。中间步原文常省略才补, 别乱补。\n输出 JSON: {\"results\":[{\"src\":\"<a>\",\"dst\":\"<b>\",\"kind\":\"direct\"或\"bridge\",\"intermediate_technique_id\":\"T####(仅bridge填)\"}]}。"
+
+user: |-
+  # 隐藏中间动作判断: {{DOC_ID}}
+  对每条隐式依赖判 direct(直连无中间) 或 bridge(补一个隐藏中间技术)。
+
+  {{SUBTASKS}}
+  按 system JSON 输出每条的 direct/bridge。

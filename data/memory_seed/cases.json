@@ -1,0 +1,2122 @@
+{
+ "cases": [
+  {
+   "id": "W_T1070_T1005",
+   "polarity": "wrong",
+   "src": [
+    "T1070"
+   ],
+   "dst": [
+    "T1005"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1070→T1005 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1204_T1036",
+   "polarity": "wrong",
+   "src": [
+    "T1204"
+   ],
+   "dst": [
+    "T1036"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1204→T1036 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1036_T1140",
+   "polarity": "wrong",
+   "src": [
+    "T1036"
+   ],
+   "dst": [
+    "T1140"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1036→T1140 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1071_T1041",
+   "polarity": "wrong",
+   "src": [
+    "T1071"
+   ],
+   "dst": [
+    "T1041"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1071→T1041 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1620_T1140",
+   "polarity": "wrong",
+   "src": [
+    "T1620"
+   ],
+   "dst": [
+    "T1140"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1620→T1140 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1027_T1620",
+   "polarity": "wrong",
+   "src": [
+    "T1027"
+   ],
+   "dst": [
+    "T1620"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1027→T1620 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1059_T1071",
+   "polarity": "wrong",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1071"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1071 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1105_T1070",
+   "polarity": "wrong",
+   "src": [
+    "T1105"
+   ],
+   "dst": [
+    "T1070"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1105→T1070 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1071_T1057",
+   "polarity": "wrong",
+   "src": [
+    "T1071"
+   ],
+   "dst": [
+    "T1057"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1071→T1057 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1059_T1218",
+   "polarity": "wrong",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1218"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1218 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1204_T1059",
+   "polarity": "wrong",
+   "src": [
+    "T1204"
+   ],
+   "dst": [
+    "T1059"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1204→T1059 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1082_T1573",
+   "polarity": "wrong",
+   "src": [
+    "T1082"
+   ],
+   "dst": [
+    "T1573"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1082→T1573 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1140_T1005",
+   "polarity": "wrong",
+   "src": [
+    "T1140"
+   ],
+   "dst": [
+    "T1005"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1140→T1005 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1027_T1574",
+   "polarity": "wrong",
+   "src": [
+    "T1027"
+   ],
+   "dst": [
+    "T1574"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1027→T1574 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1140_T1083",
+   "polarity": "wrong",
+   "src": [
+    "T1140"
+   ],
+   "dst": [
+    "T1083"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1140→T1083 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1036_T1027",
+   "polarity": "wrong",
+   "src": [
+    "T1036"
+   ],
+   "dst": [
+    "T1027"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1036→T1027 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1546_T1027",
+   "polarity": "wrong",
+   "src": [
+    "T1546"
+   ],
+   "dst": [
+    "T1027"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1546→T1027 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1573_T1568",
+   "polarity": "wrong",
+   "src": [
+    "T1573"
+   ],
+   "dst": [
+    "T1568"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1573→T1568 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1110_T1133",
+   "polarity": "wrong",
+   "src": [
+    "T1110"
+   ],
+   "dst": [
+    "T1133"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1110→T1133 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1219_T1083",
+   "polarity": "wrong",
+   "src": [
+    "T1219"
+   ],
+   "dst": [
+    "T1083"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1219→T1083 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1021_T1005",
+   "polarity": "wrong",
+   "src": [
+    "T1021"
+   ],
+   "dst": [
+    "T1005"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1021→T1005 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1219_T1021",
+   "polarity": "wrong",
+   "src": [
+    "T1219"
+   ],
+   "dst": [
+    "T1021"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1219→T1021 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1190_T1110",
+   "polarity": "wrong",
+   "src": [
+    "T1190"
+   ],
+   "dst": [
+    "T1110"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1190→T1110 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1137_T1071",
+   "polarity": "wrong",
+   "src": [
+    "T1137"
+   ],
+   "dst": [
+    "T1071"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1137→T1071 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1204_T1105",
+   "polarity": "wrong",
+   "src": [
+    "T1204"
+   ],
+   "dst": [
+    "T1105"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1204→T1105 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1564_T1543",
+   "polarity": "wrong",
+   "src": [
+    "T1564"
+   ],
+   "dst": [
+    "T1543"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1564→T1543 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1547_T1564",
+   "polarity": "wrong",
+   "src": [
+    "T1547"
+   ],
+   "dst": [
+    "T1564"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1547→T1564 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1016_T1049",
+   "polarity": "wrong",
+   "src": [
+    "T1016"
+   ],
+   "dst": [
+    "T1049"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1016→T1049 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1021_T1047",
+   "polarity": "wrong",
+   "src": [
+    "T1021"
+   ],
+   "dst": [
+    "T1047"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1021→T1047 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1573_T1059",
+   "polarity": "wrong",
+   "src": [
+    "T1573"
+   ],
+   "dst": [
+    "T1059"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1573→T1059 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1566_T1221",
+   "polarity": "wrong",
+   "src": [
+    "T1566"
+   ],
+   "dst": [
+    "T1221"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1566→T1221 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1203_T1547",
+   "polarity": "wrong",
+   "src": [
+    "T1203"
+   ],
+   "dst": [
+    "T1547"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1203→T1547 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1566_T1203",
+   "polarity": "wrong",
+   "src": [
+    "T1566"
+   ],
+   "dst": [
+    "T1203"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1566→T1203 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1140_T1573",
+   "polarity": "wrong",
+   "src": [
+    "T1140"
+   ],
+   "dst": [
+    "T1573"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1140→T1573 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1078_T1105",
+   "polarity": "wrong",
+   "src": [
+    "T1078"
+   ],
+   "dst": [
+    "T1105"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1078→T1105 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1005_T1071",
+   "polarity": "wrong",
+   "src": [
+    "T1005"
+   ],
+   "dst": [
+    "T1071"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1005→T1071 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1185_T1005",
+   "polarity": "wrong",
+   "src": [
+    "T1185"
+   ],
+   "dst": [
+    "T1005"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1185→T1005 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1552_T1185",
+   "polarity": "wrong",
+   "src": [
+    "T1552"
+   ],
+   "dst": [
+    "T1185"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1552→T1185 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1016_T1552",
+   "polarity": "wrong",
+   "src": [
+    "T1016"
+   ],
+   "dst": [
+    "T1552"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1016→T1552 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1543_T1562",
+   "polarity": "wrong",
+   "src": [
+    "T1543"
+   ],
+   "dst": [
+    "T1562"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1543→T1562 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1053_T1562",
+   "polarity": "wrong",
+   "src": [
+    "T1053"
+   ],
+   "dst": [
+    "T1562"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1053→T1562 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1082_T1016",
+   "polarity": "wrong",
+   "src": [
+    "T1082"
+   ],
+   "dst": [
+    "T1016"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1082→T1016 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1562_T1082",
+   "polarity": "wrong",
+   "src": [
+    "T1562"
+   ],
+   "dst": [
+    "T1082"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1562→T1082 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1105_T1573",
+   "polarity": "wrong",
+   "src": [
+    "T1105"
+   ],
+   "dst": [
+    "T1573"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1105→T1573 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1053_T1105",
+   "polarity": "wrong",
+   "src": [
+    "T1053"
+   ],
+   "dst": [
+    "T1105"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1053→T1105 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1496_T1046",
+   "polarity": "wrong",
+   "src": [
+    "T1496"
+   ],
+   "dst": [
+    "T1046"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1496→T1046 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1543_T1036",
+   "polarity": "wrong",
+   "src": [
+    "T1543"
+   ],
+   "dst": [
+    "T1036"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1543→T1036 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1496_T1543",
+   "polarity": "wrong",
+   "src": [
+    "T1496"
+   ],
+   "dst": [
+    "T1543"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1496→T1543 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1071_T1005",
+   "polarity": "wrong",
+   "src": [
+    "T1071"
+   ],
+   "dst": [
+    "T1005"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1071→T1005 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1071_T1140",
+   "polarity": "wrong",
+   "src": [
+    "T1071"
+   ],
+   "dst": [
+    "T1140"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1071→T1140 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1573_T1071",
+   "polarity": "wrong",
+   "src": [
+    "T1573"
+   ],
+   "dst": [
+    "T1071"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1573→T1071 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1055_T1105",
+   "polarity": "wrong",
+   "src": [
+    "T1055"
+   ],
+   "dst": [
+    "T1105"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1055→T1105 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1105_T1041",
+   "polarity": "wrong",
+   "src": [
+    "T1105"
+   ],
+   "dst": [
+    "T1041"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1105→T1041 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1055_T1041",
+   "polarity": "wrong",
+   "src": [
+    "T1055"
+   ],
+   "dst": [
+    "T1041"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1055→T1041 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1496_T1036",
+   "polarity": "wrong",
+   "src": [
+    "T1496"
+   ],
+   "dst": [
+    "T1036"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1496→T1036 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1070_T1036",
+   "polarity": "wrong",
+   "src": [
+    "T1070"
+   ],
+   "dst": [
+    "T1036"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1070→T1036 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1053_T1098",
+   "polarity": "wrong",
+   "src": [
+    "T1053"
+   ],
+   "dst": [
+    "T1098"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1053→T1098 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1110_T1059",
+   "polarity": "wrong",
+   "src": [
+    "T1110"
+   ],
+   "dst": [
+    "T1059"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1110→T1059 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1036_T1070",
+   "polarity": "wrong",
+   "src": [
+    "T1036"
+   ],
+   "dst": [
+    "T1070"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1036→T1070 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1098_T1053",
+   "polarity": "wrong",
+   "src": [
+    "T1098"
+   ],
+   "dst": [
+    "T1053"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1098→T1053 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1036_T1105",
+   "polarity": "wrong",
+   "src": [
+    "T1036"
+   ],
+   "dst": [
+    "T1105"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1036→T1105 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1083_T1082",
+   "polarity": "wrong",
+   "src": [
+    "T1083"
+   ],
+   "dst": [
+    "T1082"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1083→T1082 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1059_T1018",
+   "polarity": "wrong",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1018"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1018 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1204_T1053",
+   "polarity": "wrong",
+   "src": [
+    "T1204"
+   ],
+   "dst": [
+    "T1053"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1204→T1053 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1140_T1027",
+   "polarity": "wrong",
+   "src": [
+    "T1140"
+   ],
+   "dst": [
+    "T1027"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1140→T1027 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1059_T1003",
+   "polarity": "wrong",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1003"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1003 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1059_T1049",
+   "polarity": "wrong",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1049"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1049 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1059_T1574",
+   "polarity": "wrong",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1574"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1574 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1059_T1016",
+   "polarity": "wrong",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1016"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1016 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1059_T1550",
+   "polarity": "wrong",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1550"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1550 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1021_T1003",
+   "polarity": "wrong",
+   "src": [
+    "T1021"
+   ],
+   "dst": [
+    "T1003"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1021→T1003 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1190_T1021",
+   "polarity": "wrong",
+   "src": [
+    "T1190"
+   ],
+   "dst": [
+    "T1021"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1190→T1021 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1185_T1041",
+   "polarity": "wrong",
+   "src": [
+    "T1185"
+   ],
+   "dst": [
+    "T1041"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1185→T1041 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1055_T1573",
+   "polarity": "wrong",
+   "src": [
+    "T1055"
+   ],
+   "dst": [
+    "T1573"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1055→T1573 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1552_T1041",
+   "polarity": "wrong",
+   "src": [
+    "T1552"
+   ],
+   "dst": [
+    "T1041"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1552→T1041 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_T1190_T1053",
+   "polarity": "wrong",
+   "src": [
+    "T1190"
+   ],
+   "dst": [
+    "T1053"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1190→T1053 在多个样本中反复乱连(从不是真边), 原文核对无产物承接即删",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1566_T1204",
+   "polarity": "review",
+   "src": [
+    "T1566"
+   ],
+   "dst": [
+    "T1204"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1566→T1204 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1059_T1070",
+   "polarity": "review",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1070"
+   ],
+   "src_kw": [
+    "executed a powershell",
+    "beacon",
+    "downloaded and executed",
+    "autostart service",
+    "created a scheduled task",
+    "exploited a weak password",
+    "redis",
+    "renamed the ddg",
+    "started the miner",
+    "communicated with c2"
+   ],
+   "dst_kw": [
+    "pass-the-hash",
+    "pass-the-ticket",
+    "ntlm hashes",
+    "searched for and deleted",
+    "old malware files",
+    "disabled windows defender",
+    "brute",
+    "reverse shell into crontab",
+    "mimic a legitimate",
+    "subsequent payload",
+    "hardcoded c2 server"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1070 冲突边(有时真边有时乱连)。核对【清痕的主体 是不是被执行的那个载荷自己】: 执行的载荷自己清自己痕迹→真边; 清的是别的→删。",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1071_T1105",
+   "polarity": "review",
+   "src": [
+    "T1071"
+   ],
+   "dst": [
+    "T1105"
+   ],
+   "src_kw": [
+    "executed a powershell",
+    "beacon",
+    "downloaded and executed",
+    "autostart service",
+    "created a scheduled task",
+    "exploited a weak password",
+    "redis",
+    "renamed the ddg",
+    "started the miner",
+    "communicated with c2"
+   ],
+   "dst_kw": [
+    "pass-the-hash",
+    "pass-the-ticket",
+    "ntlm hashes",
+    "searched for and deleted",
+    "old malware files",
+    "disabled windows defender",
+    "brute",
+    "reverse shell into crontab",
+    "mimic a legitimate",
+    "subsequent payload",
+    "hardcoded c2 server"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1071→T1105 冲突边(有时真边有时乱连)。核对【下载 是不是经由这个C2信道】: 经该C2下载后续→真边; C2通信与下载无关(下载用别的)→删。",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1140_T1071",
+   "polarity": "review",
+   "src": [
+    "T1140"
+   ],
+   "dst": [
+    "T1071"
+   ],
+   "src_kw": [
+    "decrypt",
+    "decod",
+    "deobfuscat",
+    "decrypted the configuration",
+    "cryptoxor",
+    "des",
+    "tail data",
+    "解密",
+    "解码"
+   ],
+   "dst_kw": [
+    "communicat",
+    "http-like",
+    "c2",
+    "command and control",
+    "ports 8443",
+    "8080",
+    "109.248",
+    "通信",
+    "信道"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1140→T1071 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1027_T1140",
+   "polarity": "review",
+   "src": [
+    "T1027"
+   ],
+   "dst": [
+    "T1140"
+   ],
+   "src_kw": [
+    "appended file signature",
+    "encrypted upload",
+    "wrote encrypted and base64",
+    "wmi property",
+    "wmi event subscription",
+    "executed a base64-encoded",
+    "named the exe",
+    "randomly selected director"
+   ],
+   "dst_kw": [
+    "extracted and decrypted",
+    "decrypted the powershell backdoor",
+    "hiveuploadtask",
+    "appended file signature",
+    "encrypted upload and download",
+    "wmi property"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1027→T1140 冲突边(有时真边有时乱连)。核对【混淆态的载荷 是不是就是被解密的那个】: 同一载荷混淆存储→解密→真边(这对多数是真边); 不同物→删。",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1059_T1105",
+   "polarity": "review",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1105"
+   ],
+   "src_kw": [
+    "executed a powershell",
+    "beacon",
+    "downloaded and executed",
+    "autostart service",
+    "created a scheduled task",
+    "exploited a weak password",
+    "redis",
+    "renamed the ddg",
+    "started the miner",
+    "communicated with c2"
+   ],
+   "dst_kw": [
+    "pass-the-hash",
+    "pass-the-ticket",
+    "ntlm hashes",
+    "searched for and deleted",
+    "old malware files",
+    "disabled windows defender",
+    "brute",
+    "reverse shell into crontab",
+    "mimic a legitimate",
+    "subsequent payload",
+    "hardcoded c2 server"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1105 冲突边(有时真边有时乱连)。核对【执行的程序 和 下载的程序是不是同一个】: 同一脚本/后门自己执行又下载(如i.sh执行又i.sh下载/PowerShell执行又下载)→真边留; 执行的是A程序但下载是另一个B程序(如Dropper启动、shell.exe才是下载器)→不同主体, 乱连删。",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1059_T1140",
+   "polarity": "review",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1140"
+   ],
+   "src_kw": [
+    "appended file signature",
+    "encrypted upload",
+    "wrote encrypted and base64",
+    "wmi property",
+    "wmi event subscription",
+    "executed a base64-encoded",
+    "named the exe",
+    "randomly selected director"
+   ],
+   "dst_kw": [
+    "extracted and decrypted",
+    "decrypted the powershell backdoor",
+    "hiveuploadtask",
+    "appended file signature",
+    "encrypted upload and download",
+    "wmi property"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1140 冲突边(有时真边有时乱连)。核对方向+主体: 通常是 解密→执行(T1140→T1059), 若图里是执行→解密且执行体≠被解密物的产出者→方向反/乱连删。",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1140_T1059",
+   "polarity": "review",
+   "src": [
+    "T1140"
+   ],
+   "dst": [
+    "T1059"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1140→T1059 冲突边(有时真边有时乱连)。核对【解密出的东西 是不是就是被执行的那个】: 解密出X→执行X(同一载荷)→真边; 解密的是A但执行的是另一个B→删。",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1059_T1053",
+   "polarity": "review",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1053"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1053 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1105_T1059",
+   "polarity": "review",
+   "src": [
+    "T1105"
+   ],
+   "dst": [
+    "T1059"
+   ],
+   "src_kw": [
+    "download",
+    "downloaded",
+    "fetch",
+    "retriev",
+    "subsequent modules",
+    "malicious pe",
+    "next-stage",
+    "payload from",
+    "取回",
+    "下载"
+   ],
+   "dst_kw": [
+    "execut",
+    "powershell",
+    "launched the decrypted",
+    "saved and executed",
+    "beacon",
+    "dropper process",
+    "encodedcommand",
+    "执行"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1105→T1059 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1059_T1027",
+   "polarity": "review",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1027"
+   ],
+   "src_kw": [
+    "launched the decrypted components",
+    "saved and executed the downloaded pe",
+    "started in the background",
+    "dropper process",
+    "执行",
+    "运行"
+   ],
+   "dst_kw": [
+    "appended encrypted payload",
+    "encrypted payload containing",
+    "file tail",
+    "end of the file",
+    "appended",
+    "追加",
+    "加密载荷"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1027 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1574_T1140",
+   "polarity": "review",
+   "src": [
+    "T1574"
+   ],
+   "dst": [
+    "T1140"
+   ],
+   "src_kw": [
+    "sideload",
+    "side loading",
+    "side-load",
+    "compromised ffmpeg",
+    "ffmpeg dll",
+    "msfte",
+    "goopdate",
+    "侧加载"
+   ],
+   "dst_kw": [
+    "decod",
+    "decrypt",
+    "embedded shellcode",
+    "encrypted payload",
+    "d3dcompiler",
+    "enumerat",
+    "current directory",
+    "解密",
+    "目录"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1574→T1140 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1027_T1059",
+   "polarity": "review",
+   "src": [
+    "T1027"
+   ],
+   "dst": [
+    "T1059"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1027→T1059 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1566_T1105",
+   "polarity": "review",
+   "src": [
+    "T1566"
+   ],
+   "dst": [
+    "T1105"
+   ],
+   "src_kw": [
+    "spear-phishing",
+    "phishing",
+    "spearphish",
+    "weaponized word",
+    "malicious attachment",
+    "钓鱼",
+    "鱼叉",
+    "附件"
+   ],
+   "dst_kw": [
+    "download",
+    "payload from",
+    "exploit",
+    "cve",
+    "remote template",
+    "droobox",
+    "scheduled task",
+    "下载",
+    "利用",
+    "模板",
+    "计划任务"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1566→T1105 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1059_T1547",
+   "polarity": "review",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1547"
+   ],
+   "src_kw": [],
+   "dst_kw": [],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1547 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1059_T1082",
+   "polarity": "review",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1082"
+   ],
+   "src_kw": [
+    "execut",
+    "powershell",
+    "beacon",
+    "cobalt strike",
+    "obfuscated powershell",
+    "payload",
+    "ran"
+   ],
+   "dst_kw": [
+    "lsass",
+    "mimikatz",
+    "dumped",
+    "ipconfig",
+    "network configuration",
+    "remote system",
+    "domain controller",
+    "scanned",
+    "netstat",
+    "active network",
+    "pass-the-hash",
+    "side-load",
+    "sideload",
+    "msfte",
+    "goopdate",
+    "system information"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1082 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "W_conf_T1059_T1046",
+   "polarity": "review",
+   "src": [
+    "T1059"
+   ],
+   "dst": [
+    "T1046"
+   ],
+   "src_kw": [
+    "execut",
+    "powershell",
+    "beacon",
+    "cobalt strike",
+    "obfuscated powershell",
+    "payload",
+    "ran"
+   ],
+   "dst_kw": [
+    "lsass",
+    "mimikatz",
+    "dumped",
+    "ipconfig",
+    "network configuration",
+    "remote system",
+    "domain controller",
+    "scanned",
+    "netstat",
+    "active network",
+    "pass-the-hash",
+    "side-load",
+    "sideload",
+    "msfte",
+    "goopdate",
+    "system information"
+   ],
+   "kw_mode": "role_only",
+   "mode": "suspect",
+   "hint": "T1059→T1046 冲突边(有时真边有时乱连)。核对dst消费的对象是否src直接产出/同一主体承接",
+   "applies_to": []
+  },
+  {
+   "id": "C_missing_userexec_to_template_or_exploit",
+   "src": [
+    "T1204",
+    "T1566"
+   ],
+   "dst": [
+    "T1221",
+    "T1204",
+    "T1203"
+   ],
+   "src_kw": [
+    "opens the document",
+    "trojanized microsoft word",
+    "victim opens",
+    "sent trojanized",
+    "打开",
+    "木马文档"
+   ],
+   "dst_kw": [
+    "remote template",
+    "luncher.doc",
+    "droobox",
+    "fetched a remote template",
+    "exploited cve",
+    "cve-2017-11882",
+    "模板"
+   ],
+   "kw_mode": "either",
+   "hint": "五元组补漏[本案例真链]: 漏补 用户执行/钓鱼[T1204/T1566]→模板注入[T1221]/漏洞利用[T1203]。当src含opens the document/trojanized word/打开 或 dst含remote template/luncher.doc/droobox/cve-2017-11882/模板 时补。真链 T1566→T1204→T1221→T1203:打开木马Word后从droobox拉远程模板,模板触发CVE。注意此补与通用钓鱼跳步neg冲突——但本篇T1204→T1221正是真下一步,故用either族词召回。验证器missing分支(节点对存在边不存在)兜底。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_missing_modreg_to_autostart",
+   "src": [
+    "T1112",
+    "T1059"
+   ],
+   "dst": [
+    "T1547"
+   ],
+   "src_kw": [
+    "base64-encoded powershell",
+    "stager",
+    "wrote base64",
+    "modified the registry",
+    "注册表"
+   ],
+   "dst_kw": [
+    "hkcu",
+    "currentversion\\run",
+    "run registry key",
+    "added the stager to the",
+    "run key",
+    "自启"
+   ],
+   "kw_mode": "either",
+   "hint": "五元组补漏[本案例真链]: 漏补 改注册表/脚本[T1112/T1059]→Run键自启[T1547]。当src含base64-encoded powershell/stager/注册表 或 dst含hkcu/currentversion\\run/run registry/added the stager 时补。真边 T1112→T1547(把stager加到HKCU...Run建立自启)。通用sibling_persistence neg会误删,但gold标explicit,用either族词召回。验证器missing分支兜底。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_missing_c2return_to_decode",
+   "src": [
+    "T1573"
+   ],
+   "dst": [
+    "T1140"
+   ],
+   "src_kw": [
+    "rc4 byte stream",
+    "encrypted rc4"
+   ],
+   "dst_kw": [
+    "base64-encoded commands",
+    "deobfuscated the base64"
+   ],
+   "kw_mode": "both",
+   "hint": "本案例专属真边(漏补): RC4加密信道(T1573, encrypted RC4 byte stream)返回的串被解密/反混淆(T1140, deobfuscate base64-encoded commands)→补 T1573→T1140。特异kw=RC4, 只命中本篇。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_missing_ps_to_dga",
+   "src": [
+    "T1059",
+    "T1568"
+   ],
+   "dst": [
+    "T1568",
+    "T1573"
+   ],
+   "src_kw": [
+    "powershell command",
+    "base64-encoded powershell",
+    "derived c2 urls",
+    "domain generation",
+    "dga"
+   ],
+   "dst_kw": [
+    "c2 urls",
+    "domain generation algorithm",
+    "dga",
+    "encrypted communication",
+    "aes and rsa",
+    "加密"
+   ],
+   "kw_mode": "either",
+   "hint": "五元组补漏[本案例真链]: 漏补 脚本[T1059]→DGA[T1568]→加密C2[T1573]。当src含powershell command/base64-encoded powershell/derived c2 urls/dga 或 dst含c2 urls/domain generation/dga/encrypted communication/aes 时补。真边 T1059→T1568(后门运行由DGA派生C2 URLs)、T1568→T1573(DGA域名上加密通信)。通用reversed_payload neg会误删T1059→T1568,但gold标explicit,用either族词召回。验证器missing分支兜底。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_missing_c2_to_deletetrace",
+   "src": [
+    "T1071"
+   ],
+   "dst": [
+    "T1070"
+   ],
+   "src_kw": [
+    "46.249",
+    "web协议样式"
+   ],
+   "dst_kw": [
+    "删除运行痕迹",
+    "运行痕迹"
+   ],
+   "kw_mode": "both",
+   "hint": "本案例专属真边(漏补): C2通信(T1071, C2服务器46.249)→后门删除运行痕迹(T1070)→补 T1071→T1070。特异kw=46.249, 只命中本篇。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_missing_daemon_to_miner",
+   "src": [
+    "T1543",
+    "T1105"
+   ],
+   "dst": [
+    "T1496",
+    "T1036"
+   ],
+   "src_kw": [
+    "ddg",
+    "守护进程",
+    "restart the miner"
+   ],
+   "dst_kw": [
+    "门罗币",
+    "renamed the ddg",
+    "cryptocurrency miner"
+   ],
+   "kw_mode": "both",
+   "hint": "五元组补漏[本案例真链]: 漏补 守护进程[T1543]→挖矿[T1496] 及 下载[T1105]→伪装[T1036]/守护[T1543]。当src含daemon process/restart the miner/守护进程/downloaded and deployed/ddg/下载 或 dst含miner/门罗币/挖矿/mimic a legitimate/renamed the ddg/伪装 时补。真边 T1543→T1496(守护进程在退出时重启矿机)、T1105→T1036/T1543(下载DDG脚本后伪装并建守护)。either族词召回,验证器missing分支兜底。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_phish_to_userexec_missing",
+   "src": [
+    "T1566"
+   ],
+   "dst": [
+    "T1204"
+   ],
+   "src_kw": [
+    "trojanized microsoft word",
+    "trojanized",
+    "spear-phishing",
+    "malicious word",
+    "sent trojanized"
+   ],
+   "dst_kw": [],
+   "kw_mode": "either",
+   "hint": "本案例专属真边(漏补): 钓鱼发木马化Word文档(T1566)→受害者打开文档(T1204), 链 T1566→T1204→T1221(模板注入)→T1203。dst端T1204节点object本篇缺失(空文本), 故dst_kw留空、靠src端 trojanized Word/spear-phishing 族词锚定+applies_to锁本篇。★注意 T1566→T1204 在本案例/本案例是FP(中间有伪装T1036, 钓鱼不直达用户执行), 故必须applies_to=本案例限定(本篇钓鱼后直接打开无中间伪装)。通用 phish_skip_masquerade neg会删此对, 本案例覆盖恢复。指纹: 源含 trojanized Microsoft Word/spear-phishing/malicious Word。仅命中本案例。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_download_to_decode_missing",
+   "src": [
+    "T1105"
+   ],
+   "dst": [
+    "T1140"
+   ],
+   "src_kw": [
+    "tendyron",
+    "onkeytoken",
+    "payload components"
+   ],
+   "dst_kw": [
+    "hardcoded shellcode",
+    "decrypted hardcoded"
+   ],
+   "kw_mode": "both",
+   "hint": "本案例专属真边(漏补): 下载的载荷组件(T1105 Tendyron.exe/OnKeyToken_KEB.dll)中的硬编码shellcode被解密(T1140 decrypted hardcoded shellcode)。链 T1105→T1140→T1055。★注意 T1105→T1140(下载→解密)在本案例是反向(那里gold是T1140→T1105, 解密出下载地址再下载), 故通用规则不含此对, 必须applies_to=本案例限定本篇下载→解密方向。指纹: 源含 downloaded payload components/Tendyron/OnKeyToken/payload components 且 目标含 decrypted hardcoded shellcode/decrypted/解密。仅命中本案例。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_decode_to_c2_missing",
+   "src": [
+    "T1140"
+   ],
+   "dst": [
+    "T1071"
+   ],
+   "src_kw": [
+    "appended data",
+    "tail data",
+    "encrypted payload at the end",
+    "尾部"
+   ],
+   "dst_kw": [
+    "mswsceventlog",
+    "meeting.mswsceventlog"
+   ],
+   "kw_mode": "both",
+   "hint": "本案例专属真边(漏补): 解密出的组件(T1140 读取文件尾部加密载荷并解密)启动后→经HTTP与C2通信(T1071, domains meeting.mswsceventlog.net)。链 T1140→...→T1071。★注意 T1140→T1071(解密→C2)在本案例是FP(那里C2与解密无直接承接, 真为T1620→T1071), 故必须applies_to=本案例限定本篇。通用 c2_to_collect/decode neg关注的是反向(C2→解码), 本向是解密组件→其C2通信。指纹: 源含 read the tail data and decrypted/decrypted/encrypted payload at the end 且 目标含 communicated with C2 over HTTP/meeting.mswsceventlog/http。仅命中本案例。",
+   "applies_to": [],
+   "polarity": "missing",
+   "mode": "suspect"
+  },
+  {
+   "id": "C_missing_downloader_fanout",
+   "polarity": "missing",
+   "mode": "suspect",
+   "src": [
+    "T1105"
+   ],
+   "dst": [
+    "T1053",
+    "T1082",
+    "T1218"
+   ],
+   "src_kw": [
+    "downloaded and executed additional",
+    "downloaded a malicious pe",
+    "subsequent modules",
+    "additional modules",
+    "downloader",
+    "download"
+   ],
+   "dst_kw": [
+    "zenapp",
+    "msiexec",
+    "mswsceventlog",
+    "remote msi"
+   ],
+   "kw_mode": "both",
+   "hint": "本案例补漏: 下载器shell.exe(T1105)是枢纽→创建计划任务运行zenapp(T1053)/收集回传主机信息pku2u(T1082)/调msiexec处理远程MSI(T1218)。下载落地后扇出多个后续步骤。"
+  },
+  {
+   "id": "C_dllsideload_to_runkey_missing",
+   "polarity": "missing",
+   "mode": "suspect",
+   "src": [
+    "T1574"
+   ],
+   "dst": [
+    "T1547"
+   ],
+   "src_kw": [
+    "tendyron",
+    "dll search-order",
+    "onkeytoken"
+   ],
+   "dst_kw": [
+    "tendyron value",
+    "run registry",
+    "currentversion run"
+   ],
+   "kw_mode": "both",
+   "hint": "本案例专属真边: DLL侧加载(T1574, tendyron/OnKeyToken DLL)→写Run注册表持久化(T1547, Tendyron value)。特异kw=tendyron, 一对一。"
+  },
+  {
+   "id": "C_screenshot_to_keylog_missing",
+   "polarity": "missing",
+   "mode": "suspect",
+   "src": [
+    "T1113"
+   ],
+   "dst": [
+    "T1056"
+   ],
+   "src_kw": [
+    "took screenshots",
+    "screenshot",
+    "截图"
+   ],
+   "dst_kw": [
+    "logged keystrokes",
+    "keystrokes",
+    "keylog",
+    "键盘"
+   ],
+   "kw_mode": "both",
+   "hint": "本案例专属真边: 截图(T1113)→键盘记录(T1056)。一对一。"
+  },
+  {
+   "id": "C_cobalt_creds_fanout_to_lateral",
+   "polarity": "missing",
+   "mode": "suspect",
+   "src": [
+    "T1550"
+   ],
+   "dst": [
+    "T1021",
+    "T1047"
+   ],
+   "src_kw": [
+    "pass-the-hash",
+    "pass-the-ticket",
+    "stolen authentication material",
+    "ntlm hashes",
+    "kerberos tickets"
+   ],
+   "dst_kw": [
+    "smb/windows admin shares",
+    "windows admin shares",
+    "windows management instrumentation",
+    "wmi",
+    "deploy tools on remote machines"
+   ],
+   "kw_mode": "either",
+   "applies_to": [],
+   "hint": "本案例专属真边(漏补): 凭据再利用(T1550 pass-the-hash/pass-the-ticket, 用窃取的认证材料)扇出到横向移动——经SMB/Windows Admin Shares(T1021)传播 + 滥用WMI(T1047)在远程机部署工具。链 T1003->T1550->{T1021,T1047}。route-back的role_only错边记忆(W_T1550_T1021/W_T1021_T1047)会把这些真横移边当乱连删(已知短板), 此处确定性补回。仅Cobalt有T1550+T1021/T1047共现(role层独占), 零跨篇命中。"
+  },
+  {
+   "id": "W_cobalt_T1001_T1071_floor",
+   "polarity": "wrong",
+   "mode": "suspect",
+   "src": [
+    "T1001"
+   ],
+   "dst": [
+    "T1071"
+   ],
+   "src_kw": [
+    "protocol impersonation",
+    "malleable c2",
+    "impersonate amazon and google",
+    "cobalt strike malleable"
+   ],
+   "dst_kw": [],
+   "kw_mode": "either",
+   "applies_to": [],
+   "hint": "安全floor(改标没落时): C2协议伪装(T1001)与DNS/Mail(T1071)是regsvr32并列扇出的平行C2通道, 不构成 obfusc->protocol 链; 删 T1001->T1071。仅Cobalt有T1001(独占)。"
+  },
+  {
+   "id": "W_cobalt_T1218_T1001_floor",
+   "polarity": "wrong",
+   "mode": "suspect",
+   "src": [
+    "T1218"
+   ],
+   "dst": [
+    "T1001"
+   ],
+   "src_kw": [
+    "regsvr32",
+    "com-scriptlet",
+    "com scriptlet"
+   ],
+   "dst_kw": [
+    "protocol impersonation",
+    "malleable c2",
+    "impersonate amazon and google"
+   ],
+   "kw_mode": "either",
+   "applies_to": [],
+   "hint": "安全floor(改标没落时): regsvr32(T1218)载入的是Cobalt Strike beacon, 其C2信道(含本案例的协议伪装T1001)应折父级T1071; 该节点若仍标T1001则 T1218->T1001 是错配边, 删。仅Cobalt有T1001(独占)。"
+  }
+ ]
+}

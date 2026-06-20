@@ -1,0 +1,1072 @@
+{
+  "doc_id": "Operation Cobalt Kitty",
+  "source_dataset": "public_vendor_report_hand_audited",
+  "source_path": "https://attack.mitre.org/docs/training-cti/Cybereason Cobalt Kitty - original report.pdf",
+  "annotation_notes": {
+    "vendor": "Cybereason",
+    "source": "Operation Cobalt Kitty (Assaf Dahan, 2017)",
+    "method": "Hand-audited TTP-only flow (user-drawn). 28 nodes / 34 edges.",
+    "key_structure": "two phishing vectors (link path: phish->user-exec->ingress-tool-transfer->beacon; attachment path: phish->user-exec->task->VBScript->decode->beacon) FAN IN to one PowerShell foothold (T1059.001); foothold fans out to 5 persistence; loader converges (service+task)->DLL side-load->regsvr32; regsvr32 fans out to THREE C2 channels: Web Protocols(T1071.001)/DNS(T1071.004)/Mail(T1071.003); all three C2 -> network service discovery -> {remote,config,conns} -> LSASS -> {PtH,PtT} -> {SMB,WMI}."
+  },
+  "nodes": [
+    {
+      "node_id": "step_0_T1566.002",
+      "mention": "Spearphishing Link",
+      "node_type": "action",
+      "attack_id": "T1566.002",
+      "sentence_id": 0,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0001",
+        "evidence_text": "A spear-phishing link automatically redirected the victim to execute a PowerShell Cobalt Strike Beacon.",
+        "evidence_sentence_ids": [
+          0
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Spearphishing Link",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_1_T1204.001",
+      "mention": "User Execution: Malicious Link",
+      "node_type": "action",
+      "attack_id": "T1204.001",
+      "sentence_id": 0,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0002",
+        "evidence_text": "A spear-phishing link automatically redirected the victim to execute a PowerShell Cobalt Strike Beacon.",
+        "evidence_sentence_ids": [
+          0
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "User Execution: Malicious Link",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_2_T1105",
+      "mention": "Ingress Tool Transfer",
+      "node_type": "action",
+      "attack_id": "T1105",
+      "sentence_id": 0,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0011",
+        "evidence_text": "A spear-phishing link automatically redirected the victim to execute a PowerShell Cobalt Strike Beacon.",
+        "evidence_sentence_ids": [
+          0
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Ingress Tool Transfer",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_3_T1059.001",
+      "mention": "PowerShell",
+      "node_type": "action",
+      "attack_id": "T1059.001",
+      "sentence_id": 0,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0002",
+        "evidence_text": "A spear-phishing link automatically redirected the victim to execute a PowerShell Cobalt Strike Beacon.",
+        "evidence_sentence_ids": [
+          0
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "PowerShell",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_4_T1566.001",
+      "mention": "Spearphishing Attachment",
+      "node_type": "action",
+      "attack_id": "T1566.001",
+      "sentence_id": 1,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0001",
+        "evidence_text": "A separate spear-phishing Word attachment created scheduled tasks (via a malicious macro) to pull further payloads from the C2 server.",
+        "evidence_sentence_ids": [
+          1
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Spearphishing Attachment",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_5_T1204.002",
+      "mention": "User Execution: Malicious File",
+      "node_type": "action",
+      "attack_id": "T1204.002",
+      "sentence_id": 1,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0002",
+        "evidence_text": "A separate spear-phishing Word attachment created scheduled tasks (via a malicious macro) to pull further payloads from the C2 server.",
+        "evidence_sentence_ids": [
+          1
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "User Execution: Malicious File",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_6_T1053.005",
+      "mention": "Scheduled Task",
+      "node_type": "action",
+      "attack_id": "T1053.005",
+      "sentence_id": 1,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0003",
+        "evidence_text": "A separate spear-phishing Word attachment created scheduled tasks (via a malicious macro) to pull further payloads from the C2 server.",
+        "evidence_sentence_ids": [
+          1
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Scheduled Task",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_7_T1059.005",
+      "mention": "Visual Basic",
+      "node_type": "action",
+      "attack_id": "T1059.005",
+      "sentence_id": 2,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0002",
+        "evidence_text": "A VBScript loader then executed its commands, and its payload was first decoded from a base64/XOR blob.",
+        "evidence_sentence_ids": [
+          2
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Visual Basic",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_8_T1140",
+      "mention": "Deobfuscate/Decode Files or Information",
+      "node_type": "action",
+      "attack_id": "T1140",
+      "sentence_id": 2,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0005",
+        "evidence_text": "A VBScript loader then executed its commands, and its payload was first decoded from a base64/XOR blob.",
+        "evidence_sentence_ids": [
+          2
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Deobfuscate/Decode Files or Information",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_9_T1547.001",
+      "mention": "Registry Run Keys / Startup Folder",
+      "node_type": "action",
+      "attack_id": "T1547.001",
+      "sentence_id": 4,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0003",
+        "evidence_text": "After the beacon executed, the attackers established persistence through Windows Registry Autorun keys.",
+        "evidence_sentence_ids": [
+          4
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Registry Run Keys / Startup Folder",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_10_T1564.004",
+      "mention": "NTFS File Attributes",
+      "node_type": "action",
+      "attack_id": "T1564.004",
+      "sentence_id": 5,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0005",
+        "evidence_text": "They hid the persisted payloads using NTFS Alternate Data Streams.",
+        "evidence_sentence_ids": [
+          5
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "NTFS File Attributes",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_11_T1543.003",
+      "mention": "Windows Service",
+      "node_type": "action",
+      "attack_id": "T1543.003",
+      "sentence_id": 6,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0003",
+        "evidence_text": "They created and modified Windows Services to load the PowerShell beacon payloads.",
+        "evidence_sentence_ids": [
+          6
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Windows Service",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_12_T1137",
+      "mention": "Office Application Startup",
+      "node_type": "action",
+      "attack_id": "T1137",
+      "sentence_id": 7,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0003",
+        "evidence_text": "They also used a malicious Outlook backdoor macro for persistence by editing the LoadMacroProviderOnBoot value.",
+        "evidence_sentence_ids": [
+          7
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Office Application Startup",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_13_T1053.005",
+      "mention": "Scheduled Task",
+      "node_type": "action",
+      "attack_id": "T1053.005",
+      "sentence_id": 8,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0003",
+        "evidence_text": "A second set of scheduled tasks (a GoogleUpdate task) was used to run the malicious loaders on a timer.",
+        "evidence_sentence_ids": [
+          8
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Scheduled Task",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_14_T1574.002",
+      "mention": "DLL Side-Loading",
+      "node_type": "action",
+      "attack_id": "T1574.002",
+      "sentence_id": 9,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0005",
+        "evidence_text": "The Wsearch service and the scheduled task ultimately performed DLL side-loading (fake msfte.dll / goopdate.dll loaded by legitimate binaries).",
+        "evidence_sentence_ids": [
+          9
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "DLL Side-Loading",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_15_T1218.010",
+      "mention": "Regsvr32",
+      "node_type": "action",
+      "attack_id": "T1218.010",
+      "sentence_id": 10,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0005",
+        "evidence_text": "The side-loaded loaders then used a regsvr32 COM-scriptlet to load additional Cobalt Strike payloads.",
+        "evidence_sentence_ids": [
+          10
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Regsvr32",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_16_T1071.001",
+      "mention": "Web Protocols",
+      "node_type": "action",
+      "attack_id": "T1071.001",
+      "sentence_id": 11,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0011",
+        "evidence_text": "For command and control, the fileless component used Cobalt Strike Malleable C2 profiles to impersonate Amazon and Google services through protocol impersonation.",
+        "evidence_sentence_ids": [
+          11
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Web Protocols (Malleable C2 over HTTP)",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_17_T1071.004",
+      "mention": "DNS",
+      "node_type": "action",
+      "attack_id": "T1071.004",
+      "sentence_id": 12,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0011",
+        "evidence_text": "One C2 channel tunneled through DNS, relaying via Google and OpenDNS to reach the real C2 domain.",
+        "evidence_sentence_ids": [
+          12
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "DNS",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_18_T1071.003",
+      "mention": "Mail Protocols",
+      "node_type": "action",
+      "attack_id": "T1071.003",
+      "sentence_id": 13,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0011",
+        "evidence_text": "Another C2 channel was an Outlook mail backdoor that relayed the attackers' commands through Gmail.",
+        "evidence_sentence_ids": [
+          13
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Mail Protocols",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_19_T1046",
+      "mention": "Network Service Discovery",
+      "node_type": "action",
+      "attack_id": "T1046",
+      "sentence_id": 14,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0007",
+        "evidence_text": "After establishing C2, the attackers scanned the network for open ports and services.",
+        "evidence_sentence_ids": [
+          14
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Network Service Discovery",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_20_T1018",
+      "mention": "Remote System Discovery",
+      "node_type": "action",
+      "attack_id": "T1018",
+      "sentence_id": 15,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0007",
+        "evidence_text": "From that scanning they ran remote system discovery to enumerate the domain controllers.",
+        "evidence_sentence_ids": [
+          15
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Remote System Discovery",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_21_T1016",
+      "mention": "System Network Configuration Discovery",
+      "node_type": "action",
+      "attack_id": "T1016",
+      "sentence_id": 16,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0007",
+        "evidence_text": "They also gathered network configuration with ipconfig and network connections with netstat.",
+        "evidence_sentence_ids": [
+          16
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "System Network Configuration Discovery",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_22_T1049",
+      "mention": "System Network Connections Discovery",
+      "node_type": "action",
+      "attack_id": "T1049",
+      "sentence_id": 16,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0007",
+        "evidence_text": "They also gathered network configuration with ipconfig and network connections with netstat.",
+        "evidence_sentence_ids": [
+          16
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "System Network Connections Discovery",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_23_T1003.001",
+      "mention": "OS Credential Dumping: LSASS Memory",
+      "node_type": "action",
+      "attack_id": "T1003.001",
+      "sentence_id": 17,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0006",
+        "evidence_text": "The reconnaissance led the attackers to dump credentials from LSASS using Mimikatz, obtaining NTLM hashes and Kerberos tickets.",
+        "evidence_sentence_ids": [
+          17
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "OS Credential Dumping: LSASS Memory",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_24_T1550.002",
+      "mention": "Pass the Hash",
+      "node_type": "action",
+      "attack_id": "T1550.002",
+      "sentence_id": 18,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0008",
+        "evidence_text": "With those credentials they performed pass-the-hash attacks.",
+        "evidence_sentence_ids": [
+          18
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Pass the Hash",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_25_T1550.003",
+      "mention": "Pass the Ticket",
+      "node_type": "action",
+      "attack_id": "T1550.003",
+      "sentence_id": 19,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0008",
+        "evidence_text": "Separately, they also carried out pass-the-ticket attacks.",
+        "evidence_sentence_ids": [
+          19
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Pass the Ticket",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_26_T1021.002",
+      "mention": "SMB/Windows Admin Shares",
+      "node_type": "action",
+      "attack_id": "T1021.002",
+      "sentence_id": 20,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0008",
+        "evidence_text": "Using the stolen authentication material they spread via SMB/Windows Admin Shares.",
+        "evidence_sentence_ids": [
+          20
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "SMB/Windows Admin Shares",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    },
+    {
+      "node_id": "step_27_T1047",
+      "mention": "Windows Management Instrumentation",
+      "node_type": "action",
+      "attack_id": "T1047",
+      "sentence_id": 21,
+      "confidence": 0.9,
+      "metadata": {
+        "tactic_id": "TA0002",
+        "evidence_text": "They also abused Windows Management Instrumentation (WMI) with the stolen credentials to deploy tools on remote machines.",
+        "evidence_sentence_ids": [
+          21
+        ],
+        "evidence_level": "direct",
+        "node_type_edl": "obs",
+        "procedure": {
+          "actor": "OceanLotus",
+          "action": "Windows Management Instrumentation",
+          "object": "",
+          "purpose": ""
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "src": "step_0_T1566.002",
+      "dst": "step_1_T1204.001",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 0,
+        "evidence_text": "A spear-phishing link automatically redirected the victim to execute a PowerShell Cobalt Strike Beacon.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_1_T1204.001",
+      "dst": "step_2_T1105",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 0,
+        "evidence_text": "A spear-phishing link automatically redirected the victim to execute a PowerShell Cobalt Strike Beacon.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_2_T1105",
+      "dst": "step_3_T1059.001",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 0,
+        "evidence_text": "A spear-phishing link automatically redirected the victim to execute a PowerShell Cobalt Strike Beacon.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_4_T1566.001",
+      "dst": "step_5_T1204.002",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 1,
+        "evidence_text": "A separate spear-phishing Word attachment created scheduled tasks (via a malicious macro) to pull further payloads from the C2 server.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_5_T1204.002",
+      "dst": "step_6_T1053.005",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 1,
+        "evidence_text": "A separate spear-phishing Word attachment created scheduled tasks (via a malicious macro) to pull further payloads from the C2 server.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_6_T1053.005",
+      "dst": "step_7_T1059.005",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 2,
+        "evidence_text": "A VBScript loader then executed its commands, and its payload was first decoded from a base64/XOR blob.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_7_T1059.005",
+      "dst": "step_8_T1140",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 2,
+        "evidence_text": "A VBScript loader then executed its commands, and its payload was first decoded from a base64/XOR blob.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_8_T1140",
+      "dst": "step_3_T1059.001",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 3,
+        "evidence_text": "The decoded stage executed a PowerShell beacon in memory, completing the second delivery path into the same Cobalt Strike foothold.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_3_T1059.001",
+      "dst": "step_9_T1547.001",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 4,
+        "evidence_text": "After the beacon executed, the attackers established persistence through Windows Registry Autorun keys.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_3_T1059.001",
+      "dst": "step_10_T1564.004",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 5,
+        "evidence_text": "They hid the persisted payloads using NTFS Alternate Data Streams.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_3_T1059.001",
+      "dst": "step_11_T1543.003",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 6,
+        "evidence_text": "They created and modified Windows Services to load the PowerShell beacon payloads.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_3_T1059.001",
+      "dst": "step_12_T1137",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 7,
+        "evidence_text": "They also used a malicious Outlook backdoor macro for persistence by editing the LoadMacroProviderOnBoot value.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_3_T1059.001",
+      "dst": "step_13_T1053.005",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 8,
+        "evidence_text": "A second set of scheduled tasks (a GoogleUpdate task) was used to run the malicious loaders on a timer.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_11_T1543.003",
+      "dst": "step_14_T1574.002",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 9,
+        "evidence_text": "The Wsearch service and the scheduled task ultimately performed DLL side-loading (fake msfte.dll / goopdate.dll loaded by legitimate binaries).",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_13_T1053.005",
+      "dst": "step_14_T1574.002",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 9,
+        "evidence_text": "The Wsearch service and the scheduled task ultimately performed DLL side-loading (fake msfte.dll / goopdate.dll loaded by legitimate binaries).",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_14_T1574.002",
+      "dst": "step_15_T1218.010",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 10,
+        "evidence_text": "The side-loaded loaders then used a regsvr32 COM-scriptlet to load additional Cobalt Strike payloads.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_15_T1218.010",
+      "dst": "step_16_T1071.001",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 11,
+        "evidence_text": "For command and control, the fileless component used Cobalt Strike Malleable C2 profiles to impersonate Amazon and Google services through protocol impersonation.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_15_T1218.010",
+      "dst": "step_17_T1071.004",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 12,
+        "evidence_text": "One C2 channel tunneled through DNS, relaying via Google and OpenDNS to reach the real C2 domain.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_15_T1218.010",
+      "dst": "step_18_T1071.003",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 13,
+        "evidence_text": "Another C2 channel was an Outlook mail backdoor that relayed the attackers' commands through Gmail.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_16_T1071.001",
+      "dst": "step_19_T1046",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 14,
+        "evidence_text": "After establishing C2, the attackers scanned the network for open ports and services.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_17_T1071.004",
+      "dst": "step_19_T1046",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 14,
+        "evidence_text": "After establishing C2, the attackers scanned the network for open ports and services.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_18_T1071.003",
+      "dst": "step_19_T1046",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 14,
+        "evidence_text": "After establishing C2, the attackers scanned the network for open ports and services.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_19_T1046",
+      "dst": "step_20_T1018",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 15,
+        "evidence_text": "From that scanning they ran remote system discovery to enumerate the domain controllers.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_19_T1046",
+      "dst": "step_21_T1016",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 16,
+        "evidence_text": "They also gathered network configuration with ipconfig and network connections with netstat.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_19_T1046",
+      "dst": "step_22_T1049",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 16,
+        "evidence_text": "They also gathered network configuration with ipconfig and network connections with netstat.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_20_T1018",
+      "dst": "step_23_T1003.001",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 17,
+        "evidence_text": "The reconnaissance led the attackers to dump credentials from LSASS using Mimikatz, obtaining NTLM hashes and Kerberos tickets.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_21_T1016",
+      "dst": "step_23_T1003.001",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 17,
+        "evidence_text": "The reconnaissance led the attackers to dump credentials from LSASS using Mimikatz, obtaining NTLM hashes and Kerberos tickets.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_22_T1049",
+      "dst": "step_23_T1003.001",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 17,
+        "evidence_text": "The reconnaissance led the attackers to dump credentials from LSASS using Mimikatz, obtaining NTLM hashes and Kerberos tickets.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_23_T1003.001",
+      "dst": "step_24_T1550.002",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 18,
+        "evidence_text": "With those credentials they performed pass-the-hash attacks.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_23_T1003.001",
+      "dst": "step_25_T1550.003",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 19,
+        "evidence_text": "Separately, they also carried out pass-the-ticket attacks.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_24_T1550.002",
+      "dst": "step_26_T1021.002",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 20,
+        "evidence_text": "Using the stolen authentication material they spread via SMB/Windows Admin Shares.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_24_T1550.002",
+      "dst": "step_27_T1047",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 21,
+        "evidence_text": "They also abused Windows Management Instrumentation (WMI) with the stolen credentials to deploy tools on remote machines.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_25_T1550.003",
+      "dst": "step_26_T1021.002",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 20,
+        "evidence_text": "Using the stolen authentication material they spread via SMB/Windows Admin Shares.",
+        "strict_eval": true
+      }
+    },
+    {
+      "src": "step_25_T1550.003",
+      "dst": "step_27_T1047",
+      "relation": "enables",
+      "confidence": 0.9,
+      "metadata": {
+        "evidence_type": "explicit",
+        "support_sentence": 21,
+        "evidence_text": "They also abused Windows Management Instrumentation (WMI) with the stolen credentials to deploy tools on remote machines.",
+        "strict_eval": true
+      }
+    }
+  ],
+  "paths": [],
+  "metadata": {
+    "gold_version": "v6.1-hand-audited-from-diagram (2026-06-10: C2 impersonation node T1001.003->T1071.001 per user)",
+    "created_for": "Cobalt Kitty case study (single source of truth)"
+  }
+}

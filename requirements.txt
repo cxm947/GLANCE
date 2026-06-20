@@ -1,0 +1,7 @@
+# --- Core pipeline ---
+openai>=1.0.0      # OpenAI-compatible client (DeepSeek / OpenAI / Qwen / SiliconFlow / ...)
+socksio>=1.0       # SOCKS support for openai/httpx when tunneling to the provider
+PyYAML>=6.0        # config loading (configs/*.yaml)
+
+# --- Visualization only (tools/render_graph.py) ---
+matplotlib>=3.5

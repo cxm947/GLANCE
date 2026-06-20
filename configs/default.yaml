@@ -1,0 +1,22 @@
+seed: 42
+
+base_url: "https://api.deepseek.com/v1"
+model: "deepseek-chat"
+
+identifier_self_consistency: 1
+
+reasoner_temperature: 0.0
+reasoner_self_consistency: 1
+reasoner_require_anchor: true
+reasoner_hub_priority: false
+
+verifier_missing_k: 1
+verifier_missing_thresh: 1
+
+thinking: false
+enable_verify: true
+enable_route_back: true
+route_back_mode: "adjudicate"
+route_back_conf_floor: 0.5
+apply_missing_edges: true
+enable_memory: true

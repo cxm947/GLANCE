@@ -1,0 +1,28 @@
+# Runtime outputs (graphs, evaluations, traces, figures, run-scoped memory copies)
+outputs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# --- Secrets / API keys (NEVER commit) ---
+.env
+.env.*
+!.env.example          # 模板是唯一允许入库的 env 文件 (否定规则须排在 .env.* 之后才生效)
+.edl_env               # 兼容旧明文密钥文件名
+.edl_env_*             # 含 .edl_env_deepseek / 将来 .edl_env_openai 等
+configs/secrets/       # 迁入的密钥目录整体忽略
+*.key
+*.pem
+secrets.*
+
+# --- Local config overrides (机器/个人私有, 非 canonical) ---
+configs/local.yaml
+configs/*.local.yaml

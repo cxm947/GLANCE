@@ -1,0 +1,3144 @@
+{
+  "memory": [
+    {
+      "id": "node_protocol_evidence",
+      "tech": "T1071.001",
+      "when_kw": [
+        "domain",
+        "url",
+        "ip",
+        "c2",
+        "endpoint",
+        "connect",
+        "communicate",
+        "beacon",
+        "域名",
+        "服务器"
+      ],
+      "hint": "只有域名/URL/IP/C2端点(基础设施证据)不足以认定 HTTP/HTTPS/DNS 等具体应用层协议——要有明确协议证据才标。"
+    },
+    {
+      "id": "node_interpreter_evidence",
+      "tech": "T1059.001",
+      "when_kw": [
+        "script",
+        "stager",
+        "loader",
+        "payload",
+        "脚本",
+        "载荷"
+      ],
+      "hint": "泛泛的脚本/stager/loader/载荷不足以推断 PowerShell/cmd/Python 等具体解释器——报告点名解释器或可识别痕迹才标具体子技术。"
+    },
+    {
+      "id": "node_crypt_channel_not_exfil",
+      "tech": "T1573.001",
+      "when_kw": [
+        "encrypt",
+        "channel",
+        "加密",
+        "信道",
+        "communicate"
+      ],
+      "hint": "加密信道/C2传输是支撑上下文——除非原文明说传输的对象和传输动作，否则别当成外传的严格依赖。"
+    },
+    {
+      "id": "node_persistence_sidebranch",
+      "tech": "T1547.001",
+      "when_kw": [
+        "persist",
+        "run key",
+        "startup",
+        "持久化",
+        "自启动"
+      ],
+      "hint": "持久化创造的是未来执行能力——除非原文说它触发了后续动作，否则别塞进主依赖路径，应作旁支。"
+    },
+    {
+      "id": "node_model_transfer_step",
+      "tech": "T1105",
+      "when_kw": [
+        "fetch",
+        "download",
+        "retrieve",
+        "下载",
+        "拉取"
+      ],
+      "hint": "原文明说某构件在后续行为前先下载·拉取了远程模板/载荷时，要把这次传输建成中间步骤，别用捷径边跳过。"
+    },
+    {
+      "id": "node_exfil_needs_transmit",
+      "tech": "T1041",
+      "when_kw": [
+        "collect",
+        "stage",
+        "exfil",
+        "外传",
+        "上传",
+        "送回"
+      ],
+      "hint": "光有收集/暂存/加密/C2能力不等于外传——只有原文说数据被传出·上传·送回·离开环境才标外传。"
+    },
+    {
+      "id": "node_inmemory_not_injection",
+      "tech": "T1055",
+      "when_kw": [
+        "load",
+        "beacon",
+        "remote access",
+        "内存",
+        "加载"
+      ],
+      "hint": "把 beacon/agent/远控工具加载进内存不是跨进程注入——除非点名被注入的目标进程或注入API，否则它是远控工具。"
+    },
+    {
+      "id": "node_automated_collection",
+      "tech": "T1119",
+      "when_kw": [
+        "identify",
+        "collect",
+        "select",
+        "自动",
+        "批量"
+      ],
+      "hint": "发现引导下识别/选择数据是收集上下文——只有明说自动化/脚本/批量/计划/无人值守才标自动收集。"
+    },
+    {
+      "id": "node_installer_not_phishing",
+      "tech": "T1566",
+      "when_kw": [
+        "installer",
+        "package",
+        "double-click",
+        "伪装",
+        "安装包",
+        "双击"
+      ],
+      "hint": "伪装的安装包/用户运行文件本身不等于钓鱼——只有原文明说邮件/附件/链接/投递渠道才标钓鱼，否则标伪装+用户执行。"
+    },
+    {
+      "id": "node_decrypt_vs_obfuscate",
+      "tech": "T1140",
+      "when_kw": [
+        "decrypt",
+        "extract",
+        "release",
+        "解密",
+        "释放",
+        "加载器",
+        "下载器"
+      ],
+      "hint": "明确的解密/提取/释放动作标解密节点；加密/加壳/尾部追加这种状态才标混淆节点；下载器/加载器名词本身不够，要有真实下载·内存加载动作。"
+    },
+    {
+      "id": "node_keep_mining_objective",
+      "tech": "T1496",
+      "when_kw": [
+        "mine",
+        "miner",
+        "cpu",
+        "xmr",
+        "挖矿",
+        "矿机",
+        "门罗币",
+        "算力"
+      ],
+      "hint": "报告说矿机运行·消耗CPU/GPU/算力·挖币时，要保留资源劫持节点，别用执行/沙箱检测/防御规避把挖矿目标抹掉。"
+    },
+    {
+      "id": "node_rename_vs_disable_sec",
+      "tech": "T1036.003",
+      "when_kw": [
+        "rename",
+        "utility",
+        "wget",
+        "curl",
+        "重命名",
+        "改名",
+        "工具"
+      ],
+      "hint": "重命名普通系统工具是工具改名/伪装；只有原文说禁用·修改了安全工具/杀软/EDR/防火墙才标禁用安全工具。"
+    },
+    {
+      "id": "node_obfuscate_state_vs_action",
+      "tech": "T1027",
+      "when_kw": [
+        "obfuscate",
+        "packer",
+        "encrypted",
+        "混淆",
+        "加壳",
+        "加密载荷",
+        "尾部加密"
+      ],
+      "hint": "只有载荷/文件被写入·释放·投递·存储时本身处于混淆/加壳/加密态，才补混淆节点(与动作节点并列)；对混淆串做解码/解密的动作标解密节点，别补混淆。"
+    },
+    {
+      "id": "node_registry_emphasis",
+      "tech": "T1112",
+      "when_kw": [
+        "registry",
+        "run key",
+        "注册表",
+        "启动项",
+        "自启动"
+      ],
+      "hint": "只有报告把注册表修改当独立动作强调时才补修改注册表节点(与自启动并列)；只是顺带提通过Run键持久化，就只标自启动、别补。"
+    },
+    {
+      "id": "node_script_agent_not_rat",
+      "tech": "T1059",
+      "when_kw": [
+        "empire",
+        "poshc2",
+        "agent",
+        "stager",
+        "脚本框架",
+        "代理"
+      ],
+      "hint": "被脚本解释器启动的 agent/implant(Empire/PoshC2/脚本stager)是命令脚本执行，不是远控软件；远控软件留给独立具名工具(AnyDesk/具名RAT)。"
+    },
+    {
+      "id": "node_reflective_not_injection",
+      "tech": "T1620",
+      "when_kw": [
+        "reflective",
+        "mapped into memory",
+        "in-memory",
+        "内存加载",
+        "反射加载"
+      ],
+      "hint": "解密的PE在同一进程内映射·加载·运行(反射加载)是反射代码加载，不是进程注入；只有点名被注入的独立目标进程或注入API才标注入。"
+    },
+    {
+      "id": "node_credential_family",
+      "tech": "T1552",
+      "when_kw": [
+        "passwords stored",
+        "credentials",
+        "filezilla",
+        "web inject",
+        "凭据",
+        "密码",
+        "网页注入"
+      ],
+      "hint": "凭据访问按机制分：从应用文件/配置读密码=未保护凭据；专用密码库=密码库；网页注入/浏览器重定向骗输入=浏览器会话劫持；在途拦截/嗅探=中间人。"
+    },
+    {
+      "id": "node_acquire_infra",
+      "tech": "T1583",
+      "when_kw": [
+        "domain",
+        "c2 server",
+        "registered",
+        "acquired",
+        "域名",
+        "服务器",
+        "基础设施"
+      ],
+      "hint": "报告说攻击者注册·获取·控制了用作C2的域名/服务器时，要补获取基础设施节点，别因它同时是C2端点就漏掉。"
+    },
+    {
+      "id": "node_non_app_protocol",
+      "tech": "T1095",
+      "when_kw": [
+        "raw tcp",
+        "custom protocol",
+        "udp",
+        "自定义协议",
+        "裸端口"
+      ],
+      "hint": "自定义/非应用层协议、裸TCP/UDP套接字(非HTTP/HTTPS/DNS)的通信是非应用层协议，别硬塞应用层协议、也别漏。"
+    },
+    {
+      "id": "node_user_execution_human",
+      "tech": "T1204",
+      "when_kw": [
+        "opens",
+        "double-click",
+        "victim runs",
+        "打开",
+        "双击",
+        "运行",
+        "受害者运行"
+      ],
+      "hint": "只有人类用户亲自打开·双击·运行·启用宏才标用户执行；脚本/计划任务/服务/父进程自动启动另一程序没人参与，不是用户执行，按相应执行/计划任务/服务技术标。"
+    },
+    {
+      "id": "node_network_recon_vs_discovery",
+      "tech": "T1590",
+      "when_kw": [
+        "gather victim network",
+        "搜集网络信息",
+        "network topology",
+        "网络拓扑",
+        "dns",
+        "ip ranges",
+        "before compromise",
+        "入侵前",
+        "外部侦察"
+      ],
+      "hint": "T1590 是【拿到立足点之前、从外部搜集目标网络信息(拓扑/DNS/IP段/信任依赖)】; 若同样的网络枚举发生在已上线主机上·用本机命令完成, 那是 Discovery(TA0007)不是侦察——按动作发生在'入侵前/外部'还是'入侵后/受害机内'区分父技术, 别把内网发现误标成 T1590。"
+    },
+    {
+      "id": "node_host_recon_vs_discovery",
+      "tech": "T1592",
+      "when_kw": [
+        "gather victim host",
+        "搜集主机信息",
+        "host information",
+        "software version",
+        "软件版本",
+        "client configuration",
+        "fingerprint",
+        "指纹",
+        "入侵前"
+      ],
+      "hint": "T1592 是【入侵前从外部探知目标主机硬件/软件/固件/客户端配置】, 用于选兼容的利用·工具; 若'识别系统信息'是登陆后在受害机上跑本机命令拿的, 那是系统信息发现(TA0007)不是侦察——按'外部/入侵前'还是'机内/入侵后'区分, 别把发现误标成 T1592。"
+    },
+    {
+      "id": "node_active_scan_vs_passive_db",
+      "tech": "T1595",
+      "when_kw": [
+        "active scanning",
+        "主动扫描",
+        "port scan",
+        "端口扫描",
+        "probe",
+        "探测",
+        "vulnerability scan",
+        "漏洞扫描",
+        "wordlist"
+      ],
+      "hint": "T1595 主动扫描必须是攻击者【直接向目标基础设施发流量探测】(IP段扫描/漏洞扫描/目录爆破); 若只是查 Shodan/证书透明/WHOIS 这类第三方库, 那是被动的 T1596 搜开放技术库, 别因都叫'扫描/查端口'就标成主动扫描。"
+    },
+    {
+      "id": "node_phish_for_info_not_delivery",
+      "tech": "T1598",
+      "when_kw": [
+        "phishing for information",
+        "钓鱼套取信息",
+        "elicit",
+        "套取",
+        "credential harvest",
+        "凭据收集",
+        "fake login",
+        "假登录页",
+        "no malware"
+      ],
+      "hint": "T1598 是【用社工邮件/消息/电话套取信息(凭据/内部流程), 不投递载荷】; 一旦报告说邮件带可执行载荷/利用文档要在受害机运行, 那是投递型钓鱼(初始访问), 不是侦察的 Phishing-for-Information——按'是否真正投递并执行载荷'切分。"
+    },
+    {
+      "id": "node_open_source_search_passive",
+      "tech": "T1596",
+      "when_kw": [
+        "open technical database",
+        "开放技术库",
+        "shodan",
+        "whois",
+        "certificate transparency",
+        "证书透明",
+        "passive dns",
+        "scan database",
+        "被动搜集"
+      ],
+      "hint": "查 WHOIS/证书库/Shodan/扫描库这类第三方技术库是【被动开源情报搜集(T1596)】, 全程不接触目标基础设施、在目标侧不留日志; 别把这类外部检索误当成对受害环境的主动扫描或内网发现, 它只产出'情报'不产出对目标系统的访问。"
+    },
+    {
+      "id": "node_gather_identity_org_intel",
+      "tech": "T1589",
+      "when_kw": [
+        "employee names",
+        "员工姓名",
+        "email addresses",
+        "邮箱地址",
+        "credentials",
+        "凭据",
+        "identity information",
+        "身份信息",
+        "社工"
+      ],
+      "hint": "搜集员工姓名/邮箱/凭据线索是侦察期的【身份信息搜集(T1589)】, 它的产物是'用于后续社工/定向的知识', 本身不是从系统读出凭据也不是账户操作——别因为出现'账号/邮箱/凭据'就误标成凭据获取或账户技术, 要看是不是入侵前的外部收集。"
+    },
+    {
+      "id": "node_develop_vs_obtain_capability",
+      "tech": "T1587",
+      "when_kw": [
+        "develop",
+        "author",
+        "build custom",
+        "in-house",
+        "自研",
+        "自行开发",
+        "定制恶意软件"
+      ],
+      "hint": "攻击者【自行编写·编译·定制】恶意软件/漏洞/证书才标开发能力(T1587);若是【购买·下载·获取现成】工具/样本/证书,应标获取能力(T1588)——别把现成工具的引入误记成开发。"
+    },
+    {
+      "id": "node_obtain_tool_not_transfer",
+      "tech": "T1588.002",
+      "when_kw": [
+        "obtain tool",
+        "download tool",
+        "open-source",
+        "commodity",
+        "获取工具",
+        "公开工具",
+        "现成工具"
+      ],
+      "hint": "获取能力·工具(T1588.002)是攻击前【在攻方侧备得】红队/公开工具,属资源准备;它不是把工具投到受害主机的入站传输,后者是另一类技术,别把'准备工具'与'落地传输'混标。"
+    },
+    {
+      "id": "node_obtain_vuln_vs_exploit",
+      "tech": "T1588.006",
+      "when_kw": [
+        "vulnerability",
+        "cve",
+        "0day",
+        "nday",
+        "漏洞情报",
+        "获取漏洞",
+        "购买漏洞"
+      ],
+      "hint": "获取漏洞信息(T1588.006)只是攻方掌握了某CVE/0day【知识】这一资源准备;真正对目标发起利用是利用类技术——只有'掌握/购买漏洞情报'语义才标本技术,别和实际利用动作混为一谈。"
+    },
+    {
+      "id": "node_stage_capability_preposition",
+      "tech": "T1608",
+      "when_kw": [
+        "upload to",
+        "host on",
+        "stage",
+        "pre-position",
+        "上传到",
+        "托管于",
+        "预置",
+        "投放到服务器"
+      ],
+      "hint": "暂存能力(T1608)是把载荷/工具/链接/证书【预先放到攻方掌控的基础设施上】等待投递,作用对象是攻方资产而非受害主机;别把它和受害侧的落地·释放动作混淆。"
+    },
+    {
+      "id": "node_compromise_vs_establish_account",
+      "tech": "T1586",
+      "when_kw": [
+        "compromise account",
+        "hijack account",
+        "stolen account",
+        "盗用账号",
+        "接管账号",
+        "失陷邮箱"
+      ],
+      "hint": "攻击者【盗用·接管他人既有】社媒/邮箱/云账号标失陷账号(T1586);若是攻方【新注册·自建】账号,应标建立账号(T1585)——区分'夺取既有'与'新建'。"
+    },
+    {
+      "id": "node_compromise_infra_vs_acquire",
+      "tech": "T1584",
+      "when_kw": [
+        "compromise server",
+        "hijacked domain",
+        "commandeer",
+        "失陷服务器",
+        "劫持域名",
+        "征用基础设施"
+      ],
+      "hint": "攻击者【入侵·征用第三方既有】服务器/域名/网站当跳板标失陷基础设施(T1584);合法注册·租用属获取基础设施(在P13中,本战术其余技术按此区分),核心看是'夺取既有'还是'新购租'。"
+    },
+    {
+      "id": "node_acquire_access_broker",
+      "tech": "T1650",
+      "when_kw": [
+        "initial access broker",
+        "purchase access",
+        "buy foothold",
+        "购买访问",
+        "访问中间商",
+        "已有立足点"
+      ],
+      "hint": "获取访问(T1650)指攻方【从访问中间商处购得他人已建立的目标立足点】这一资源交易,不是自己实施的初始入侵动作;只有'购买/获得现成访问权'语义才标。"
+    },
+    {
+      "id": "node_code_signing_cert_resource",
+      "tech": "T1587.002",
+      "when_kw": [
+        "code signing certificate",
+        "signing cert",
+        "create cert",
+        "代码签名证书",
+        "自签证书",
+        "制作证书"
+      ],
+      "hint": "开发·获取代码签名证书(T1587.002/T1588.003)是攻方在攻击前【备得签名材料】这一资源;用该证书在样本上实际签名以骗过信任是另一类信任规避技术,别把'备得证书'与'用证书签名'同标一处。"
+    },
+    {
+      "id": "node_establish_email_for_phish",
+      "tech": "T1585.002",
+      "when_kw": [
+        "register email",
+        "create mailbox",
+        "attacker-controlled email",
+        "注册邮箱",
+        "新建邮箱",
+        "攻方邮箱"
+      ],
+      "hint": "建立邮箱账号(T1585.002)是攻方新注册发件邮箱这一资源准备,本身不等于发起钓鱼;只有真正用它投递诱饵才进入投递阶段,别把'备好邮箱'误标为已实施的投递。"
+    },
+    {
+      "id": "node_driveby_vs_phish_link",
+      "tech": "T1189",
+      "when_kw": [
+        "drive-by",
+        "watering hole",
+        "compromised website",
+        "browser exploit",
+        "水坑",
+        "网页挂马",
+        "浏览器漏洞"
+      ],
+      "hint": "受害者主动浏览被攻击者控制/挂马的站点而被利用才标路过式攻击(drive-by); 若是邮件/即时消息里投递的恶意链接被点开, 那是钓鱼链接(T1566.002)而非 drive-by, 别混。"
+    },
+    {
+      "id": "node_hardware_vs_removable",
+      "tech": "T1200",
+      "when_kw": [
+        "rogue device",
+        "BadUSB",
+        "implant",
+        "hardware",
+        "rogue NIC",
+        "硬件",
+        "植入设备",
+        "恶意外设"
+      ],
+      "hint": "硬件接入(T1200)指接入恶意物理设备本身(网卡/键盘仿冒/植入物)作为入口; 若只是普通U盘携带恶意文件被自动/手动运行, 那是可移动介质复制(T1091), 别按硬件接入标。"
+    },
+    {
+      "id": "node_removable_media_replication",
+      "tech": "T1091",
+      "when_kw": [
+        "usb",
+        "removable media",
+        "autorun",
+        "thumb drive",
+        "可移动介质",
+        "U盘",
+        "自动运行"
+      ],
+      "hint": "可移动介质复制是把恶意代码写到U盘/移动盘并随插入触发, 它本身只是'传播载体'; 不要因为后面有解释器执行/注入就把这步当成那些动作, 也别和供应链(软件分发污染)混。"
+    },
+    {
+      "id": "node_trusted_relationship_scope",
+      "tech": "T1199",
+      "when_kw": [
+        "MSP",
+        "third party",
+        "contractor",
+        "trusted relationship",
+        "supplier access",
+        "供应商",
+        "第三方",
+        "受信任连接"
+      ],
+      "hint": "信任关系滥用指经由第三方/MSP/承包商既有的受信任连接进入, 它是一种'访问条件/入口', 不是某个本地动作; 若攻击者用的是自己窃取的合法账号登录, 那是有效账号而非信任关系, 别混标。"
+    },
+    {
+      "id": "node_wmi_exec_not_discovery",
+      "tech": "T1047",
+      "when_kw": [
+        "wmi",
+        "wmic",
+        "win32_process",
+        "wbem",
+        "管理规范",
+        "进程创建"
+      ],
+      "hint": "WMI 既能查询(发现)也能 Win32_Process.Create 起进程——只有原文明说借 WMI 创建·启动了进程/命令才标 WMI 执行;若只是用 WMI 查系统/服务/账号信息,那是发现而非执行。"
+    },
+    {
+      "id": "node_native_api_evidence",
+      "tech": "T1106",
+      "when_kw": [
+        "native api",
+        "ntdll",
+        "createprocess",
+        "syscall",
+        "原生api",
+        "系统调用"
+      ],
+      "hint": "调用 CreateProcess/ShellExecute/系统调用直接拉起执行才标原生API执行;泛泛说'调用了API'或只是普通函数调用不够,要有绕过命令行·直接经API触发执行的痕迹。"
+    },
+    {
+      "id": "node_shared_module_load",
+      "tech": "T1129",
+      "when_kw": [
+        "loadlibrary",
+        "dll load",
+        "shared module",
+        "模块加载",
+        "导出函数",
+        "dllmain"
+      ],
+      "hint": "经 LoadLibrary/链接器加载合法共享模块(DLL/SO)并执行其代码才标共享模块;若是把恶意DLL塞进别的进程地址空间那是进程注入,只是侧加载一个伴生DLL则归侧加载,别混标。"
+    },
+    {
+      "id": "node_system_service_exec",
+      "tech": "T1569.002",
+      "when_kw": [
+        "sc.exe",
+        "service start",
+        "psexec",
+        "services.exe",
+        "服务启动",
+        "系统服务"
+      ],
+      "hint": "通过服务控制管理器启动·执行一个服务来跑命令/二进制才标服务执行;若重点是'新建/改服务做持久化或提权'应归创建系统进程,服务执行强调的是借服务这次把代码跑起来。"
+    },
+    {
+      "id": "node_ipc_exec_dde_com",
+      "tech": "T1559",
+      "when_kw": [
+        "dde",
+        "com object",
+        "ole",
+        "进程间通信",
+        "动态数据交换",
+        "组件对象"
+      ],
+      "hint": "借进程间通信(DDE字段/COM对象实例化)让另一进程替自己执行才标该技术;单纯进程间传数据·正常COM调用不算,要有'让对端代为执行命令/载荷'的语义。"
+    },
+    {
+      "id": "node_deploy_container_exec",
+      "tech": "T1610",
+      "when_kw": [
+        "docker run",
+        "deploy container",
+        "kubectl run",
+        "部署容器",
+        "镜像启动",
+        "容器运行"
+      ],
+      "hint": "在已入侵环境里部署·运行一个容器来执行代码/逃逸才标部署容器;若只是发现已有容器或枚举编排平台那是容器发现,这里强调'攻击者新拉起容器跑东西'。"
+    },
+    {
+      "id": "node_serverless_exec",
+      "tech": "T1648",
+      "when_kw": [
+        "lambda",
+        "cloud function",
+        "serverless",
+        "无服务器",
+        "函数计算",
+        "automation runbook"
+      ],
+      "hint": "滥用云端无服务器函数(Lambda/Cloud Function/自动化Runbook)来执行代码才标该技术;只是调用云API做配置/读取不算,要有'触发函数运行攻击者代码'的动作。"
+    },
+    {
+      "id": "node_cloud_admin_cmd",
+      "tech": "T1651",
+      "when_kw": [
+        "run command",
+        "ssm",
+        "runcommand",
+        "云管理命令",
+        "azure runbook",
+        "agent执行"
+      ],
+      "hint": "借云厂商管理服务(如AWS SSM RunCommand/Azure RunCommand)经虚机内置代理在云主机上执行命令才标该技术;它是'从云控制面打进客户机内部',别和本地命令解释器或远程服务登录混标。"
+    },
+    {
+      "id": "node_softdeploy_exec_not_lateral",
+      "tech": "T1072",
+      "when_kw": [
+        "sccm",
+        "deployment tool",
+        "patch management",
+        "软件分发",
+        "推送部署",
+        "运维平台"
+      ],
+      "hint": "劫持企业软件分发/补丁运维平台(SCCM等)向大量端点推送并执行代码才标该技术;它天然兼具执行+横向语义,核对原文是'借集中平台批量下发执行',而非普通远程服务登录。"
+    },
+    {
+      "id": "node_webshell_not_rat_or_exploit",
+      "tech": "T1505.003",
+      "when_kw": [
+        "web shell",
+        "webshell",
+        "网页木马",
+        "aspx jsp php",
+        "China Chopper",
+        "服务器后门"
+      ],
+      "hint": "Web shell是放在可访问Web服务器上的服务端脚本作持久化, 常被误标成通用RAT/C2或被误并入'漏洞利用'本身; 它不主动外联(靠入站HTTP唤起), 与下载型后门和利用动作是不同节点。"
+    },
+    {
+      "id": "node_server_software_component_extensibility",
+      "tech": "T1505",
+      "when_kw": [
+        "server software component",
+        "IIS module",
+        "transport agent",
+        "SQL stored procedure",
+        "服务器组件",
+        "扩展持久化"
+      ],
+      "hint": "该技术是滥用宿主应用的合法扩展机制(IIS模块/邮件传输代理/SQL存储过程)而非独立恶意程序; 易误标成通用Backdoor, 关键识别是它运行在宿主服务进程上下文且随服务启动复活。"
+    },
+    {
+      "id": "node_bits_job_dualuse_persistence",
+      "tech": "T1197",
+      "when_kw": [
+        "BITS job",
+        "bitsadmin",
+        "background intelligent transfer",
+        "后台传输",
+        "持久任务",
+        "重试下载"
+      ],
+      "hint": "BITS Jobs常被仅当作下载(ingress)节点, 但其TA0003角色是创建可重试/触发的持久作业; 只标传输会漏掉它的持久化语义, 二者机制不同。"
+    },
+    {
+      "id": "node_pre_os_boot_before_os",
+      "tech": "T1542",
+      "when_kw": [
+        "bootkit",
+        "MBR",
+        "VBR",
+        "UEFI firmware",
+        "pre-os boot",
+        "固件持久化"
+      ],
+      "hint": "Pre-OS Boot在固件/引导扇区执行, 早于OS加载且能挺过重装, 常被误标成普通rootkit/内核模块; 识别要点是触发时机在引导阶段而非OS运行期。"
+    },
+    {
+      "id": "node_modify_auth_process_vs_cred_theft",
+      "tech": "T1556",
+      "when_kw": [
+        "skeleton key",
+        "password filter",
+        "PAM",
+        "modify authentication",
+        "篡改认证",
+        "认证后门"
+      ],
+      "hint": "Modify Authentication Process是改认证机制本身(骨架钥匙/密码过滤DLL/PAM)以放行登录, 常被误标成凭据窃取(TA0006)或Valid Accounts; 它产出的是'认证旁路'而非被盗口令。"
+    },
+    {
+      "id": "node_office_startup_not_macro_exec",
+      "tech": "T1137",
+      "when_kw": [
+        "office template",
+        "outlook rule",
+        "outlook home page",
+        "add-in",
+        "office启动",
+        "宏持久化"
+      ],
+      "hint": "Office Application Startup是靠模板/加载项/Outlook规则在每次Office启动时重触发的持久化, 常被误标成钓鱼宏的一次性执行; 关键是再触发载体而非首次投递。"
+    },
+    {
+      "id": "node_software_extensions_relaunch",
+      "tech": "T1176",
+      "when_kw": [
+        "browser extension",
+        "IDE extension",
+        "malicious addon",
+        "浏览器扩展",
+        "插件持久化",
+        "extension"
+      ],
+      "hint": "Software Extensions靠浏览器/IDE扩展随宿主应用重新加载实现持久化, 常被误标成普通软件安装; 识别要点是它依附宿主进程并随其启动复活。"
+    },
+    {
+      "id": "node_traffic_signaling_passive_trigger",
+      "tech": "T1205",
+      "when_kw": [
+        "port knocking",
+        "magic packet",
+        "socket filter",
+        "traffic signaling",
+        "端口敲门",
+        "被动触发"
+      ],
+      "hint": "Traffic Signaling是潜伏监听器被特定'魔术包'唤醒后开放访问/启动载荷, 常被误标成通用C2或防火墙改动; 它本身不持续外联, 是被动触发型隐蔽通道/持久化。"
+    },
+    {
+      "id": "node_compromise_host_binary_local_trojan",
+      "tech": "T1554",
+      "when_kw": [
+        "trojanized binary",
+        "patched executable",
+        "compromise host software binary",
+        "本地二进制篡改",
+        "替换合法程序"
+      ],
+      "hint": "Compromise Host Software Binary是把本机已有的合法程序就地木马化以在其被调用时复活, 常被误标成通用文件改动或供应链(T1195); 区别是篡改发生在受害主机本地而非分发源。"
+    },
+    {
+      "id": "node_implant_internal_image_stored",
+      "tech": "T1525",
+      "when_kw": [
+        "implant image",
+        "poisoned image",
+        "backdoored AMI",
+        "container image",
+        "镜像植入",
+        "黄金镜像"
+      ],
+      "hint": "Implant Internal Image是污染存储中的镜像(容器/AMI), 使日后由其派生的每个实例都自带后门, 常被误标成单点恶意部署; 识别要点是持久化载体是'镜像'而非某个运行实例。"
+    },
+    {
+      "id": "node_logon_init_script_registered",
+      "tech": "T1037",
+      "when_kw": [
+        "logon script",
+        "rc script",
+        "startup items",
+        "login hook",
+        "登录脚本",
+        "启动脚本"
+      ],
+      "hint": "Boot/Logon Initialization Scripts的关键是脚本被登记到引导/登录流程从而自动重跑, 常被误标成一次性脚本执行(TA0002); 区分点在'是否注册为开机/登录触发'。"
+    },
+    {
+      "id": "node_t1548_abuse_elevation_not_every_priv_cmd",
+      "tech": "T1548",
+      "when_kw": [
+        "UAC bypass",
+        "sudo",
+        "setuid",
+        "elevated COM",
+        "提权机制滥用",
+        "TCC"
+      ],
+      "hint": "Abuse Elevation Control Mechanism means riding a legitimate elevation path (UAC auto-elevate, sudo caching, setuid binary, elevated COM moniker), not any command that happens to run as admin; do not tag a process merely observed running high-integrity as T1548 unless a built-in elevation control was actually subverted. Sub-techniques are OS-specific (.001 setuid/setgid, .002 UAC, .003 sudo, .004 elevated COM, .005 TCC), so pick the right child rather than the parent by default."
+    },
+    {
+      "id": "node_t1134_token_manip_vs_cred_theft",
+      "tech": "T1134",
+      "when_kw": [
+        "access token",
+        "impersonation",
+        "SID-History",
+        "parent PID spoofing",
+        "令牌操纵",
+        "make token"
+      ],
+      "hint": "Access Token Manipulation reuses or duplicates an existing Windows token to assume another security context; it is frequently mislabeled as credential theft, but no plaintext/hash is necessarily obtained, only a token handle is borrowed. Distinguish .001 token theft/impersonation, .002 create-process-with-token, .003 make-and-impersonate, .004 parent-PID spoofing, and .005 SID-History injection rather than collapsing them."
+    },
+    {
+      "id": "node_t1484_domain_policy_mod_not_local_config",
+      "tech": "T1484",
+      "when_kw": [
+        "GPO",
+        "Group Policy",
+        "domain trust",
+        "域策略修改",
+        "gpo modification",
+        "trust modification"
+      ],
+      "hint": "Domain Policy Modification edits domain-wide objects (GPOs in .001, trust relationships in .002) to push attacker logic to many hosts; do not confuse it with local registry or single-host policy tweaks, which belong to other techniques. The escalation comes from authority scope, so it presupposes existing rights over the policy object rather than granting them from nothing."
+    },
+    {
+      "id": "node_t1611_escape_to_host_vs_normal_container_exec",
+      "tech": "T1611",
+      "when_kw": [
+        "container escape",
+        "breakout",
+        "privileged container",
+        "逃逸到宿主机",
+        "host mount",
+        "docker.sock"
+      ],
+      "hint": "Escape to Host is breaking the container boundary to act on the underlying node (via privileged flags, host mounts, exposed runtime socket, or kernel abuse), not ordinary execution inside a container. Running a command in a container, deploying one, or building an image are separate techniques and should not be folded into T1611 just because containers are mentioned."
+    },
+    {
+      "id": "node_t1068_exploit_privesc_requires_vuln_not_misconfig",
+      "tech": "T1068",
+      "when_kw": [
+        "kernel exploit",
+        "driver exploit",
+        "privilege escalation exploit",
+        "提权漏洞利用",
+        "CVE",
+        "local exploit"
+      ],
+      "hint": "Exploitation for Privilege Escalation requires abusing a software/kernel/driver vulnerability to gain higher rights; weak file permissions, unquoted paths, or service misconfig are NOT T1068 (they map to hijack/abuse techniques). It is local post-access escalation, so it should not be conflated with remote-service exploitation used for initial access or lateral movement."
+    },
+    {
+      "id": "node_sandbox_evasion_is_check_not_action",
+      "tech": "T1497",
+      "when_kw": [
+        "sandbox",
+        "virtual machine",
+        "anti-vm",
+        "evasion check",
+        "沙箱检测",
+        "虚拟机",
+        "反沙箱",
+        "环境检测"
+      ],
+      "hint": "检测虚拟机/沙箱/分析环境(查注册表项·驱动·进程·鼠标活动·sleep绕过)是【条件判断/守门】节点，不是把防御关掉的禁用动作；只有原文明说真去修改·禁用安全工具才另算，单纯探测环境就标沙箱规避。"
+    },
+    {
+      "id": "node_guardrail_keying_not_plain_decrypt",
+      "tech": "T1480",
+      "when_kw": [
+        "guardrail",
+        "environmental keying",
+        "domain check",
+        "serial number",
+        "执行护栏",
+        "环境密钥",
+        "限定环境",
+        "目标特征"
+      ],
+      "hint": "用目标特有值(域名·卷序列号·主机名·IP·系统时间)派生密钥或限定只在特定环境运行，是执行护栏/环境锁；它本身是'限定条件+派生密钥'，与单纯解码动作不同——派生出的密钥用于解密那一步才是后续节点。"
+    },
+    {
+      "id": "node_hide_artifact_family",
+      "tech": "T1564",
+      "when_kw": [
+        "hidden file",
+        "alternate data stream",
+        "ads",
+        "hidden window",
+        "隐藏文件",
+        "数据流",
+        "隐藏窗口",
+        "隐藏属性"
+      ],
+      "hint": "隐藏构件按机制分：设隐藏/系统属性=隐藏文件目录；藏进NTFS交替数据流(ADS)=NTFS文件属性；无窗口/SW_HIDE运行=隐藏窗口；邮件规则藏信=邮件隐藏规则——别和加壳/加密(混淆)或删痕迹(指标移除)混为一类。"
+    },
+    {
+      "id": "node_rootkit_vs_generic_hook",
+      "tech": "T1014",
+      "when_kw": [
+        "rootkit",
+        "kernel module",
+        "hook ssdt",
+        "hide process",
+        "内核",
+        "驱动隐藏",
+        "进程隐藏",
+        "rootkit"
+      ],
+      "hint": "Rootkit特指在内核/系统底层挂钩以隐藏进程·文件·网络连接·驱动；普通用户态改文件属性或藏窗口不是Rootkit——要有底层挂钩·内核模块·隐藏OS对象的明确证据才标。"
+    },
+    {
+      "id": "node_direct_volume_access_not_filedelete",
+      "tech": "T1006",
+      "when_kw": [
+        "raw disk",
+        "volume access",
+        "\\\\.\\\\",
+        "ntfs parse",
+        "原始磁盘",
+        "卷读取",
+        "绕过文件系统",
+        "直接读盘"
+      ],
+      "hint": "直接读裸卷/原始磁盘(绕过文件系统API去解析NTFS、读受锁文件)是直接卷访问；它是'绕过文件系统句柄去读'，不是删除文件·清痕迹，也不是普通文件读取。"
+    },
+    {
+      "id": "node_preos_boot_persistence_vs_evasion",
+      "tech": "T1542",
+      "when_kw": [
+        "bootkit",
+        "firmware",
+        "mbr",
+        "uefi",
+        "引导",
+        "固件",
+        "主引导记录",
+        "bootkit"
+      ],
+      "hint": "篡改固件/引导扇区/MBR(Pre-OS Boot)落在操作系统之下、OS看不到，既是隐蔽也是极强持久化；它和普通自启动/注册表持久化不是一类，要有引导级·固件级痕迹才标。"
+    },
+    {
+      "id": "node_bits_job_multipurpose",
+      "tech": "T1197",
+      "when_kw": [
+        "bits",
+        "bitsadmin",
+        "background transfer",
+        "transfer job",
+        "后台传输",
+        "bits任务",
+        "下载任务"
+      ],
+      "hint": "BITS任务可同时承担下载·持久化(任务完成/出错回调拉起代码)·上传外传三种角色，自身不留新文件且常被防火墙放行；判其角色看上下文(拉载荷/保活/送数据)，别默认只当下载。"
+    },
+    {
+      "id": "node_indirect_exec_not_interpreter",
+      "tech": "T1202",
+      "when_kw": [
+        "forfiles",
+        "pcalua",
+        "wsl",
+        "scriptrunner",
+        "间接执行",
+        "绕过命令行",
+        "代执行工具"
+      ],
+      "hint": "借 forfiles·pcalua·wsl·scriptrunner·ssh -o 等系统工具间接发起命令以绕开对cmd/解释器的限制，是间接命令执行；它强调'代为发起'这层规避，别直接标成命令解释器执行。"
+    },
+    {
+      "id": "node_signed_script_proxy_not_signed_binary",
+      "tech": "T1216",
+      "when_kw": [
+        "pubprn",
+        "syncappvpublishingserver",
+        "signed script",
+        "proxy execution",
+        "签名脚本",
+        "白脚本",
+        "代理执行"
+      ],
+      "hint": "滥用微软签名脚本(PubPrn·SyncAppvPublishingServer等)代跑恶意代码以过应用控制，是系统脚本代理执行(T1216)；它和滥用签名二进制(rundll32/mshta那类)不是同一技术，别混标。"
+    },
+    {
+      "id": "node_xsl_script_proxy",
+      "tech": "T1220",
+      "when_kw": [
+        "xsl",
+        "msxsl",
+        "wmic format",
+        "xslt",
+        "样式表",
+        "脚本处理",
+        "白名单绕过"
+      ],
+      "hint": "用XSL样式表内嵌脚本(经msxsl或wmic /format)执行代码以绕白名单，是XSL脚本处理；它是独立的代理执行技术，别归入通用脚本解释器或签名二进制代理。"
+    },
+    {
+      "id": "node_traffic_signaling_gate",
+      "tech": "T1205",
+      "when_kw": [
+        "port knocking",
+        "magic packet",
+        "traffic signal",
+        "port knock",
+        "端口敲门",
+        "魔术包",
+        "流量信号",
+        "激活后门"
+      ],
+      "hint": "端口敲门/魔术包/特定报文用来在防火墙上临时开端口或激活潜伏后门，是流量信号(T1205)；它是'触发开门'的门控机制，本身不是C2通信信道，别和应用层/隧道通信混为一节点。"
+    },
+    {
+      "id": "node_token_manip_not_account",
+      "tech": "T1134",
+      "when_kw": [
+        "access token",
+        "token theft",
+        "impersonate token",
+        "parent pid spoof",
+        "令牌",
+        "访问令牌",
+        "令牌窃取",
+        "假冒"
+      ],
+      "hint": "窃取·复制·假冒访问令牌或伪造父进程PID以改变进程安全上下文是访问令牌操纵(T1134)；它操纵的是已存在会话的令牌，不是获取凭据/账号本身，也不等于提权目标达成。"
+    },
+    {
+      "id": "node_debugger_evasion_is_check",
+      "tech": "T1622",
+      "when_kw": [
+        "debugger",
+        "isdebuggerpresent",
+        "anti-debug",
+        "ntqueryinformation",
+        "反调试",
+        "调试器检测",
+        "调试标志"
+      ],
+      "hint": "查IsDebuggerPresent·调试标志·时间差以发现调试器属调试器规避(T1622)，与沙箱检测同为'条件判断/守门'类节点；探测到后改行为·退出才是其作用，单纯探测别标成动作。"
+    },
+    {
+      "id": "node_exploit_for_evasion_scope",
+      "tech": "T1211",
+      "when_kw": [
+        "exploit",
+        "bypass security",
+        "disable detection via vuln",
+        "漏洞规避",
+        "利用漏洞绕过",
+        "绕过防护"
+      ],
+      "hint": "专门利用漏洞去使安全特性失效/绕过检测(而非用漏洞拿执行或提权)才标利用漏洞规避防御(T1211)；多数漏洞利用是为初始访问/执行/提权，别把那些误标成本技术。"
+    },
+    {
+      "id": "node_aitm_active_not_sniff",
+      "tech": "T1557",
+      "when_kw": [
+        "relay",
+        "poisoning",
+        "LLMNR",
+        "NBT-NS",
+        "ARP",
+        "中间人",
+        "投毒",
+        "重放"
+      ],
+      "hint": "AiTM 是主动把流量重定向/中继到自己(LLMNR/NBT-NS 投毒、ARP 欺骗、SMB 中继),要有'重定向·中继·投毒'动作才标;只是被动监听线路不改流向的应标网络嗅探,别混。"
+    },
+    {
+      "id": "node_sniffing_passive",
+      "tech": "T1040",
+      "when_kw": [
+        "sniff",
+        "capture traffic",
+        "pcap",
+        "嗅探",
+        "抓包",
+        "监听",
+        "明文"
+      ],
+      "hint": "网络嗅探是被动捕获在途流量/明文凭据,不改变流量路径;一旦报告说做了投毒·重定向·中继来逼流量经过自己,就升级为 AiTM(主动),嗅探只描述被动抓取。"
+    },
+    {
+      "id": "node_kerberoast_vs_ticket_forge",
+      "tech": "T1558.003",
+      "when_kw": [
+        "kerberoast",
+        "SPN",
+        "service ticket",
+        "TGS",
+        "服务票据",
+        "请求票据"
+      ],
+      "hint": "Kerberoasting 是为带 SPN 的服务账号请求 TGS 服务票据以离线破解其口令,属合法请求+提取;它不是伪造票据(金/银票),后者是用已得密钥凭空铸票,机制相反别标错子技术。"
+    },
+    {
+      "id": "node_ticket_forge_vs_extract",
+      "tech": "T1558",
+      "when_kw": [
+        "golden ticket",
+        "silver ticket",
+        "forge",
+        "TGT",
+        "krbtgt",
+        "金票",
+        "银票",
+        "伪造票据"
+      ],
+      "hint": "伪造 Kerberos 票据(金票/银票)需先掌握 krbtgt 或服务账号密钥再铸造任意票据,是'凭密钥造票';单纯从内存提取已有票据或请求票据是另一回事,要看是否真有'用密钥铸造'语义。"
+    },
+    {
+      "id": "node_passwd_store_not_dump",
+      "tech": "T1555",
+      "when_kw": [
+        "password store",
+        "credential manager",
+        "keychain",
+        "vault",
+        "密码库",
+        "凭据管理器",
+        "钥匙串"
+      ],
+      "hint": "从专用密码库/凭据管理器/钥匙串/浏览器存储读取已保存口令属密码库窃取;它针对的是应用层的'凭据保险箱',与从 LSASS 等系统内存抠凭据、或从配置明文捡凭据是不同机制,按存储载体区分。"
+    },
+    {
+      "id": "node_exploit_for_cred_access",
+      "tech": "T1212",
+      "when_kw": [
+        "exploit",
+        "vulnerability",
+        "ZeroLogon",
+        "PetitPotam",
+        "漏洞",
+        "提取凭据",
+        "认证漏洞"
+      ],
+      "hint": "只有当漏洞利用的直接目的/产物是获取凭据材料(如打认证协议/域控漏洞掏出哈希·密钥)才标'为凭据访问而利用漏洞';若漏洞只是拿执行权或立足点,应标对应的执行/初始访问类,别一律塞到这里。"
+    },
+    {
+      "id": "node_forced_auth_coerce",
+      "tech": "T1187",
+      "when_kw": [
+        "forced authentication",
+        "coerce",
+        "UNC path",
+        "SMB callback",
+        "强制认证",
+        "回连",
+        "诱导认证"
+      ],
+      "hint": "强制认证是诱导受害系统/账号主动向攻击者控制的端点发起认证(如塞 UNC 路径触发 SMB 回连),从而泄露凭据材料;它是'逼出认证',不要与捕获后做中继的那一步(AiTM)合并为同一节点。"
+    },
+    {
+      "id": "node_forge_web_cred_mint",
+      "tech": "T1606",
+      "when_kw": [
+        "forge",
+        "SAML",
+        "golden SAML",
+        "web cookie",
+        "token",
+        "伪造",
+        "令牌",
+        "会话凭据"
+      ],
+      "hint": "伪造 Web 凭据是用窃得的签名密钥/秘密凭空铸造合法的会话 cookie 或 SAML 令牌(如金 SAML),是'造新令牌';与窃取一个已存在的 cookie/令牌是不同机制,关键看是否有'用密钥签发'语义。"
+    },
+    {
+      "id": "node_modify_auth_process",
+      "tech": "T1556",
+      "when_kw": [
+        "skeleton key",
+        "authentication",
+        "LSASS patch",
+        "PAM",
+        "篡改认证",
+        "万能密码",
+        "认证流程"
+      ],
+      "hint": "修改认证流程是篡改认证机制本身(打万能密码、改域控认证、改 PAM 模块),使后续任意/特定登录被放行或被记录;它改的是'认证如何判定',不是单纯偷一份凭据,别和凭据窃取节点混。"
+    },
+    {
+      "id": "node_mfa_request_vs_intercept",
+      "tech": "T1621",
+      "when_kw": [
+        "MFA fatigue",
+        "push bombing",
+        "approve",
+        "prompt",
+        "推送轰炸",
+        "多因素",
+        "疲劳攻击"
+      ],
+      "hint": "MFA 请求生成(疲劳/轰炸)是已握有口令后反复触发推送、诱导用户点'批准',靠的是用户误批;它不是技术性截获一次性码,后者(截获/转发 OTP·短信)应标 MFA 拦截,机制不同。"
+    },
+    {
+      "id": "node_steal_app_token",
+      "tech": "T1528",
+      "when_kw": [
+        "OAuth",
+        "access token",
+        "application token",
+        "refresh token",
+        "应用令牌",
+        "访问令牌",
+        "云"
+      ],
+      "hint": "窃取应用访问令牌针对的是 OAuth/云应用签发的 access/refresh 令牌,持有即可免密调用 API/云资源;它与浏览器里的网站会话 cookie 是不同载体,按'应用/API 令牌 vs 网页会话'区分。"
+    },
+    {
+      "id": "node_steal_web_cookie",
+      "tech": "T1539",
+      "when_kw": [
+        "session cookie",
+        "browser cookie",
+        "session hijack",
+        "会话cookie",
+        "会话劫持",
+        "浏览器cookie"
+      ],
+      "hint": "窃取 Web 会话 cookie 是偷取已认证网站的会话凭据以绕过登录与 MFA;它偷的是浏览器/会话态的 cookie,与窃取云应用 OAuth 令牌(应用令牌)不同,别都笼统当一类。"
+    },
+    {
+      "id": "node_steal_forge_cert",
+      "tech": "T1649",
+      "when_kw": [
+        "certificate",
+        "ADCS",
+        "PKINIT",
+        "private key",
+        "证书",
+        "证书模板",
+        "私钥"
+      ],
+      "hint": "窃取/伪造认证证书是盗取或滥用 CA(如企业 PKI/ADCS)签发可用于认证的证书;证书可长期免密认证。要有'证书/CA/模板'语义才标,别与窃取 Kerberos 票据或口令混为一谈。"
+    },
+    {
+      "id": "node_share_discovery_not_access",
+      "tech": "T1135",
+      "when_kw": [
+        "network share",
+        "net view",
+        "smb share",
+        "enumerate shares",
+        "网络共享",
+        "共享枚举",
+        "列举共享"
+      ],
+      "hint": "枚举/列举网络共享只是发现共享的存在与名称, 不等于访问·读取·复制其中文件(那是收集); 也别与远程主机发现混为一谈——只有原文明说列举共享本身才标。"
+    },
+    {
+      "id": "node_remote_system_not_scan",
+      "tech": "T1018",
+      "when_kw": [
+        "remote system",
+        "net view",
+        "ping sweep",
+        "ad computers",
+        "远程主机",
+        "主机发现",
+        "域内主机"
+      ],
+      "hint": "远程系统发现是枚举网络中其他主机的存在(AD查询/ping/net view), 既不是端口/服务扫描, 也不等于真去连接·登录它们——发现到主机≠对主机动手。"
+    },
+    {
+      "id": "node_perm_groups_not_modify",
+      "tech": "T1069",
+      "when_kw": [
+        "group membership",
+        "net group",
+        "domain admins",
+        "权限组",
+        "组成员",
+        "枚举管理员组"
+      ],
+      "hint": "权限组发现是枚举本地/域/云的组及其成员关系, 不是修改组或加入成员(那是账号操纵/权限提升); 区分本地·域·云三个子技术按枚举范围定。"
+    },
+    {
+      "id": "node_domain_trust_not_abuse",
+      "tech": "T1482",
+      "when_kw": [
+        "domain trust",
+        "trust relationship",
+        "forest trust",
+        "nltest",
+        "域信任",
+        "信任关系",
+        "林信任"
+      ],
+      "hint": "域信任发现是测绘域/林之间的信任关系图, 只是侦察知识, 不等于跨信任滥用(SID历史/跨域票据)——只有原文说枚举·查询信任本身才标。"
+    },
+    {
+      "id": "node_sniffing_not_credaccess",
+      "tech": "T1040",
+      "when_kw": [
+        "sniff",
+        "packet capture",
+        "pcap",
+        "promiscuous",
+        "嗅探",
+        "抓包",
+        "流量捕获"
+      ],
+      "hint": "网络嗅探是被动捕获在途流量这个机制本身; 即便目的是抓凭据, 嗅探节点只标捕获动作, 截获后凭据的使用是另一步, 别把二者合并。"
+    },
+    {
+      "id": "node_security_software_disc_not_disable",
+      "tech": "T1518.001",
+      "when_kw": [
+        "security software",
+        "av installed",
+        "edr present",
+        "list defender",
+        "安全软件发现",
+        "查杀软",
+        "枚举edr"
+      ],
+      "hint": "安全软件发现是查询·枚举主机上装了哪些杀软/EDR/防护, 是读操作; 这不等于禁用·篡改安全工具(那是削弱防御), 也不等于仅点名某杀软存在。"
+    },
+    {
+      "id": "node_sandbox_evasion_intent",
+      "tech": "T1497",
+      "when_kw": [
+        "sandbox",
+        "vm check",
+        "anti-analysis",
+        "evade",
+        "虚拟机检测",
+        "沙箱规避",
+        "反分析"
+      ],
+      "hint": "虚拟化/沙箱规避要有'为躲避分析而做环境检查并据此改变·中止行为'的意图才标; 单纯采集系统信息(无规避意图)是系统信息发现, 不是沙箱规避。"
+    },
+    {
+      "id": "node_net_connections_not_config",
+      "tech": "T1049",
+      "when_kw": [
+        "netstat",
+        "established connections",
+        "active connections",
+        "网络连接",
+        "已建立连接",
+        "活动连接"
+      ],
+      "hint": "系统网络连接发现是枚举本机当前已建立的连接/会话(netstat类), 区别于查网络配置(接口/路由/DNS)那种静态配置发现——按'看的是动态连接还是静态配置'区分。"
+    },
+    {
+      "id": "node_query_registry_not_modify",
+      "tech": "T1012",
+      "when_kw": [
+        "query registry",
+        "read registry",
+        "reg query",
+        "查询注册表",
+        "读注册表",
+        "注册表侦察"
+      ],
+      "hint": "查询注册表是为侦察而读取注册表键值, 是读操作; 不等于修改注册表或借Run键持久化(那是写操作)——只有'读取·查询'语义才标本技术。"
+    },
+    {
+      "id": "node_service_discovery_not_create",
+      "tech": "T1007",
+      "when_kw": [
+        "service discovery",
+        "list services",
+        "sc query",
+        "tasklist svc",
+        "服务发现",
+        "枚举服务",
+        "列举服务"
+      ],
+      "hint": "系统服务发现是枚举·列举主机上正在运行/已安装的服务, 是读操作; 不等于创建·修改服务(那是持久化/提权)——别把'列服务'误标成动手改服务。"
+    },
+    {
+      "id": "node_browser_info_not_cookie_theft",
+      "tech": "T1217",
+      "when_kw": [
+        "browser history",
+        "bookmarks",
+        "visited sites",
+        "浏览器历史",
+        "书签",
+        "访问记录"
+      ],
+      "hint": "浏览器信息发现是读取书签·历史·访问记录做侦察; 不等于窃取浏览器Cookie/会话或保存的密码(那是凭据获取)——按'读浏览记录'与'偷凭据'分开标。"
+    },
+    {
+      "id": "node_container_resource_disc",
+      "tech": "T1613",
+      "when_kw": [
+        "container",
+        "kubernetes",
+        "pod list",
+        "docker ps",
+        "容器发现",
+        "集群枚举",
+        "pod列举"
+      ],
+      "hint": "容器与资源发现是枚举容器/Pod/节点/集群资源清单, 是读操作; 不等于在容器内执行命令·部署新容器·逃逸到宿主(那些是后续动作)。"
+    },
+    {
+      "id": "node_cloud_service_disc_not_dataaccess",
+      "tech": "T1526",
+      "when_kw": [
+        "cloud service",
+        "enumerate services",
+        "list resources",
+        "云服务发现",
+        "枚举云资源",
+        "list buckets"
+      ],
+      "hint": "云服务发现是枚举租户内开启了哪些云服务/资源, 是侦察读操作; 不等于访问·拉取这些服务里的数据(那是云数据获取)——枚举服务≠取走数据。"
+    },
+    {
+      "id": "node_t1550_alt_auth_not_account_use",
+      "tech": "T1550",
+      "when_kw": [
+        "pass the hash",
+        "pass the ticket",
+        "alternate authentication",
+        "PtH",
+        "PtT",
+        "哈希传递",
+        "票据传递"
+      ],
+      "hint": "T1550 是用窃取的认证材料(哈希/票据/cookie/token)直接认证, 不是明文凭据登录, 易被误标成 Valid Accounts; 关键标识是绕过了正常密码校验流程。"
+    },
+    {
+      "id": "node_t1550_002_pth_vs_003_ptt",
+      "tech": "T1550",
+      "when_kw": [
+        "NTLM hash",
+        "Kerberos ticket",
+        "overpass-the-hash",
+        "golden ticket use",
+        "sub-technique",
+        "子技术区分"
+      ],
+      "hint": "PtH(.002)消费的是 NTLM 哈希走 NTLM 认证, PtT(.003)消费的是 Kerberos 票据(TGT/TGS); 二者凭据来源不同, 混标会切断与正确凭据获取技术的依赖。"
+    },
+    {
+      "id": "node_t1210_exploit_vs_normal_use",
+      "tech": "T1210",
+      "when_kw": [
+        "exploit remote service",
+        "SMB vulnerability",
+        "RDP exploit",
+        "EternalBlue-like",
+        "远程服务漏洞",
+        "横向利用"
+      ],
+      "hint": "T1210 是利用远程服务的软件漏洞实现横向, 区别于用合法凭据访问远程服务; 没有漏洞利用动作而只是登录的不应标 T1210。"
+    },
+    {
+      "id": "node_t1570_transfer_internal_only",
+      "tech": "T1570",
+      "when_kw": [
+        "lateral tool transfer",
+        "copy tool to host",
+        "SMB copy",
+        "admin share copy",
+        "内网工具拷贝",
+        "横向传输"
+      ],
+      "hint": "T1570 专指已立足环境内主机间的工具/文件搬运, 与从外部下载入网的 Ingress 类下载有本质区别; 方向与来源(内网已控点)是判别核心。"
+    },
+    {
+      "id": "node_t1563_session_hijack_not_new_login",
+      "tech": "T1563",
+      "when_kw": [
+        "session hijacking",
+        "RDP hijack",
+        "SSH hijack",
+        "tscon",
+        "会话劫持",
+        "复用已有会话"
+      ],
+      "hint": "T1563 是劫持/复用目标主机上已存在的活动会话(SSH/RDP), 无需自身凭据; 常被误标为新建远程登录, 但其前提是受害者会话已在。"
+    },
+    {
+      "id": "node_t1072_deploy_tool_dual_use",
+      "tech": "T1072",
+      "when_kw": [
+        "software deployment",
+        "SCCM",
+        "patch management abuse",
+        "deployment server",
+        "部署工具滥用",
+        "批量下发"
+      ],
+      "hint": "T1072 是滥用合法的集中化部署/运维系统向大量端点下发载荷, 既是横向也是执行; 易被误判为普通远程执行而丢失'规模化分发'语义。"
+    },
+    {
+      "id": "node_t1091_removable_media_replication",
+      "tech": "T1091",
+      "when_kw": [
+        "removable media",
+        "USB autorun",
+        "air-gap",
+        "removable drive replication",
+        "U盘传播",
+        "可移动介质"
+      ],
+      "hint": "T1091 强调经可移动介质在主机间(常含隔离网)自我复制传播, 而非单纯从介质执行文件; 跨越气隙的传播意图是关键标识。"
+    },
+    {
+      "id": "node_t1080_taint_shared_content",
+      "tech": "T1080",
+      "when_kw": [
+        "taint shared content",
+        "poison network share",
+        "shared folder backdoor",
+        "watering hole internal",
+        "污染共享",
+        "投毒共享目录"
+      ],
+      "hint": "T1080 是在共享内容(网络共享/目录)中植入恶意代码等他人触发, 是被动横向; 与主动推送执行不同, 易被误标成普通文件写入。"
+    },
+    {
+      "id": "node_t1534_internal_spearphish",
+      "tech": "T1534",
+      "when_kw": [
+        "internal spearphishing",
+        "internal phishing",
+        "compromised mailbox phishing",
+        "trust internal sender",
+        "内部钓鱼",
+        "横向钓鱼"
+      ],
+      "hint": "T1534 是已控内部账号向同组织其他人发钓鱼, 借内部信任横向扩散; 常被误标为外部钓鱼(Initial Access), 但发件方已是被控内部身份。"
+    },
+    {
+      "id": "node_t1557_aitm_not_sniffing_or_proxy",
+      "tech": "T1557",
+      "when_kw": [
+        "adversary-in-the-middle",
+        "AiTM",
+        "中间人",
+        "LLMNR",
+        "ARP spoof",
+        "relay"
+      ],
+      "hint": "AiTM (T1557) actively poisons name/route resolution (LLMNR/NBT-NS/ARP) or relays auth; do not collapse it into passive Network Sniffing or a generic proxy. The 'positioning' is the technique, and captured creds/traffic are its output."
+    },
+    {
+      "id": "node_t1560_archive_not_encrypted_channel",
+      "tech": "T1560",
+      "when_kw": [
+        "archive",
+        "compress",
+        "zip",
+        "rar",
+        "7z",
+        "打包加密"
+      ],
+      "hint": "Archive Collected Data (T1560) is staging-side packaging/compression/encryption of loot before exfil; do not confuse it with transport-layer encrypted C2. A password-protected RAR/zip of files is archiving, not the exfil channel itself."
+    },
+    {
+      "id": "node_t1119_automated_collection_is_method_not_goal",
+      "tech": "T1119",
+      "when_kw": [
+        "automated collection",
+        "自动收集",
+        "script harvest",
+        "loop find",
+        "bulk gather"
+      ],
+      "hint": "Automated Collection (T1119) is the scripted/looped harvesting method that drives other collection techniques in bulk; label the orchestration as T1119 but keep the per-source technique distinct, and do not infer exfil merely because collection is automated."
+    },
+    {
+      "id": "node_t1114_email_collection_vs_inbox_rule_persistence",
+      "tech": "T1114",
+      "when_kw": [
+        "email collection",
+        "mailbox",
+        "PST",
+        "OST",
+        "邮件收集",
+        "forwarding rule"
+      ],
+      "hint": "Email Collection (T1114) is reading/copying mail content (local PST/OST, remote EWS/IMAP, or auto-forward). A forwarding/transport rule used to keep siphoning mail is collection, but a rule used to hide alerts or maintain access is a different mechanism, do not merge them."
+    },
+    {
+      "id": "node_t1530_cloud_storage_vs_local_files",
+      "tech": "T1530",
+      "when_kw": [
+        "cloud storage",
+        "S3 bucket",
+        "blob",
+        "object storage",
+        "云存储",
+        "snapshot"
+      ],
+      "hint": "Data from Cloud Storage (T1530) is reading objects/buckets/snapshots via cloud APIs or misconfigured access; do not relabel it as reading a local filesystem just because the data ends up on disk. The access vector (cloud API/IAM) is what defines it."
+    },
+    {
+      "id": "node_t1213_info_repo_vs_config_repo",
+      "tech": "T1213",
+      "when_kw": [
+        "information repositories",
+        "wiki",
+        "SharePoint",
+        "Confluence",
+        "ticketing",
+        "知识库"
+      ],
+      "hint": "Data from Information Repositories (T1213) targets human-knowledge stores (wiki/SharePoint/Confluence/ticketing/code repos); keep it separate from network-device Configuration Repository dumps. Both are 'repositories' but the asset type and access path differ."
+    },
+    {
+      "id": "node_t1602_config_repo_is_network_device_data",
+      "tech": "T1602",
+      "when_kw": [
+        "configuration repository",
+        "SNMP",
+        "TFTP config",
+        "running-config",
+        "网络设备配置",
+        "startup-config"
+      ],
+      "hint": "Data from Configuration Repository (T1602) pulls network-device configs via SNMP/management protocols or a central config store; it is not generic file collection. Treat captured device configs (creds, ACLs, topology) as a distinct collection source."
+    },
+    {
+      "id": "node_t1039_network_share_collection_needs_access",
+      "tech": "T1039",
+      "when_kw": [
+        "network shared drive",
+        "SMB share",
+        "file server",
+        "UNC path",
+        "共享盘",
+        "DFS"
+      ],
+      "hint": "Data from Network Shared Drive (T1039) is reading files over an existing share/SMB session; it presumes prior access, but the act labeled here is the file pull from the remote share, not the authentication or the lateral move that granted it."
+    },
+    {
+      "id": "node_t1025_removable_media_collection_vs_replication",
+      "tech": "T1025",
+      "when_kw": [
+        "removable media",
+        "USB",
+        "external drive",
+        "可移动介质",
+        "thumb drive",
+        "collection"
+      ],
+      "hint": "Data from Removable Media (T1025) is copying files OFF inserted USB/external drives into the operation; do not conflate it with malware spreading ONTO removable media or with physical-medium exfil. Direction and intent distinguish these."
+    },
+    {
+      "id": "node_t1123_audio_capture_vs_screen_or_keylog",
+      "tech": "T1123",
+      "when_kw": [
+        "audio capture",
+        "microphone",
+        "录音",
+        "mic record",
+        "VoIP capture",
+        "eavesdrop"
+      ],
+      "hint": "Audio Capture (T1123) records microphone/call audio; keep it distinct from screen or input capture even when one tool does all three. The captured stream is collection output, not the delivery or persistence of the tool."
+    },
+    {
+      "id": "node_t1125_video_capture_vs_screen_capture",
+      "tech": "T1125",
+      "when_kw": [
+        "video capture",
+        "webcam",
+        "camera",
+        "摄像头",
+        "video feed",
+        "record"
+      ],
+      "hint": "Video Capture (T1125) records from a camera/webcam device, which is mechanistically different from screenshotting the display surface; do not merge camera capture with display capture. The device source defines the technique."
+    },
+    {
+      "id": "node_t1115_clipboard_data_is_passive_grab",
+      "tech": "T1115",
+      "when_kw": [
+        "clipboard",
+        "copy buffer",
+        "剪贴板",
+        "clipboard hijack",
+        "paste capture"
+      ],
+      "hint": "Clipboard Data (T1115) reads/monitors the clipboard buffer (often to grab copied passwords or swap crypto addresses); it is opportunistic collection, not keystroke logging and not the credential store itself."
+    },
+    {
+      "id": "node_webservice_role_split",
+      "tech": "T1102",
+      "when_kw": [
+        "web service",
+        "dead drop",
+        "github",
+        "pastebin",
+        "social media",
+        "合法服务",
+        "死信箱",
+        "公共服务"
+      ],
+      "hint": "用合法公共服务做C2要按角色分：仅从帖子/页面读取下一跳C2地址=死信箱解析器；双向收发指令=双向通信；只下行取指=单向。光提到攻击者用了某知名云/社交服务还不够，要看通信方向才定子技术。"
+    },
+    {
+      "id": "node_nonstandard_port_property",
+      "tech": "T1571",
+      "when_kw": [
+        "non-standard port",
+        "port 8443",
+        "odd port",
+        "443",
+        "非标准端口",
+        "高位端口",
+        "端口"
+      ],
+      "hint": "非标准端口是某条信道的属性而非独立动作——只有原文强调通信刻意走了与协议不符的端口(如HTTP跑在8443/444)来规避检测时才标；只是顺带提了个端口号、协议端口相符就别补这个节点。"
+    },
+    {
+      "id": "node_fallback_not_primary",
+      "tech": "T1008",
+      "when_kw": [
+        "fallback",
+        "backup c2",
+        "secondary",
+        "if blocked",
+        "备用信道",
+        "回退",
+        "主信道失败"
+      ],
+      "hint": "回退信道专指'主信道被封/失联后才启用的备份通信'——只有原文明说存在主备切换或失败转移逻辑才标；把唯一的那条C2通信标成回退信道是误标。"
+    },
+    {
+      "id": "node_multistage_vs_single",
+      "tech": "T1104",
+      "when_kw": [
+        "multi-stage",
+        "first stage",
+        "second stage",
+        "stager",
+        "多阶段",
+        "第一阶段",
+        "分阶段信道"
+      ],
+      "hint": "多阶段信道指'不同阶段用彼此不同的通信信道(如初期低调拉取、后期主控)'——只有原文区分出两条及以上前后衔接的信道才标；单一信道里下载了多个文件不算多阶段信道。"
+    },
+    {
+      "id": "node_encoding_not_encryption",
+      "tech": "T1132",
+      "when_kw": [
+        "base64",
+        "encode",
+        "ascii",
+        "data encoding",
+        "编码",
+        "标准编码",
+        "字符集"
+      ],
+      "hint": "数据编码(Base64/十六进制/字符集变换)只是让C2内容便于传输或稍作伪装，不等于加密——只有原文说对流量做了编码/转码才标编码；说'加密'要标加密信道而非编码，二者机制不同别混。"
+    },
+    {
+      "id": "node_obfuscation_channel_property",
+      "tech": "T1001",
+      "when_kw": [
+        "junk data",
+        "steganography",
+        "protocol impersonation",
+        "padding",
+        "垃圾数据",
+        "隐写",
+        "协议伪装",
+        "混入"
+      ],
+      "hint": "本案例改标(node_check请对该节点发replace): 若有节点把 Cobalt Strike Malleable C2 经HTTP伪装成Amazon/Google合法服务的C2通信 标成了 T1001(Data Obfuscation), 应改标为 T1071.001(Web Protocols)——它本质是一条Web应用层协议C2信道, 与DNS/Mail两条信道并列。retag目标技术=T1071.001。"
+    },
+    {
+      "id": "node_tunneling_vs_proxy",
+      "tech": "T1572",
+      "when_kw": [
+        "tunnel",
+        "dns tunnel",
+        "encapsulate",
+        "wrap inside",
+        "隧道",
+        "封装",
+        "套在协议里"
+      ],
+      "hint": "协议隧道指把一种流量封装进另一种协议(如C2裹进DNS/ICMP/SSH隧道)；它强调'封装/嵌套'这一动作。只是经过跳板转发应归代理，借合法协议端点中转数据应归相应信道，别都塞成隧道。"
+    },
+    {
+      "id": "node_traffic_signaling_trigger",
+      "tech": "T1205",
+      "when_kw": [
+        "port knocking",
+        "magic packet",
+        "socket filter",
+        "wake",
+        "端口敲门",
+        "魔术包",
+        "唤醒",
+        "信号触发"
+      ],
+      "hint": "流量信号指用特定数据包/端口序列去'唤醒'潜伏的监听或触发动作(端口敲门、魔术包)——它本身不传输指令，只做触发开关；别把真正承载指令的那条C2通信误标成流量信号。"
+    },
+    {
+      "id": "node_removable_media_c2",
+      "tech": "T1092",
+      "when_kw": [
+        "removable media",
+        "usb",
+        "air-gap",
+        "sneakernet",
+        "可移动介质",
+        "U盘",
+        "气隙",
+        "物理摆渡"
+      ],
+      "hint": "经可移动介质通信专指跨气隙/物理隔离网用U盘等介质摆渡指令与数据——只有原文描述了这种物理中转通信才标；普通通过U盘投递载荷(初始访问)不是C2通信，别误标。"
+    },
+    {
+      "id": "node_content_injection_inpath",
+      "tech": "T1659",
+      "when_kw": [
+        "content injection",
+        "in-transit",
+        "man-on-the-side",
+        "inject into traffic",
+        "内容注入",
+        "流量注入",
+        "在途注入",
+        "旁路注入"
+      ],
+      "hint": "内容注入指在受害者正常网络会话的在途流量里插入恶意内容来投递或通信(常借在网链路/中间设备)——它依赖控制链路或在途位置；普通网页挂马/钓鱼链接不是这条，别误标。"
+    },
+    {
+      "id": "node_hide_infra_not_channel",
+      "tech": "T1665",
+      "when_kw": [
+        "hide infrastructure",
+        "bulletproof",
+        "fast flux infra",
+        "domain fronting host",
+        "隐藏基础设施",
+        "防弹主机",
+        "隐匿设施"
+      ],
+      "hint": "隐藏基础设施是攻击者侧对自有C2资产的隐匿运营(防弹托管、设施轮换隐藏等)，属支撑上下文而非受害侧的一次通信动作——除非原文确有此类隐匿设施描述才标，别与具体信道节点混同。"
+    },
+    {
+      "id": "node_exfil_webservice_not_c2",
+      "tech": "T1567",
+      "when_kw": [
+        "github",
+        "dropbox",
+        "pastebin",
+        "telegram",
+        "mega",
+        "web service",
+        "公共服务",
+        "云盘",
+        "外传到"
+      ],
+      "hint": "数据被送往合法第三方Web服务(代码仓/云盘/文本粘贴站/即时通讯/webhook)才标Web服务外传;若送往攻击者自建C2服务器那是C2外传(T1041),只是HTTP通信而无数据离开则是应用层协议,别混。"
+    },
+    {
+      "id": "node_exfil_alt_protocol_not_c2",
+      "tech": "T1048",
+      "when_kw": [
+        "dns tunnel",
+        "ftp",
+        "smtp",
+        "alternative protocol",
+        "non-c2",
+        "另辟",
+        "独立通道",
+        "外传协议"
+      ],
+      "hint": "数据经一条与已建C2分离的协议(DNS隧道/FTP/SMTP等)送出才标备用协议外传;若就是沿原C2信道回传则是C2外传(T1041),仅有协议通信无数据外送则别标外传。"
+    },
+    {
+      "id": "node_automated_exfil_needs_automation",
+      "tech": "T1020",
+      "when_kw": [
+        "automatically",
+        "automated",
+        "scripted",
+        "self",
+        "自动外传",
+        "无人值守",
+        "脚本化"
+      ],
+      "hint": "只有原文明说外传是自动化/脚本驱动/收集即自动送出时才标自动外传;一次人工上传或单纯把数据传出,只标对应外传通道技术,别升级成自动外传(同T1119自动收集的判别口径)。"
+    },
+    {
+      "id": "node_size_limit_modifier",
+      "tech": "T1030",
+      "when_kw": [
+        "chunk",
+        "size limit",
+        "split into",
+        "throttle",
+        "分块",
+        "限速",
+        "固定大小",
+        "切片"
+      ],
+      "hint": "把外传数据按固定大小切块/限带宽以躲检测是外传的修饰行为,常被误当独立传输;只有原文明说分块·大小限制·限速时才标,且它修饰的是某次外传而非凭空存在。"
+    },
+    {
+      "id": "node_scheduled_transfer_timing",
+      "tech": "T1029",
+      "when_kw": [
+        "scheduled",
+        "certain hours",
+        "interval",
+        "时段",
+        "定时外传",
+        "周期回传",
+        "工作时间"
+      ],
+      "hint": "只在特定时段/按周期才发起外传是定时外传(时间修饰),易与自动外传混;cue是'限定时间窗/间隔发送',若只是自动而无时间约束应标自动外传而非定时。"
+    },
+    {
+      "id": "node_exfil_physical_medium",
+      "tech": "T1052",
+      "when_kw": [
+        "usb",
+        "removable",
+        "physical",
+        "air-gap",
+        "u盘",
+        "移动介质",
+        "物理介质",
+        "拷贝到"
+      ],
+      "hint": "数据被拷到USB/移动介质等物理载体带出(常见于隔离网)才标物理介质外传;经任何网络送出都不是它,别因为提到'拷贝'就误标,要有物理/可移动介质证据。"
+    },
+    {
+      "id": "node_exfil_other_network_medium",
+      "tech": "T1011",
+      "when_kw": [
+        "bluetooth",
+        "cellular",
+        "wifi",
+        "out-of-band",
+        "蓝牙",
+        "蜂窝",
+        "带外网络",
+        "另一网络"
+      ],
+      "hint": "数据经与主网络不同的另一物理网络(蓝牙/蜂窝/带外WiFi)送出才标其他网络介质外传;同一主网络上换协议是备用协议外传(T1048),要看是否切换了物理网络。"
+    },
+    {
+      "id": "node_transfer_to_cloud_account_not_upload",
+      "tech": "T1537",
+      "when_kw": [
+        "cloud account",
+        "snapshot",
+        "shared bucket",
+        "another account",
+        "云账户",
+        "快照共享",
+        "对象存储",
+        "转移到"
+      ],
+      "hint": "把云资源(快照/镜像/对象存储/邮箱)直接共享·转移到攻击者控制的另一云账户(云到云、不落本地)才标转移数据到云账户;用工具把数据上传到云盘是Web服务外传(T1567.002),从云读数据是T1530,三者别混。"
+    },
+    {
+      "id": "node_ransom_vs_destroy_wipe",
+      "tech": "T1486",
+      "when_kw": [
+        "encrypt",
+        "ransom",
+        "lock files",
+        "勒索",
+        "加密文件",
+        "render unavailable"
+      ],
+      "hint": "为勒索/拒止而加密数据(理论上持密钥可解)是 Data Encrypted for Impact；不可逆地删除/覆写文件内容是数据销毁、覆写磁盘扇区/MBR 是磁盘擦除——别把三者混标，按是否可逆与作用对象区分。"
+    },
+    {
+      "id": "node_destroy_vs_diskwipe",
+      "tech": "T1485",
+      "when_kw": [
+        "delete",
+        "wipe",
+        "destroy",
+        "overwrite",
+        "销毁",
+        "删除",
+        "覆写"
+      ],
+      "hint": "删除/覆写文件、对象存储、数据库记录等具体数据是数据销毁(T1485)；直接对原始磁盘扇区或 MBR/分区表等启动结构下手是磁盘擦除(T1561)——作用在文件层还是裸盘层决定标哪个。"
+    },
+    {
+      "id": "node_inhibit_recovery_own_node",
+      "tech": "T1490",
+      "when_kw": [
+        "shadow copy",
+        "vssadmin",
+        "wbadmin",
+        "bcdedit",
+        "backup",
+        "卷影",
+        "备份",
+        "恢复"
+      ],
+      "hint": "删除卷影副本、禁用/删除备份、关闭 Windows 恢复(vssadmin/wbadmin/bcdedit)是独立的抑制系统恢复节点，常与勒索加密同句出现但必须拆成单独节点，不要并进加密动作里。"
+    },
+    {
+      "id": "node_service_stop_availability",
+      "tech": "T1489",
+      "when_kw": [
+        "stop service",
+        "kill process",
+        "terminate",
+        "停止服务",
+        "关闭进程",
+        "database",
+        "backup service"
+      ],
+      "hint": "停止/杀掉服务或进程(尤指数据库、备份、邮件等业务服务)以中断可用性是服务停止(T1489)；它针对的是业务/可用性目标，与专门为规避检测而关停安全产品的机制要点不同——看停的是不是安全工具、目的是不是可用性破坏。"
+    },
+    {
+      "id": "node_account_access_removal_impact",
+      "tech": "T1531",
+      "when_kw": [
+        "delete account",
+        "lock out",
+        "change password",
+        "revoke",
+        "锁定",
+        "改密码",
+        "删除账户",
+        "禁用账户"
+      ],
+      "hint": "删除/锁定账户、批量改密码、吊销权限以把【合法用户】挡在外面是账户访问移除(Impact)；这与为维持/抬升【攻击者自身】访问而做的账户操纵机制相反，方向是'剥夺受害者'而非'保住攻击者'——按受益方与意图区分。"
+    },
+    {
+      "id": "node_data_manipulation_subtype",
+      "tech": "T1565",
+      "when_kw": [
+        "tamper",
+        "modify data",
+        "alter",
+        "篡改",
+        "修改数据",
+        "in transit",
+        "runtime"
+      ],
+      "hint": "为影响业务/决策而篡改数据要按子型分：改静态存储数据=.001、改在途传输数据=.002、改运行时内存数据=.003；篡改本身是 T1565，别和为拒止而加密(T1486)或销毁(T1485)混淆。"
+    },
+    {
+      "id": "node_defacement_not_manip",
+      "tech": "T1491",
+      "when_kw": [
+        "deface",
+        "defacement",
+        "homepage",
+        "message",
+        "篡改页面",
+        "涂改",
+        "internal",
+        "external"
+      ],
+      "hint": "为传递信息/制造影响而改写可见内容(网页、登录提示、桌面)是篡改展示(Defacement)：对内系统是 .001、对外资产是 .002；它强调可见的视觉/消息改写，与一般数据篡改(T1565)按'是否面向展示'区分。"
+    },
+    {
+      "id": "node_endpoint_vs_network_dos",
+      "tech": "T1499",
+      "when_kw": [
+        "dos",
+        "exhaust",
+        "flood",
+        "crash service",
+        "拒绝服务",
+        "资源耗尽",
+        "endpoint"
+      ],
+      "hint": "在单个主机/服务上耗尽其 CPU/内存/连接或触发崩溃是端点拒绝服务(T1499)；在网络层用流量洪泛/带宽饱和打瘫可达性是网络拒绝服务(T1498)——按打击面在'端点资源'还是'网络带宽'区分。"
+    },
+    {
+      "id": "node_firmware_corruption_vs_wipe",
+      "tech": "T1495",
+      "when_kw": [
+        "firmware",
+        "bios",
+        "uefi",
+        "flash",
+        "brick",
+        "固件",
+        "刷写",
+        "变砖"
+      ],
+      "hint": "覆写/损坏 BIOS/UEFI 等固件闪存使设备无法启动(硬件级变砖)是固件损坏(T1495)；擦除裸盘扇区/MBR 是磁盘擦除(T1561)，改网络设备 OS 镜像以削弱防御是修改系统镜像——按作用对象是'固件闪存'还是'磁盘'还是'设备OS镜像'区分。"
+    },
+    {
+      "id": "node_shutdown_reboot_impact",
+      "tech": "T1529",
+      "when_kw": [
+        "shutdown",
+        "reboot",
+        "restart",
+        "关机",
+        "重启",
+        "force reboot"
+      ],
+      "hint": "强制关机/重启以中断可用性、或令擦除/固件破坏/锁定改动'生效'是系统关机重启(Impact 动作)，不是普通运维——报告把它作为破坏/收尾手段提到时要标成节点，别当无关系统行为忽略。"
+    },
+    {
+      "id": "nm_merge_same_phishing_email_theme_vs_attachment",
+      "tech": [
+        "T1566"
+      ],
+      "when_kw": [],
+      "hint": "同parent且object均为'同一封邮件'的不同描述粒度(主题vs附件)→应合并为单一钓鱼投递; 别因措辞不同当两次投递。"
+    },
+    {
+      "id": "nm_keep_staged_downloads_separate",
+      "tech": [
+        "T1105"
+      ],
+      "when_kw": [],
+      "hint": "同parent但object为不同具名载荷(具名exe vs 通用阶段码)且形成stage链/不同触发条件→保留多实例不合并; 仅object指向同一文件才并。"
+    },
+    {
+      "id": "nm_keep_distinct_decrypt_instances",
+      "tech": [
+        "T1140"
+      ],
+      "when_kw": [],
+      "hint": "同parent下object核心名词不等或解密算法/产物/阶段不同→不同实例不并; 仅object核心物归一后相等才并。误并会造成父折叠反向回边(如T1620→T1140)。"
+    },
+    {
+      "id": "nm_keep_distinct_exec_instances",
+      "tech": [
+        "T1059"
+      ],
+      "when_kw": [],
+      "hint": "同parent下object字面与sid/阶段均不同(自启vs释放启动vs下载执行)→各为独立执行实例不合并; 误并会丢失各异下游边(T1059→{T1140,T1105,T1568,T1036,T1573}等)。"
+    },
+    {
+      "id": "find_obfuscated_payload",
+      "tech": [
+        "T1027"
+      ],
+      "find_node": true,
+      "when_kw": [
+        "base64",
+        "base-64",
+        "encoded",
+        "加壳",
+        "packed loader",
+        "obfuscated payload"
+      ],
+      "hint": "原文明说【载荷/命令/脚本以 base64·加密·加壳·混淆态 被写入·存储·投递】, 而图里没有 T1027 混淆节点时→补一个(状态修饰, 与写/下载动作并列)。★区分: 仅'执行/解码被混淆的X'里混淆只是修饰【不补】; 必须是载荷本身处于混淆态被落地·存储才补。"
+    },
+    {
+      "id": "find_user_open",
+      "tech": [
+        "T1204"
+      ],
+      "find_node": true,
+      "when_kw": [
+        "victim opens",
+        "opens the",
+        "double-click",
+        "double click",
+        "双击",
+        "打开文档",
+        "打开附件",
+        "enabled the macro",
+        "启用宏",
+        "victim ran",
+        "user ran"
+      ],
+      "hint": "原文明说【受害者/用户 打开·双击·运行·启用宏 文档·附件·文件】, 图里无 T1204 时→补用户执行节点(即使紧接着是漏洞利用/宏执行/模板拉取)。★区分: 程序自动启动(释放后自启/服务拉起)不是用户执行不补。"
+    },
+    {
+      "id": "find_acquire_c2_infra",
+      "tech": [
+        "T1583"
+      ],
+      "find_node": true,
+      "when_kw": [
+        "actor-controlled",
+        "attacker-controlled",
+        "actor-created website",
+        "registered domain",
+        "registered the domain",
+        "注册的域名",
+        "攻击者控制的",
+        "申请的服务器",
+        "acquired infrastructure"
+      ],
+      "hint": "原文点名 C2 域名/服务器 且明示是【攻击者注册·控制·创建·获取的基础设施】, 图里无 T1583 时→补获取基础设施节点(与 C2 通信 T1071/T1573 分开)。★区分: 仅出现域名/IP 但没说是攻击者获取·控制的(可能是受害侧)【不补】。"
+    },
+    {
+      "id": "node_exec_program_not_t1059",
+      "tech": [
+        "T1059"
+      ],
+      "hint": "T1059=命令与脚本解释器。逐个核对 T1059 节点的 object/action: 若是【启动·执行一个独立可执行程序本体】(launched/executed 一个 .exe / PE 文件 / dropper / 被解密释放的具名组件, object 是程序文件名而非命令)——这是【程序自执行】不是命令脚本解释器, 不构成独立 T1059, 应 remove(gold 口径: 这种执行并入 下载·释放·用户双击 的链, 不单标 T1059)。★保留(真 T1059): object 是 cmd/命令 · PowerShell命令或脚本 · .sh脚本 · shell命令 · 解释器调用 · 含 PowerShell/script 字样的 agent。仅【纯 PE 程序本体被 launch/execute】才 remove, 拿不准保留。"
+    }
+  ],
+  "error": [
+    {
+      "error_id": "seed_err_0000",
+      "error_type": "unsupported_protocol_from_endpoint",
+      "technique_id": "T1071.001",
+      "action_verbs": [
+        "connect",
+        "communicate",
+        "beacon"
+      ],
+      "original_value": "endpoint -> web protocol",
+      "corrected_value": "Require explicit protocol evidence before accepting protocol-specific ATT&CK nodes.",
+      "reason": "A domain, URL, IP address, C2 endpoint, or server name is infrastructure evidence. It does not by itself prove HTTP, HTTPS, DNS, or another application-layer protocol.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-02T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0001",
+      "error_type": "unsupported_execution_technology",
+      "technique_id": "T1059.001",
+      "action_verbs": [
+        "script",
+        "stager",
+        "execute"
+      ],
+      "original_value": "generic script -> PowerShell",
+      "corrected_value": "Use a specific interpreter only when the report names that interpreter or a directly identifying artifact.",
+      "reason": "A generic script, stager, loader, or payload is not enough to infer PowerShell, command shell, Python, or another specific interpreter.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-02T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0002",
+      "error_type": "support_edge_not_strict_dependency",
+      "technique_id": "T1573.001",
+      "action_verbs": [
+        "encrypt",
+        "communicate",
+        "send"
+      ],
+      "original_value": "encrypted channel -> exfiltration",
+      "corrected_value": "Treat encryption or C2 transport as support context unless the text states the transmitted object and transfer action.",
+      "reason": "Encrypted or C2 communication can support later data transfer, but it is not the direct strict dependency for exfiltration without evidence of actual data leaving the environment.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-02T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0003",
+      "error_type": "support_edge_not_strict_dependency",
+      "technique_id": "T1547.001",
+      "action_verbs": [
+        "persist",
+        "run key",
+        "startup"
+      ],
+      "original_value": "persistence mechanism -> later execution step",
+      "corrected_value": "Keep persistence as a side branch unless the report says the persistence mechanism triggered the later action.",
+      "reason": "Persistence setup creates future execution capability. It should not be forced into the main strict dependency path when the text describes a separate immediate execution path.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-02T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0005",
+      "error_type": "missing_intermediate_transfer",
+      "technique_id": "T1105",
+      "action_verbs": [
+        "fetch",
+        "download",
+        "retrieve"
+      ],
+      "original_value": "trigger -> later payload behavior",
+      "corrected_value": "When text explicitly says an artifact fetches or downloads a remote template or payload before later behavior, model the transfer as an intermediate procedure.",
+      "reason": "Shortcut edges hide evidence-grounded procedures. The transfer should be represented when it is a distinct actor-action-object step in the report.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-02T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0006",
+      "error_type": "unsupported_exfiltration",
+      "technique_id": "T1041",
+      "action_verbs": [
+        "collect",
+        "stage"
+      ],
+      "original_value": "collection or C2 presence -> exfiltration",
+      "corrected_value": "Accept exfiltration only when the report states data was transmitted out, uploaded, sent back, or otherwise left the victim environment.",
+      "reason": "Collection, staging, encryption, or C2 capability alone is not exfiltration evidence.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-02T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0008",
+      "error_type": "unsupported_process_injection_without_cross_process",
+      "technique_id": "T1055",
+      "action_verbs": [
+        "load",
+        "beacon",
+        "remote access"
+      ],
+      "original_value": "remote access beacon loaded into memory -> process injection",
+      "corrected_value": "Require injection into another process before accepting process injection; remote-access beacons and tools are remote access tooling when the text describes remote access or command-and-control.",
+      "reason": "Loading a beacon, agent, or remote-access tool into memory is not cross-process injection unless the report names an injected target process or injection API.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-03T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0009",
+      "error_type": "unsupported_automated_collection_without_automation",
+      "technique_id": "T1119",
+      "action_verbs": [
+        "identify",
+        "collect",
+        "select"
+      ],
+      "original_value": "identified data of interest -> automated collection",
+      "corrected_value": "Use automated collection only when automation, scheduling, scripting, bulk, recursive, or unattended collection is explicit; otherwise keep the collection step local and evidence-grounded.",
+      "reason": "Discovery-guided identification or selection of data is collection context, not automated collection by itself.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-03T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0013",
+      "error_type": "installer_masquerade_not_phishing",
+      "technique_id": "T1566",
+      "action_verbs": [
+        "masquerade",
+        "installer",
+        "伪装",
+        "安装包"
+      ],
+      "original_value": "fake installer or package or user-run file -> phishing link or attachment",
+      "corrected_value": "Do not infer T1566, T1566.001, or T1566.002 from a fake installer, package, or user execution alone. Use phishing only when the report explicitly says email, attachment, link, message, or delivery channel; otherwise prefer masquerading plus user execution when those actions are directly described.",
+      "reason": "A masqueraded installer is an artifact and execution procedure. The phishing delivery technique requires explicit delivery-channel evidence, not merely a suspicious file reaching a target.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-05T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0014",
+      "error_type": "chinese_transform_action_and_tool_noun_boundary",
+      "technique_id": "T1140",
+      "action_verbs": [
+        "decrypt",
+        "extract",
+        "release",
+        "decode",
+        "deobfuscate",
+        "unpack",
+        "loader",
+        "downloader",
+        "解密",
+        "提取",
+        "释放",
+        "加载器",
+        "下载器"
+      ],
+      "original_value": "Chinese decrypt, extract, or release action -> T1027 subtechnique, or loader or downloader noun -> transfer or load action",
+      "corrected_value": "Map explicit 解密, 提取, 释放, decrypt, extract, or release actions to T1140. Keep encrypted, packed, or appended-tail state as T1027 only when the state itself is the action being modeled. Do not accept T1105 or T1620 from the noun 下载器 or 加载器 alone; require an actual download, fetch, or memory-load execution action.",
+      "reason": "Chinese malware reports often name component roles before describing actions. Technique binding should follow the actor-action-object sentence, not component names or artifact states by themselves.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-05T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0015",
+      "error_type": "cryptomining_objective_not_sandbox_or_generic_execution",
+      "technique_id": "T1496",
+      "action_verbs": [
+        "mine",
+        "miner",
+        "cryptomining",
+        "resource",
+        "cpu",
+        "gpu",
+        "xmr",
+        "monero",
+        "挖矿",
+        "矿机",
+        "门罗币",
+        "算力"
+      ],
+      "original_value": "miner running or resource consumption -> sandbox check, generic execution, or defense evasion only",
+      "corrected_value": "When the report states a miner or mining task runs, consumes CPU/GPU/算力, or mines cryptocurrency, retain an observed T1496 Resource Hijacking node. Do not replace the mining objective with only execution, sandbox checks, or defense evasion.",
+      "reason": "Cryptomining is the resource-abuse objective of the procedure. Execution or evasion context can coexist, but it should not erase the evidence-grounded resource hijacking node.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-05T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0016",
+      "error_type": "utility_rename_not_security_tool_disable",
+      "technique_id": "T1036.003",
+      "action_verbs": [
+        "rename",
+        "renamed",
+        "utility",
+        "wget",
+        "curl",
+        "重命名",
+        "改名",
+        "工具"
+      ],
+      "original_value": "renaming general system utilities -> disable or modify security tools",
+      "corrected_value": "Map explicit renaming of ordinary system utilities to utility-rename or masquerading behavior. Use T1562.001 only when the report says security tools, monitoring, antivirus, EDR, firewall, or defenses were disabled or modified.",
+      "reason": "Changing names of general utilities is not the same as disabling security tools. Technique binding should follow the object being modified.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-05T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0017",
+      "error_type": "split_action_vs_artifact_obfuscation",
+      "technique_id": "T1027",
+      "action_verbs": [
+        "obfuscate",
+        "obfuscated",
+        "packer",
+        "packed",
+        "encrypted payload",
+        "base64-encoded",
+        "appended encrypted",
+        "encrypted tail",
+        "encoded command",
+        "混淆",
+        "加壳",
+        "编码",
+        "加密载荷",
+        "加密数据",
+        "尾部加密"
+      ],
+      "original_value": "wrote/loaded an obfuscated payload -> single execution or transfer node only",
+      "corrected_value": "Emit a SEPARATE T1027 Obfuscated Files or Information node ONLY when the report describes a payload/file/script that is WRITTEN, DROPPED, DELIVERED, or STORED while itself being in an obfuscated/packed/encrypted/base64-encoded/appended-encrypted state; in that case output two nodes: the action node (e.g. execution/transfer) AND the T1027 artifact-state node. Do NOT add an extra T1027 for a DECODE/DEOBFUSCATE/DECRYPT action performed ON an obfuscated string or blob - such a deobfuscation action maps to T1140 Deobfuscate/Decode Files or Information alone. T1027 marks an artifact stored in obfuscated form, not the act of removing obfuscation.",
+      "reason": "The obfuscated STATE of a written/dropped product and the action that produced it are two behaviors, but removing obfuscation (decode/decrypt) is T1140, not T1027. Splitting out a T1027 node for a mere decode action over-recalls a spurious obfuscation node.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-30T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0018",
+      "error_type": "split_registry_modify_vs_autostart",
+      "technique_id": "T1112",
+      "action_verbs": [
+        "registry",
+        "run key",
+        "hkcu",
+        "hklm",
+        "currentversion\\run",
+        "注册表",
+        "run键",
+        "启动项",
+        "自启动"
+      ],
+      "original_value": "added to Run registry key for persistence -> single autostart node only",
+      "corrected_value": "Emit a SEPARATE T1112 Modify Registry node ONLY when the report SEPARATELY EMPHASIZES the registry change as an action in its own right - e.g. it narrates modifying registry values as a distinct configuration or defense-evasion step, alters security/system-relevant registry settings, or describes the registry write in its own clause apart from merely stating persistence. In that case emit both T1112 and the autostart technique (e.g. T1547.001 Registry Run Keys). If the report only mentions in passing that persistence is achieved via a Run/startup key (the registry write is just the vehicle for autostart), emit the autostart technique ALONE (T1547.001) and do NOT add a separate T1112 node. Follow the report's emphasis.",
+      "reason": "A Run-key write is both a registry change and an autostart effect, but gold counts a separate T1112 only when the report emphasizes the registry modification independently. Splitting T1112 from a passing 'persists via Run key' mention over-recalls a spurious T1112.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-30T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0019",
+      "error_type": "script_framework_agent_not_remote_access_software",
+      "technique_id": "T1059",
+      "action_verbs": [
+        "empire",
+        "poshc2",
+        "agent",
+        "stager",
+        "powershell agent",
+        "script framework",
+        "launched agent",
+        "脚本框架",
+        "代理",
+        "脚本载荷"
+      ],
+      "original_value": "launched a PowerShell Empire / PoshC2 / script-based agent -> T1219 Remote Access Software",
+      "corrected_value": "An agent or implant launched BY a script interpreter (PowerShell Empire, PoshC2, script-based stager) is command/script execution (T1059 / its sub-technique), NOT T1219. Reserve T1219 for a standalone named remote-access tool (AnyDesk, TeamViewer, a named RAT used for hands-on-keyboard remote control).",
+      "reason": "Script-launched offensive frameworks are interpreter execution, not remote-access software. Mislabeling them T1219 both adds a spurious T1219 and drops the T1059 node.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-30T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0020",
+      "error_type": "reflective_loading_not_process_injection",
+      "technique_id": "T1620",
+      "action_verbs": [
+        "reflective",
+        "reflectively",
+        "mapped into memory",
+        "map into memory",
+        "load into memory",
+        "loaded into memory",
+        "in-memory",
+        "memory load",
+        "内存加载",
+        "映射到内存",
+        "反射加载",
+        "装入内存"
+      ],
+      "original_value": "decrypted PE mapped/loaded into memory and executed -> T1055 Process Injection",
+      "corrected_value": "A decrypted/decoded PE that is mapped/loaded into the SAME process's memory and run (reflective loading) is T1620 Reflective Code Loading, NOT T1055. Use T1055 only when the report names a SEPARATE target process being injected into (e.g. injected into svchost.exe) or an injection API.",
+      "reason": "In-memory/reflective loading within the current process is not cross-process injection. T1055 requires an injected target process.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-30T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0021",
+      "error_type": "credential_access_family_disambiguation",
+      "technique_id": "T1552",
+      "action_verbs": [
+        "passwords stored in files",
+        "credentials in files",
+        "password from application",
+        "filezilla",
+        "openvpn",
+        "winscp",
+        "outlook",
+        "openssh",
+        "web inject",
+        "browser redirection",
+        "fake webpage",
+        "凭据",
+        "密码",
+        "存储的密码",
+        "网页注入",
+        "浏览器重定向"
+      ],
+      "original_value": "obtained stored passwords / web-inject credential theft -> T1555 password store or T1557 adversary-in-the-middle",
+      "corrected_value": "Disambiguate the credential-access family by mechanism: passwords read FROM application files/configs = T1552 Unsecured Credentials; a dedicated credential/password-manager store DB = T1555; web injects or browser redirection to a fake page to capture typed credentials = T1185 Browser Session Hijacking; on-path interception/sniffing of traffic = T1557.",
+      "reason": "These credential-access techniques share cues but differ by mechanism (files vs store vs browser injection vs on-path). Picking the wrong sibling causes paired FN+FP.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-30T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0022",
+      "error_type": "recall_acquire_infrastructure",
+      "technique_id": "T1583",
+      "action_verbs": [
+        "registered domain",
+        "acquired infrastructure",
+        "attacker-controlled domain",
+        "set up c2 infrastructure",
+        "注册了域名",
+        "搭建了基础设施",
+        "架设c2服务器",
+        "攻击者注册"
+      ],
+      "original_value": "attacker domain/server mentioned only as C2 endpoint -> no resource-development node",
+      "corrected_value": "When the report states the actor registered/acquired/controls a domain or server used as C2 infrastructure, emit a T1583 Acquire Infrastructure node (resource development). Do not silently drop infrastructure acquisition just because it also appears as a C2 endpoint.",
+      "reason": "Acquire-infrastructure is a distinct resource-development behavior that is frequently omitted because it co-occurs with C2 communication.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-30T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0023",
+      "error_type": "recall_non_application_layer_protocol",
+      "technique_id": "T1095",
+      "action_verbs": [
+        "raw tcp",
+        "raw socket",
+        "custom protocol",
+        "non-http",
+        "udp",
+        "tcp port",
+        "binary protocol",
+        "自定义协议",
+        "裸端口",
+        "原始套接字"
+      ],
+      "original_value": "C2 over a custom/raw protocol -> dropped or mislabeled as application-layer protocol",
+      "corrected_value": "Communication over a custom or non-application-layer protocol, or raw TCP/UDP sockets that are not HTTP/HTTPS/DNS/standard app-layer protocols, is T1095 Non-Application Layer Protocol. Do not force it into T1071 and do not drop it.",
+      "reason": "Custom/raw transport is T1095, distinct from T1071 application-layer protocol; it is easy to miss when only a port or 'custom protocol' is mentioned.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-30T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_0024",
+      "error_type": "recall_user_execution",
+      "technique_id": "T1204",
+      "action_verbs": [
+        "opens",
+        "opened",
+        "double-click",
+        "double-clicked",
+        "victim runs",
+        "user runs",
+        "launch the document",
+        "enable macro",
+        "打开",
+        "双击",
+        "运行",
+        "点击",
+        "受害者运行"
+      ],
+      "original_value": "victim opens/double-clicks/runs the delivered file -> only the delivery or downstream node",
+      "corrected_value": "Emit a T1204 User Execution node ONLY for an action performed by a HUMAN user - the victim/person opens, double-clicks, runs, launches, or enables a macro on a delivered document/installer/attachment. If a script, command interpreter, scheduled task, service, parent process, or any program AUTOMATICALLY starts/launches/executes another file or process with no human in the loop, that is NOT T1204 - model it as the appropriate execution / scheduled-task / service technique instead. The pivot for T1204 is human interaction; automated program-to-program launching does not qualify.",
+      "reason": "User execution is the human pivot between delivery and payload. Labelling an automated script-launches-program step as T1204 over-recalls a spurious user-execution node; T1204 requires a human action.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-05-30T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_err_outlook_t1137",
+      "error_type": "office_startup_misclassified",
+      "technique_id": "T1137",
+      "action_verbs": [
+        "loadmacroprovideronboot",
+        "outlook backdoor macro"
+      ],
+      "original_value": "Outlook/Office macro persistence -> T1546.001 (Change Default File Association)",
+      "corrected_value": "Outlook/Office macro persistence (LoadMacroProviderOnBoot, Outlook forms/rules/home-page) is T1137 Office Application Startup, NOT T1546.001 (file-association hijacking).",
+      "reason": "LoadMacroProviderOnBoot and Outlook backdoor macros are the canonical Office/Outlook startup persistence MITRE documents under T1137; T1546.001 is Change Default File Association, an unrelated mechanism.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1005_not_t1119",
+      "error_type": "collection_granularity",
+      "technique_id": "T1005",
+      "action_verbs": [
+        "data of interest",
+        "files of interest",
+        "interesting data",
+        "感兴趣的数据",
+        "选取数据"
+      ],
+      "original_value": "identifying/selecting data -> T1119 Automated Collection",
+      "corrected_value": "Identifying/selecting specific data of interest WITHOUT automation/scripting/recursion evidence is T1005 (Data from Local System), NOT T1119.",
+      "reason": "T1119 requires automation; manual selection of interesting data is T1005.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1133_remote",
+      "error_type": "missed_external_remote",
+      "technique_id": "T1133",
+      "action_verbs": [
+        "vpn",
+        "citrix",
+        "external remote service"
+      ],
+      "original_value": "account accessing VPN/Citrix -> only T1078",
+      "corrected_value": "Using an account to access VPN/Citrix/external remote service should ALSO label T1133 (External Remote Services).",
+      "reason": "External-facing remote access service is T1133.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1070_not_t1485",
+      "error_type": "indicator_removal_granularity",
+      "technique_id": "T1070",
+      "action_verbs": [
+        "clean trace",
+        "competing miner",
+        "delete old",
+        "其他挖矿",
+        "其他样本",
+        "删除旧",
+        "清理",
+        "清理其他",
+        "清理本机",
+        "清理痕迹"
+      ],
+      "original_value": "deleting own old files/competing malware -> T1485 Data Destruction",
+      "corrected_value": "Searching and deleting one's OWN old malware / competing miners to clean traces is T1070 (Indicator Removal), NOT T1485.",
+      "reason": "Self-cleanup of traces is defense evasion T1070, not victim data destruction.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1543_service",
+      "error_type": "missed_service_persistence",
+      "technique_id": "T1543",
+      "action_verbs": [
+        "create service",
+        "register service",
+        "daemon",
+        "守护进程",
+        "保活"
+      ],
+      "original_value": "starting payload + creating service to stay alive -> only the exec technique",
+      "corrected_value": "Creating/registering a service or daemon to keep a payload alive is T1543 (Create or Modify System Process).",
+      "reason": "Service/daemon for persistence is T1543.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1021_lateral",
+      "error_type": "missed_remote_services",
+      "technique_id": "T1021",
+      "action_verbs": [
+        "ssh",
+        "rdp",
+        "登录主机",
+        "log into host",
+        "remote desktop",
+        "remote service",
+        "remote services"
+      ],
+      "original_value": "logging into a host via SSH/RDP -> missed",
+      "corrected_value": "Logging into another host via SSH/RDP for lateral movement is T1021 (Remote Services).",
+      "reason": "SSH/RDP lateral login is T1021.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1112_registry",
+      "error_type": "missed_registry_modify",
+      "technique_id": "T1112",
+      "action_verbs": [
+        "modify registry value",
+        "sets registry",
+        "注册表值"
+      ],
+      "original_value": "separately-emphasized registry value change -> missed",
+      "corrected_value": "A separately-emphasized registry value modification (config/defense change) is T1112 (Modify Registry), beyond any autorun persistence.",
+      "reason": "Emphasized registry value change is T1112.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1027_written",
+      "error_type": "missed_obfuscated_stored",
+      "technique_id": "T1027",
+      "action_verbs": [
+        "appended encrypted",
+        "base64-encoded script",
+        "尾部附加加密",
+        "写入混淆",
+        "encoded blob stored"
+      ],
+      "original_value": "payload stored in obfuscated form -> missed",
+      "corrected_value": "A payload WRITTEN/STORED in obfuscated/encrypted/base64 form (not merely executed) is T1027 (Obfuscated Files or Information).",
+      "reason": "Stored obfuscated artifact is T1027.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1078_account",
+      "error_type": "missed_valid_account",
+      "technique_id": "T1078",
+      "action_verbs": [
+        "domain admin credential",
+        "valid account",
+        "域管理员凭据",
+        "有效账户"
+      ],
+      "original_value": "using stolen/valid account to authenticate -> missed",
+      "corrected_value": "Authenticating/moving laterally with a stolen or valid account is T1078 (Valid Accounts).",
+      "reason": "Reusing a valid/stolen account is T1078.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1036_masq",
+      "error_type": "missed_masquerade",
+      "technique_id": "T1036",
+      "action_verbs": [
+        "disguised as",
+        "masquerade",
+        "match the chosen directory",
+        "named the exe to match",
+        "packaged as",
+        "pose as legitimate",
+        "wrapped as",
+        "伪装为",
+        "伪装成",
+        "冒充合法",
+        "包装成",
+        "命名和图标伪装",
+        "图标伪装"
+      ],
+      "original_value": "naming/disguising malware as legitimate -> missed",
+      "corrected_value": "Naming/disguising a malicious file or process to look legitimate (icon/name spoof) is T1036 (Masquerading).",
+      "reason": "Disguising as legitimate is T1036.",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-04T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1059_stager_is_script",
+      "error_type": "stager_entity_is_execution_not_download",
+      "technique_id": "T1059",
+      "action_verbs": [
+        "stager",
+        "small script designed",
+        "a script designed to",
+        "小脚本",
+        "stager脚本",
+        "脚本型 stager"
+      ],
+      "original_value": "'stager/a small script designed to obtain payload' -> T1105 download",
+      "corrected_value": "stager/小脚本实体【本身是脚本】→ 脚本执行 T1059; 不要因其目的是'获取/拉取后续载荷'就把 stager 实体判成下载 T1105。只有当另有【独立明确的下载动作句】(retrieve/download additional payload 作为单独动作)才标 T1105。",
+      "reason": "stager 是脚本载体(T1059); 'designed to obtain payload' 是描述用途不是已发生的下载动作。",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-05T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1059_auto_bg_start",
+      "error_type": "auto_background_start_not_execution",
+      "technique_id": "T1059",
+      "action_verbs": [
+        "dropper",
+        "in the background",
+        "后台启动",
+        "后台运行",
+        "自动启动",
+        "在后台同时启动",
+        "释放器",
+        "植入程序启动"
+      ],
+      "original_value": "'dropper started in the background' -> T1059",
+      "corrected_value": "dropper/释放器/植入程序【自动/在后台被拉起运行】是该程序自身被执行的状态描述, 不是命令/脚本解释器执行, 不标 T1059(也不标 T1204)。只有出现明确的命令行/脚本/解释器调用(cmd/PowerShell/VBScript/JScript/Python 等)才标 T1059。",
+      "reason": "把规则4(自动启动不算 T1204)扩展到 T1059: 程序被自动拉起的运行状态不是脚本解释器执行。",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-05T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1021_cred_then_remote",
+      "error_type": "cred_then_remote_access_is_T1021",
+      "technique_id": "T1021",
+      "action_verbs": [
+        "used that account to",
+        "used the account to",
+        "用该账户",
+        "用该账号",
+        "凭据访问远程",
+        "用账户登录远程",
+        "used stolen credentials to access",
+        "凭据进行横向访问"
+      ],
+      "original_value": "'used that account to access remote service' -> T1078",
+      "corrected_value": "一句同时出现[获取/转储凭据]与[用该账户去访问/登录另一主机或 remote service 做横向]时, 横向这一跳的动作技术判 T1021(Remote Services)为主; T1078 只在该句【没有任何远程访问动作、仅强调凭据本身被复用认证】时才单独成立。凭据是手段不是被标动作; 远程访问是动作按机制归 T1021。",
+      "reason": "含横向访问动作的句子取动作侧(T1021), 不取凭据侧(T1078)。",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-05T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1203_cve_client_exec",
+      "error_type": "cve_exploit_client_execution",
+      "technique_id": "T1203",
+      "action_verbs": [
+        "cve-",
+        "exploited cve",
+        "used cve",
+        "exploiting cve",
+        "equation editor",
+        "利用漏洞",
+        "漏洞利用",
+        "利用了cve",
+        "vulnerability to execute"
+      ],
+      "original_value": "document exploiting CVE-#### -> missed",
+      "corrected_value": "文档/文件利用【具名漏洞或 CVE 编号】触发代码执行(weaponized doc exploiting CVE-xxxx, 利用 Office/Equation Editor 等客户端软件漏洞)→ 标 Exploitation for Client Execution(T1203)。见 'used/exploited CVE-####' 或 '利用…漏洞' 配客户端文档/应用打开即触发→必出 T1203。",
+      "reason": "label 通用手册无漏洞利用类映射, 整类被漏抽; 补此条覆盖整类。",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-05T00:00:00+00:00"
+    },
+    {
+      "error_id": "seed_ex_t1036_file_sig_header",
+      "error_type": "file_signature_header_is_masquerade",
+      "technique_id": "T1036",
+      "action_verbs": [
+        "file signature header",
+        "signature headers",
+        "magic bytes",
+        "file header",
+        "追加文件头",
+        "签名头",
+        "魔数",
+        "伪造文件头"
+      ],
+      "original_value": "'appended file signature headers to data' -> T1027 obfuscation",
+      "corrected_value": "为数据/文件【追加/伪造文件签名头、魔数、文件格式头】使其看起来像合法文件类型 → 伪装 T1036(Masquerading), 不是数据混淆 T1027。区分: T1027 让内容不可读(加密/编码/打包); T1036 伪装外观/身份(文件头/扩展名/合法名)。同句若既加密(T1027)又伪造文件头(T1036)两者都成立。",
+      "reason": "伪造文件头是伪装外观=T1036, 非让内容不可读的混淆 T1027。",
+      "doc_id": "generic-seed-memory",
+      "timestamp": "2026-06-05T00:00:00+00:00"
+    }
+  ],
+  "positive": [
+    {
+      "sentence": "The threat actors used MSBuild to execute an actor-created project file, abusing the signed Microsoft developer utility to bypass application whitelisting.",
+      "technique_id": "T1127.001",
+      "procedure": {
+        "actor": "the threat actors",
+        "action": "used MSBuild to proxy-execute an actor-created file",
+        "object": "a malicious MSBuild project file",
+        "purpose": "to execute code while bypassing application control"
+      },
+      "note": "A NAMED trusted developer utility (MSBuild) used for proxy execution maps to Trusted Developer Utilities Proxy Execution: MSBuild (T1127.001). Do NOT map it to T1218 sub-techniques (Mshta is T1218.005); the tool name decides the specific sub-technique."
+    },
+    {
+      "sentence": "When opened, the malicious document fetched a remote template from an actor-controlled URL to pull in the next-stage payload.",
+      "technique_id": "T1221",
+      "procedure": {
+        "actor": "the malicious document",
+        "action": "fetched a remote template",
+        "object": "an actor-controlled remote template URL",
+        "purpose": "to load the next-stage payload via template injection"
+      },
+      "note": "A document that fetches a REMOTE TEMPLATE is Template Injection (T1221), a specific technique. Do NOT downgrade it to the generic Ingress Tool Transfer (T1105); the 'remote template' keyword selects T1221."
+    },
+    {
+      "sentence": "The attacker sent a spearphishing email carrying a weaponized Office document as an attachment to the target organization.",
+      "technique_id": "T1566.001",
+      "procedure": {
+        "actor": "the attacker",
+        "action": "sent a spearphishing email with a malicious attachment",
+        "object": "a weaponized Office document",
+        "purpose": "to obtain initial access to the target organization"
+      },
+      "note": "Delivery of a malicious FILE as an email attachment is Phishing: Spearphishing Attachment (T1566.001, Initial Access). The mechanism keyword is 'attachment' on an email; if a link were sent instead it would be T1566.002. Do not confuse the delivery act with the later User Execution of the file."
+    },
+    {
+      "sentence": "Believing it to be a legitimate invoice, the recipient double-clicked the document and enabled the embedded macro, which executed automatically.",
+      "technique_id": "T1204.002",
+      "procedure": {
+        "actor": "the recipient (victim user)",
+        "action": "double-clicked the file and enabled the macro",
+        "object": "the malicious document",
+        "purpose": "to trigger execution of the embedded payload"
+      },
+      "note": "A VICTIM user opening/double-clicking a malicious FILE (not a link) is User Execution: Malicious File (T1204.002, Execution). The actor is the user, not the attacker. A user clicking a malicious LINK would be T1204.001. This is a separate node from the T1566 delivery that preceded it."
+    },
+    {
+      "sentence": "The macro launched powershell.exe with a Base64-encoded command line to run the next-stage script.",
+      "technique_id": "T1059.001",
+      "procedure": {
+        "actor": "the malicious macro",
+        "action": "executed an encoded PowerShell command",
+        "object": "powershell.exe with a Base64 command line",
+        "purpose": "to run the next-stage script in memory"
+      },
+      "note": "Execution via the PowerShell interpreter is Command and Scripting Interpreter: PowerShell (T1059.001, Execution). The interpreter name 'powershell' is the mechanism cue. The Base64-encoding aspect, if treated as obfuscation, is a SEPARATE node (T1140 / T1027), not part of this execution node."
+    },
+    {
+      "sentence": "At runtime the loader decoded and decrypted the embedded shellcode blob before mapping it into memory.",
+      "technique_id": "T1140",
+      "procedure": {
+        "actor": "the loader",
+        "action": "decoded and decrypted an embedded payload",
+        "object": "the encrypted/encoded shellcode blob",
+        "purpose": "to reveal the runnable payload prior to execution"
+      },
+      "note": "Decoding/decrypting/deobfuscating an EMBEDDED payload at runtime is Deobfuscate/Decode Files or Information (T1140, Defense Evasion). The cue is decode/decrypt/deobfuscate acting on already-present data. Distinguish from T1027 (the static obfuscation itself) and from T1573 (encrypting the C2 channel)."
+    },
+    {
+      "sentence": "Once running, the implant retrieved an additional payload from the remote server and saved it to disk.",
+      "technique_id": "T1105",
+      "procedure": {
+        "actor": "the implant",
+        "action": "downloaded an additional payload",
+        "object": "a remote file/module fetched from the server",
+        "purpose": "to stage further tools on the host"
+      },
+      "note": "Merely fetching/downloading/transferring a remote file, module, or tool onto the host is Ingress Tool Transfer (T1105, Command and Control). Use this when the text only says a file was downloaded/retrieved, without naming a specific protocol's purpose. If the same line stresses HTTP/DNS as the comms channel, that is T1071 instead."
+    },
+    {
+      "sentence": "All beacon traffic to the C2 server was protected with AES encryption over a custom protocol.",
+      "technique_id": "T1573",
+      "procedure": {
+        "actor": "the malware/beacon",
+        "action": "encrypted its command-and-control traffic",
+        "object": "the C2 communication channel",
+        "purpose": "to conceal commands and stolen data in transit"
+      },
+      "note": "When the text only states that C2 traffic is ENCRYPTED (names an algorithm like AES/RC4 or 'encrypted channel'), map to Encrypted Channel (T1573, Command and Control). Use the parent T1573 unless symmetric (T1573.001) vs asymmetric (T1573.002) is explicitly stated. This is the channel's confidentiality, distinct from T1041 exfiltration of the data itself."
+    },
+    {
+      "sentence": "The collected files were compressed and uploaded back to the operator's command-and-control server.",
+      "technique_id": "T1041",
+      "procedure": {
+        "actor": "the malware",
+        "action": "uploaded the collected data out to the C2",
+        "object": "the staged/compressed victim files",
+        "purpose": "to exfiltrate stolen data to the attacker"
+      },
+      "note": "Data being SENT/uploaded/exfiltrated OUT to the C2 server or attacker is Exfiltration Over C2 Channel (T1041, Exfiltration, TA0010). This is the GOAL (moving data out), a distinct terminal node from establishing the C2 channel (T1071/T1573, TA0011). Direction (out to attacker) is the deciding cue."
+    },
+    {
+      "sentence": "For persistence, the malware created a value under the registry Run key so it would launch at every user logon.",
+      "technique_id": "T1547.001",
+      "procedure": {
+        "actor": "the malware",
+        "action": "wrote an autostart value to the registry Run key",
+        "object": "the HKCU/HKLM ...\\CurrentVersion\\Run registry key",
+        "purpose": "to automatically execute at each logon (persistence)"
+      },
+      "note": "Adding an autostart entry to the Run/RunOnce registry key is Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder (T1547.001, Persistence). The cue is the literal 'Run key'/'startup folder'. A bare 'modified a registry value' with no Run-key cue would be T1112 instead."
+    },
+    {
+      "sentence": "The operators dumped the LSASS process memory to harvest cached domain credentials.",
+      "technique_id": "T1003.001",
+      "procedure": {
+        "actor": "the operators",
+        "action": "dumped process memory to extract credentials",
+        "object": "the LSASS process memory",
+        "purpose": "to harvest cached credentials for further access"
+      },
+      "note": "Extracting credentials specifically from LSASS memory is OS Credential Dumping: LSASS Memory (T1003.001, Credential Access). 'LSASS' is the required sub-technique cue. Generic 'dumped credentials' with no source named should stay at parent T1003."
+    },
+    {
+      "sentence": "After gaining a foothold, the actor deployed a Cobalt Strike beacon to maintain interactive remote control of the host.",
+      "technique_id": "T1219",
+      "procedure": {
+        "actor": "the actor",
+        "action": "deployed a remote-access/C2 framework agent",
+        "object": "a Cobalt Strike beacon",
+        "purpose": "to retain interactive remote control of the host"
+      },
+      "note": "Deploying a NAMED remote-access/C2-framework tool (Cobalt Strike beacon, Meterpreter, a RAT, AnyDesk) for remote control collapses to ONE node, Remote Access Software (T1219, Command and Control). Do NOT split it into a separate execution + protocol node; the named tool is the single technique."
+    },
+    {
+      "sentence": "Months before the intrusion, the group registered several domains to use as command-and-control infrastructure.",
+      "technique_id": "T1583.001",
+      "procedure": {
+        "actor": "the group",
+        "action": "registered/acquired domains for C2",
+        "object": "newly registered C2 domains",
+        "purpose": "to stand up attacker-controlled infrastructure ahead of the operation"
+      },
+      "note": "An attacker ACQUIRING/registering domains (or IPs/servers) for later C2 is Acquire Infrastructure: Domains (T1583.001, Resource Development). Use parent T1583 if the asset type is vague; .001 when 'domain(s)' is explicit. This pre-attack acquisition is distinct from the runtime C2 connection (T1071)."
+    },
+    {
+      "sentence": "Upon execution the backdoor enumerated the hostname, OS version, and architecture of the compromised machine.",
+      "technique_id": "T1082",
+      "procedure": {
+        "actor": "the backdoor",
+        "action": "enumerated host/system information",
+        "object": "hostname, OS version, and architecture",
+        "purpose": "to fingerprint the environment before further action"
+      },
+      "note": "Gathering host/system details (OS, hostname, hardware, architecture) is System Information Discovery (T1082, Discovery). Distinguish from T1016 (network config), T1057 (process listing), and T1083 (file/directory listing) by the OBJECT being enumerated."
+    },
+    {
+      "sentence": "The implant searched local directories and staged documents of interest into a single working folder.",
+      "technique_id": "T1005",
+      "procedure": {
+        "actor": "the implant",
+        "action": "collected files of interest from the local system",
+        "object": "documents on the local host",
+        "purpose": "to gather data prior to exfiltration"
+      },
+      "note": "Harvesting files/data from the local host is Data from Local System (T1005, Collection). This precedes exfiltration but is a distinct Collection node. The act of putting them in one folder, if emphasized, can additionally be T1074 (Data Staged); keep T1005 for the local-data harvest itself."
+    },
+    {
+      "sentence": "To survive reboots, the malware registered a scheduled task that re-launched its loader every hour.",
+      "technique_id": "T1053.005",
+      "procedure": {
+        "actor": "the malware",
+        "action": "created a scheduled task for recurring execution",
+        "object": "a Windows scheduled task (schtasks)",
+        "purpose": "to persist and periodically re-launch the loader"
+      },
+      "note": "Creating a Windows scheduled task (schtasks / Task Scheduler) for execution or persistence is Scheduled Task/Job: Scheduled Task (T1053.005). 'Scheduled task' on Windows is the .005 cue; cron on Linux would be T1053.003. Tactic can be Persistence or Execution depending on emphasis."
+    },
+    {
+      "sentence": "The dropper injected its payload into a legitimate running process to evade detection.",
+      "technique_id": "T1055",
+      "procedure": {
+        "actor": "the dropper",
+        "action": "injected code into a legitimate process",
+        "object": "the address space of a benign host process",
+        "purpose": "to execute under cover and evade detection"
+      },
+      "note": "Running code inside another live process is Process Injection (T1055, Defense Evasion / Privilege Escalation). Stay at parent T1055 unless a specific mechanism appears (e.g. 'hollowing' -> T1055.012, 'DLL injection' -> T1055.001). Generic 'injected into a process' must not be guessed to a sub-technique."
+    },
+    {
+      "sentence": "The signed but malicious DLL was loaded by a trusted application through search-order hijacking.",
+      "technique_id": "T1574.001",
+      "procedure": {
+        "actor": "the malware",
+        "action": "planted a malicious DLL to be side-loaded",
+        "object": "a DLL loaded by a trusted signed application",
+        "purpose": "to execute under a legitimate process and evade defenses"
+      },
+      "note": "Abusing a trusted application's DLL search/load order to run a malicious DLL is Hijack Execution Flow: DLL Search Order Hijacking (T1574.001). The cue is 'DLL' + 'search order'/'side-load'/'hijack'. Without an explicit DLL-loading mechanism, stay at parent T1574."
+    },
+    {
+      "sentence": "The beacon communicated with its controller using HTTPS requests that blended in with normal web traffic.",
+      "technique_id": "T1071.001",
+      "procedure": {
+        "actor": "the beacon",
+        "action": "communicated over an application-layer web protocol",
+        "object": "HTTPS requests to the C2 controller",
+        "purpose": "to issue/receive commands while blending with normal traffic"
+      },
+      "note": "C2 over an application-layer protocol like HTTP/HTTPS is Application Layer Protocol: Web Protocols (T1071.001, Command and Control). 'HTTP/HTTPS/web' is the .001 cue; DNS would be T1071.004. This is the C2 channel/protocol, separate from T1105 (file transfer) and T1041 (data exfiltration)."
+    },
+    {
+      "sentence": "Before deploying ransomware, the actors deleted volume shadow copies to prevent recovery, then encrypted files across the network.",
+      "technique_id": "T1486",
+      "procedure": {
+        "actor": "the actors",
+        "action": "encrypted files for impact",
+        "object": "files across the victim network",
+        "purpose": "to render data unavailable and extort the victim"
+      },
+      "note": "Encrypting victim data to deny access is Data Encrypted for Impact (T1486, Impact). The shadow-copy deletion in the same sentence is a DISTINCT node, Inhibit System Recovery (T1490). Split one sentence describing two acts into two nodes; T1486 covers only the encryption-for-impact act."
+    },
+    {
+      "sentence": "The malware cleared the Windows Security and System event logs to erase traces of its activity.",
+      "technique_id": "T1070.001",
+      "procedure": {
+        "actor": "the malware",
+        "action": "cleared the Windows event logs",
+        "object": "the Security and System event logs",
+        "purpose": "to remove evidence and hinder investigation"
+      },
+      "note": "Clearing Windows event logs is Indicator Removal: Clear Windows Event Logs (T1070.001, Defense Evasion). The cue is 'event log(s)' being cleared/deleted. Deleting files specifically would be T1070.004; keep parent T1070 if the artifact type is unstated."
+    },
+    {
+      "sentence": "It read saved browser credentials from the local password store to expand its access.",
+      "technique_id": "T1555.003",
+      "procedure": {
+        "actor": "the malware",
+        "action": "read stored credentials from the browser password store",
+        "object": "saved web browser credentials",
+        "purpose": "to obtain additional account access"
+      },
+      "note": "Reading STORED passwords from a web browser's credential store is Credentials from Password Stores: Credentials from Web Browsers (T1555.003, Credential Access). 'Browser' + stored passwords is the .003 cue. This is theft of at-rest credentials, distinct from T1003 (dumping OS credential material from memory)."
+    },
+    {
+      "sentence": "the C2 traffic was shaped by Cobalt Strike Malleable C2 profiles that impersonate Amazon and Google services",
+      "technique_id": "T1001.003",
+      "procedure": {
+        "actor": "the attacker",
+        "action": "impersonated legitimate services using Malleable C2 profiles",
+        "object": "C2 traffic disguised as Amazon/Google traffic",
+        "purpose": "evade network detection"
+      },
+      "note": "用 Malleable C2 profiles 冒充/伪装合法服务(Amazon/Google 等)的 C2 流量 = 协议伪装 T1001(父级), 不要标成通用应用层协议 T1071。impersonate / spoof / mimic legitimate service protocol 的 C2 → T1001。"
+    }
+  ]
+}

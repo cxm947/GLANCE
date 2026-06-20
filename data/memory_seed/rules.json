@@ -1,0 +1,975 @@
+{
+  "rules": [
+    {
+      "id": "R_neg_c2comm_to_exfil_proc_reversed",
+      "src": [
+        "T1071",
+        "T1095",
+        "T1573",
+        "T1090",
+        "T1219",
+        "T1572",
+        "T1102"
+      ],
+      "dst": [
+        "T1041",
+        "T1057",
+        "T1005",
+        "T1082",
+        "T1016",
+        "T1083",
+        "T1119",
+        "T1113",
+        "T1056"
+      ],
+      "src_kw": [
+        "c2",
+        "command and control",
+        "command-and-control",
+        "communicat",
+        "http",
+        "https",
+        "dns",
+        "beacon",
+        "channel",
+        "回传",
+        "通信",
+        "信道",
+        "上线"
+      ],
+      "dst_kw": [
+        "sent",
+        "send",
+        "upload",
+        "exfiltrat",
+        "host information",
+        "hostname",
+        "compromised host",
+        "collected",
+        "process list",
+        "enumerat",
+        "gathered",
+        "system information",
+        "local files",
+        "回传",
+        "上传",
+        "主机信息",
+        "进程",
+        "收集"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[方向反]: src=C2通信/应用层协议[T1071等] 且 dst=外传[T1041]/本地发现采集[T1057/T1005/T1082/T1016/T1083]。当src含c2/communicat/http/channel/通信 或 dst含sent/upload/exfiltrat/host information/process list/collected/enumerat/主机信息 时删该边——采集/枚举在前、C2外传在后(collect→exfil→C2),不会C2通道反过来产生本地信息或发起外传。真边方向 T1041/T1057→T1071。either+族词跨3篇稳定抗随机。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_exec_to_c2comm_direct_skip",
+      "src": [
+        "T1059",
+        "T1106",
+        "T1204",
+        "T1203",
+        "T1569"
+      ],
+      "dst": [
+        "T1071",
+        "T1095",
+        "T1102",
+        "T1572"
+      ],
+      "src_kw": [
+        "execut",
+        "ran",
+        "run",
+        "launch",
+        "invoke",
+        "started in the background",
+        "dropper process",
+        "executed",
+        "运行",
+        "执行",
+        "启动"
+      ],
+      "dst_kw": [
+        "communicat",
+        "http",
+        "https",
+        "dns",
+        "c2",
+        "command and control",
+        "carried",
+        "traffic",
+        "通信",
+        "信道"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[跳步/方向]: src=脚本/命令执行[T1059] 且 dst=C2通信[T1071]。当src含execut/ran/launch/dropper process/执行 或 dst含communicat/http/c2/traffic/通信 时删——执行后应先有具体网络行为节点(download/exfil)再到信道,或信道由后门建立而非execute直连;多为脑补的exec→C2跳步。真链 exec→download/collect→C2。either族词跨本案例/本案例稳定。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_exec_to_proxy_signedbinary_reversed",
+      "src": [
+        "T1059",
+        "T1106"
+      ],
+      "dst": [
+        "T1218",
+        "T1216",
+        "T1127"
+      ],
+      "src_kw": [
+        "execut",
+        "ran",
+        "run",
+        "launch",
+        "beacon",
+        "payload",
+        "dropper process",
+        "执行",
+        "运行",
+        "启动"
+      ],
+      "dst_kw": [
+        "regsvr32",
+        "msiexec",
+        "rundll32",
+        "msbuild",
+        "signed",
+        "scriptlet",
+        "com scriptlet",
+        "remote msi",
+        "proxy"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[方向反/跳步]: src=脚本执行[T1059] 且 dst=签名二进制代理执行[T1218/T1127]。当src含execut/ran/launch/执行 或 dst含regsvr32/msiexec/rundll32/msbuild/signed/scriptlet 时删——代理执行(regsvr32/msiexec)通常是被download/decode触发的初始/中间loader,在脚本执行之前或并行,不是脚本执行的后继。真边多为 T1574/T1547→T1127 或 download→T1218。either族词跨本案例/本案例。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_decode_to_encrypt_c2_reversed",
+      "src": [
+        "T1140",
+        "T1027.013",
+        "T1620"
+      ],
+      "dst": [
+        "T1573",
+        "T1027",
+        "T1568"
+      ],
+      "src_kw": [
+        "decod",
+        "decrypt",
+        "deobfuscat",
+        "unpack",
+        "extract",
+        "rc4 decrypt",
+        "decrypted",
+        "解码",
+        "解密",
+        "脱壳"
+      ],
+      "dst_kw": [
+        "encrypt",
+        "encrypted communication",
+        "aes",
+        "rsa",
+        "ssl",
+        "tls",
+        "obfuscat",
+        "appended encrypted",
+        "domain generation",
+        "dga",
+        "加密",
+        "混淆"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[方向反]: src=解码/解密[T1140] 且 dst=加密通信[T1573]/混淆[T1027]/DGA[T1568]。当src含decod/decrypt/deobfuscat/解密 或 dst含encrypt/aes/rsa/obfuscat/dga/加密 时删——解密是把载荷还原以执行(decrypt→execute),不会反过来产生加密C2信道或混淆物;加密/混淆在解密之前(obfuscate→...→deobfuscate)。真边 T1573→T1140(C2回传解密)或 T1027→T1140。either族词跨本案例/本案例/本案例。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_exploit_to_bruteforce_altpath",
+      "src": [
+        "T1190",
+        "T1133",
+        "T1566",
+        "T1078"
+      ],
+      "dst": [
+        "T1110"
+      ],
+      "src_kw": [
+        "exploit",
+        "exploited",
+        "log4shell",
+        "cve",
+        "vulnerable",
+        "web-facing",
+        "利用",
+        "漏洞"
+      ],
+      "dst_kw": [
+        "password spray",
+        "spraying",
+        "brute",
+        "brute-forc",
+        "password guess",
+        "暴力",
+        "爆破",
+        "弱口令",
+        "猜测"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[平行非串联]: src=利用漏洞/外部远程服务[T1190] 且 dst=暴力破解[T1110]。当src含exploit/log4shell/cve/vulnerable/利用 或 dst含spray/brute/弱口令/爆破 时删——漏洞利用与口令爆破是两条平行的初始访问路径,不互为因果(exploit不会触发brute-force);二者各自独立进入。真链各自 exploit→后续 / brute→后续。either族词跨本案例/本案例。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_userexec_to_download_or_exec_skip",
+      "src": [
+        "T1204"
+      ],
+      "dst": [
+        "T1059",
+        "T1105",
+        "T1053",
+        "T1106"
+      ],
+      "src_kw": [
+        "open",
+        "click",
+        "double-click",
+        "ran the",
+        "run the installer",
+        "enabled the macro",
+        "打开",
+        "双击",
+        "运行",
+        "点击"
+      ],
+      "dst_kw": [
+        "execut",
+        "powershell",
+        "download",
+        "fetch",
+        "retriev",
+        "scheduled task",
+        "launched",
+        "dropper",
+        "执行",
+        "下载",
+        "计划任务"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[跳步]: src=用户执行[T1204] 直连 dst=脚本执行[T1059]/下载[T1105]/计划任务[T1053]。需src含open/click/ran/打开/双击 且 dst含execut/powershell/download/scheduled/下载/执行(both区分,因T1204→exec在别篇是真初始步)。删该跳步——用户打开文件后的真实下一步通常是漏洞利用T1203/伪装释放T1036/模板注入T1221,再到脚本;direct T1204→download/exec是省略中间loader的脑补。both+族词防误删真初始链。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_lateralmove_to_discover_collect_reversed",
+      "src": [
+        "T1021",
+        "T1550",
+        "T1570"
+      ],
+      "dst": [
+        "T1005",
+        "T1047",
+        "T1003",
+        "T1083",
+        "T1018",
+        "T1016",
+        "T1049",
+        "T1057"
+      ],
+      "src_kw": [
+        "lateral",
+        "laterally",
+        "smb",
+        "admin shares",
+        "pass-the-hash",
+        "pass-the-ticket",
+        "rdp",
+        "spread",
+        "横向",
+        "移动"
+      ],
+      "dst_kw": [
+        "wmi",
+        "identified data",
+        "data of interest",
+        "dumped",
+        "lsass",
+        "file and director",
+        "listing",
+        "collected",
+        "discover",
+        "enumerat",
+        "数据",
+        "凭据",
+        "收集"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[方向反]: src=横向移动/凭据再利用[T1021/T1550] 且 dst=本地发现/采集/凭据转储/WMI执行[T1005/T1003/T1047/T1083]。当src含lateral/smb/pass-the-hash/rdp/横向 或 dst含wmi/lsass/dumped/data of interest/file and director/采集 时删——发现/采集/转储凭据在横向之前为其提供目标与凭据(discover→creds→lateral),横向到达新机后才在新机重新发现,但与原节点不是直接边。真边 T1003→T1021/T1550, T1083→T1005。either族词跨本案例/本案例。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_inmemload_to_lateral_or_discover",
+      "src": [
+        "T1219",
+        "T1055",
+        "T1620"
+      ],
+      "dst": [
+        "T1021",
+        "T1083",
+        "T1140"
+      ],
+      "src_kw": [
+        "loaded",
+        "cobalt strike beacon",
+        "into memory",
+        "injected",
+        "mapped",
+        "reflective",
+        "内存",
+        "加载",
+        "注入"
+      ],
+      "dst_kw": [
+        "lateral",
+        "laterally",
+        "file and director",
+        "listing",
+        "decrypt",
+        "decod",
+        "横向",
+        "解密",
+        "目录"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[跳步/方向]: src=内存加载/进程注入/反射加载[T1219/T1055/T1620] 直连 dst=横向[T1021]/文件目录发现[T1083]/解密[T1140]。当src含loaded/cobalt strike beacon/into memory/injected/mapped/注入 或 dst含lateral/file and director/decrypt/横向/解密 时删——加载beacon后的真实后继是C2上线/凭据访问/外传(T1041),而横向与目录枚举属更后阶段或由凭据触发;reflective加载T1620前置是解密(decrypt→map),不是map→decrypt。真边 T1133/T1078→T1219, T1620→执行。either族词跨本案例/本案例。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_mining_persistence_loop_reversed",
+      "src": [
+        "T1496",
+        "T1543",
+        "T1053",
+        "T1098",
+        "T1070",
+        "T1036"
+      ],
+      "dst": [
+        "T1046",
+        "T1543",
+        "T1036",
+        "T1098",
+        "T1053",
+        "T1070"
+      ],
+      "src_kw": [
+        "miner",
+        "mining",
+        "cpu",
+        "daemon",
+        "cron",
+        "authorized_keys",
+        "renamed",
+        "wget",
+        "curl",
+        "挖矿",
+        "守护",
+        "定时",
+        "公钥",
+        "改名",
+        "清理"
+      ],
+      "dst_kw": [
+        "scan",
+        "redis",
+        "ssh",
+        "daemon",
+        "cron",
+        "authorized_keys",
+        "mimic",
+        "legitimate",
+        "renamed",
+        "清理残留",
+        "扫描",
+        "守护",
+        "公钥",
+        "伪装",
+        "定时"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[挖矿木马环内反向/平行]: 挖矿/持久化族[T1496/T1543/T1053/T1098/T1070/T1036]彼此乱连(miner→scan, daemon→masquerade, cron↔authorized_keys, 清理↔改名)。需两端各含对应族词(both)。删——这些是并列的落地动作(下载脚本后:挖矿+建守护+写cron+加公钥+改名+清痕迹各自由初始执行/脚本派生),不构成 miner→scan 或 daemon→伪装 的链;真上游是 T1059/T1105→各动作, T1543→T1496(守护重启矿机)。both+族词仅命中本类乱连,不波及 download→miner 真边。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_neg_c2_to_collect_decode_reversed",
+      "src": [
+        "T1573",
+        "T1071"
+      ],
+      "dst": [
+        "T1059",
+        "T1005",
+        "T1071"
+      ],
+      "src_kw": [
+        "encrypt",
+        "rc4 byte stream",
+        "aes",
+        "rsa",
+        "communicat",
+        "c2",
+        "command and control",
+        "加密",
+        "通信",
+        "信道"
+      ],
+      "dst_kw": [
+        "execut",
+        "powershell",
+        "launched a powershell empire",
+        "collected",
+        "local files",
+        "local host",
+        "执行",
+        "收集",
+        "本地文件"
+      ],
+      "kw_mode": "role_only",
+      "hint": "五元组去伪[方向反]: src=加密信道/C2通信[T1573/T1071] 直连 dst=脚本执行[T1059]/本地采集[T1005]。需src含encrypt/rc4/communicat/c2/加密 且 dst含execut/powershell/collected/local files/执行(both,因本案例有真边T1573→T1140而非T1573→T1059)。删——加密C2是数据传输的封装层,在执行/采集之后(execute→C2, collect→C2),不会C2加密反向触发执行或采集;C2下发的解密才接执行(C2→decrypt→exec)。真边 collect→C2, T1573→T1140。both+族词区分同源T1573的真假后继。",
+      "applies_to": [],
+      "tier": "implicit_rule",
+      "polarity": "neg"
+    },
+    {
+      "id": "R_recon_converge_to_creddump_missing",
+      "src": [
+        "T1016",
+        "T1049",
+        "T1018",
+        "T1057",
+        "T1083",
+        "T1135"
+      ],
+      "dst": [
+        "T1003"
+      ],
+      "src_kw": [
+        "network configuration",
+        "ipconfig",
+        "network connection",
+        "netstat",
+        "remote system discovery",
+        "enumerate the domain",
+        "system discovery",
+        "process list",
+        "file and directory",
+        "domain controllers",
+        "网络配置",
+        "网络连接",
+        "进程",
+        "系统发现"
+      ],
+      "dst_kw": [
+        "lsass",
+        "mimikatz",
+        "dumped credentials",
+        "dump credentials",
+        "credential",
+        "harvest",
+        "转储",
+        "凭据"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 跨篇通用真边): 多条并列的本机/远程侦察(网络配置T1016/网络连接T1049/远程系统发现T1018/进程T1057/文件目录T1083)收敛到同一次凭据转储(T1003 LSASS/Mimikatz)——侦察确认目标后才dump。五元组判别: src父∈{T1016,T1049,T1018,T1057,T1083} 且 src节点含 ipconfig/netstat/network configuration/remote system discovery/network connection/网络配置/网络连接; dst父=T1003 且 dst节点含 lsass/mimikatz/dumped credentials/凭据; 图里两节点present但未连即补(either: 任一端族词命中即可, 抗deepseek换措辞)。如 本案例 的 T1016/T1049/T1018→T1003 三条都漏。注意只补 侦察→转储 这一收敛, 不补转储→侦察(反向见neg)。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_netscan_to_hostdiscovery_missing",
+      "src": [
+        "T1046"
+      ],
+      "dst": [
+        "T1016",
+        "T1049",
+        "T1018",
+        "T1135",
+        "T1083"
+      ],
+      "src_kw": [
+        "scanned the network",
+        "network scan",
+        "open ports and services",
+        "port scan",
+        "scanned",
+        "nmap",
+        "扫描网络",
+        "端口扫描"
+      ],
+      "dst_kw": [
+        "network configuration",
+        "ipconfig",
+        "network connection",
+        "netstat",
+        "remote system discovery",
+        "enumerate the domain",
+        "domain controllers",
+        "network share",
+        "网络配置",
+        "网络连接"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 跨篇通用真边): 网络服务扫描(T1046 扫开放端口/服务)→紧接着的细化主机/网络侦察(网络配置T1016/连接T1049/远程系统T1018)。扫到活主机后再ipconfig/netstat细查。五元组: src父=T1046 且含 scanned the network/open ports/扫描; dst父∈{T1016,T1049,T1018} 且含 ipconfig/netstat/remote system discovery/网络配置; present且未连即补。如 本案例 T1046→T1016 / T1046→T1049 漏。方向是 scan→discovery, 不反。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_executor_to_persist_evade_fanout_missing",
+      "src": [
+        "T1059",
+        "T1106"
+      ],
+      "dst": [
+        "T1137",
+        "T1543",
+        "T1564",
+        "T1112",
+        "T1036"
+      ],
+      "src_kw": [
+        "powershell",
+        "beacon",
+        "empire",
+        "cmd",
+        "executed",
+        "script",
+        "ran",
+        "launch",
+        "invoke",
+        "backdoor",
+        "执行",
+        "启动",
+        "脚本"
+      ],
+      "dst_kw": [
+        "outlook",
+        "loadmacroprovideronboot",
+        "macro for persist",
+        "windows services",
+        "autostart service",
+        "service",
+        "alternate data stream",
+        "ntfs",
+        "hid the persisted",
+        "modified the registry",
+        "registry value",
+        "named the exe",
+        "masquerad",
+        "wrote executables",
+        "守护",
+        "服务",
+        "隐藏",
+        "注册表",
+        "伪装"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 跨篇通用真边): 跑起来的执行体(命令脚本T1059 PowerShell/beacon/Empire)→它直接建立的持久化/防御规避动作(Outlook宏持久T1137/服务T1543/ADS隐藏T1564/改注册表T1112/进程伪装T1036)。执行体是这些动作的共同父, 各动作从它扇出。五元组: src父=T1059 且含 powershell/beacon/empire/executed/执行; dst父∈{T1137,T1543,T1564,T1112,T1036} 且含对应机制词(outlook/service/ntfs/registry/named the exe/服务/注册表/伪装); present且未连即补。如 本案例 T1059→{T1137,T1543,T1564} / 本案例 T1059→T1112 / 本案例·本案例 T1059→T1036。★只补执行体→子动作(扇出), 不补子动作彼此互连(那是sibling neg), 也不含 T1547/T1053(跨篇冲突, 见对应case)。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_collect_screenshot_to_keylog_missing",
+      "src": [
+        "T1113"
+      ],
+      "dst": [
+        "T1056"
+      ],
+      "src_kw": [
+        "screenshot",
+        "screenshots",
+        "screen",
+        "captured the screen",
+        "截屏",
+        "屏幕"
+      ],
+      "dst_kw": [
+        "keystroke",
+        "keystrokes",
+        "keylog",
+        "logged keystrokes",
+        "log keystrokes",
+        "键盘",
+        "键击"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 同后门采集承接): 同一后门定时截屏(T1113)并记录键盘(T1056), 原文常按'截屏...日志键盘'相邻陈述, 属同后门采集能力链。五元组: src父=T1113 且含 screenshot/screen/截屏; dst父=T1056 且含 keystroke/keylog/键盘; present且未连即补。如 本案例后门 T1113→T1056。注意通用sibling_collect neg刻意不连采集兄弟, 但截屏→键盘这对在原文是同后门顺序能力, 故作正向补边规则覆盖(either一端命中即可)。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_RAT_beacon_to_exfil_missing",
+      "src": [
+        "T1219",
+        "T1071",
+        "T1573"
+      ],
+      "dst": [
+        "T1041"
+      ],
+      "src_kw": [
+        "cobalt strike beacon",
+        "loaded a cobalt strike",
+        "beacon into memory",
+        "loaded into memory",
+        "rat",
+        "remote access",
+        "beacon",
+        "c2 traffic",
+        "communicated with c2"
+      ],
+      "dst_kw": [
+        "exfiltrat",
+        "exfiltrated data",
+        "through the command-and-control",
+        "small data",
+        "sent",
+        "外传",
+        "回传"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 通用真边): 载入内存的RAT/Cobalt Strike beacon(T1219)或其C2信道→通过C2通道外传数据(T1041, exfiltration over C2)。RAT是回传载体, 数据经它外传。五元组: src父∈{T1219,T1071,T1573} 且含 cobalt strike beacon/loaded into memory/c2 traffic/beacon; dst父=T1041 且含 exfiltrat/through the command-and-control/small data/外传; present且未连即补。如 本案例 T1219→T1041(beacon经C2外传少量数据)。注意这是承接(RAT→exfil)非枢纽过扇出, 仅当dst确为exfil-over-C2时补。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_validacct_to_RAT_or_remoteservice_missing",
+      "src": [
+        "T1078"
+      ],
+      "dst": [
+        "T1219",
+        "T1133",
+        "T1021"
+      ],
+      "src_kw": [
+        "valid account",
+        "defaultaccount",
+        "default account",
+        "valid administrator",
+        "built-in windows",
+        "stolen account",
+        "compromised account",
+        "有效账户",
+        "合法账号",
+        "默认账户"
+      ],
+      "dst_kw": [
+        "cobalt strike beacon",
+        "loaded into memory",
+        "rat",
+        "vpn",
+        "citrix",
+        "remote service",
+        "external remote",
+        "rdp",
+        "move laterally",
+        "远程服务",
+        "横向"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 通用真边, 与cred_lateral互补): 拿到的有效账户(T1078)→用它载入RAT/beacon(T1219)、登录外部远程服务(T1133 VPN/Citrix)或横向(T1021 RDP)。五元组: src父=T1078 且含 valid account/defaultaccount/built-in windows/有效账户; dst父∈{T1219,T1133,T1021} 且含 cobalt strike beacon/vpn/citrix/remote service/rdp/远程服务; present且未连即补。如 本案例 T1078→T1219(用合法账户加载beacon)、T1078→T1133(账户登VPN)。只连账户→紧邻落脚点, 不连账户→远端discovery/exfil(那是入口过扇出neg)。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_download_fanout_to_loader_persist_disc_missing",
+      "src": [
+        "T1105"
+      ],
+      "dst": [
+        "T1053",
+        "T1547",
+        "T1082",
+        "T1218",
+        "T1036",
+        "T1543",
+        "T1574"
+      ],
+      "src_kw": [
+        "download",
+        "downloaded",
+        "fetched",
+        "retrieved",
+        "subsequent modules",
+        "malicious pe",
+        "payload components",
+        "next-stage",
+        "additional files",
+        "下载",
+        "获取",
+        "拉取"
+      ],
+      "dst_kw": [
+        "scheduled task",
+        "schtasks",
+        "run registry",
+        "hkcu",
+        "currentversion",
+        "startup",
+        "collected hostname",
+        "host information",
+        "system information",
+        "msiexec",
+        "remote msi",
+        "named the exe",
+        "masquerad",
+        "renamed",
+        "daemon",
+        "service",
+        "dll search-order",
+        "side-loading",
+        "ffmpeg",
+        "计划任务",
+        "注册表",
+        "守护",
+        "伪装"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 通用真边): 下载落地的载荷(T1105 下载后续模块/恶意PE/组件)→它被用于的紧邻动作: 建计划任务(T1053)、写Run键/启动项持久(T1547)、读主机信息(T1082)、msiexec代理执行(T1218)、伪装(T1036)、建服务守护(T1543)、DLL侧加载(T1574)。下载体是这些后续步的直接父。五元组: src父=T1105 且含 download/downloaded/subsequent modules/malicious pe/payload components/下载; dst父∈上述集 且含对应机制词(scheduled task/run registry/msiexec/named the exe/daemon/dll search-order/计划任务/注册表); present且未连即补。如 本案例 T1105→{T1053,T1082,T1218} / 本案例 T1105→{T1547,T1574} / Redis T1105→{T1036,T1543}。★不含 T1105→T1140(下载→解密, 与本案例反向T1140→T1105冲突, 见本案例专属case), 也不含 T1105→T1059(skip解码neg)。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_userexec_to_decode_obf_inject_missing",
+      "src": [
+        "T1204"
+      ],
+      "dst": [
+        "T1140",
+        "T1027",
+        "T1055"
+      ],
+      "src_kw": [
+        "opened",
+        "clicked",
+        "double-click",
+        "enabled the macro",
+        "induced to run",
+        "ran the installer",
+        "ran the fake",
+        "launch malicious",
+        "打开",
+        "点击",
+        "运行",
+        "诱导",
+        "双击"
+      ],
+      "dst_kw": [
+        "decode",
+        "decoded",
+        "decrypt",
+        "decrypted",
+        "deobfuscat",
+        "base64",
+        "obfuscated",
+        "encrypted payload",
+        "appended encrypted",
+        "injected",
+        "svchost",
+        "inject into",
+        "解密",
+        "解码",
+        "混淆",
+        "注入"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 通用真边): 用户执行恶意文件/安装包(T1204 打开/双击/启用宏)→它触发的紧邻载荷处理或执行: 解码解密(T1140)、释放混淆载荷(T1027)、进程注入(T1055)。用户执行是这些的直接父。五元组: src父=T1204 且含 opened/clicked/double-click/enabled the macro/induced to run/打开/点击/双击; dst父∈{T1140,T1027,T1055} 且含 decode/decrypt/base64/obfuscated/encrypted payload/injected/svchost/解密/混淆/注入; present且未连即补。如 本案例 T1204→T1140(打开PE→解码混淆串) / 本案例 T1204→T1027(运行安装器→释放加密载荷) / 本案例 T1204→T1055(运行文档→注入svchost)。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_masquerade_to_userexec_missing",
+      "src": [
+        "T1036"
+      ],
+      "dst": [
+        "T1204"
+      ],
+      "src_kw": [
+        "masquerad",
+        "named the exe",
+        "disguised",
+        "fake client",
+        "legitimate client",
+        "展示近似正常",
+        "伪造的客户端",
+        "伪装成",
+        "命名为",
+        "图标"
+      ],
+      "dst_kw": [
+        "opened",
+        "clicked",
+        "double-click",
+        "induced to run",
+        "enabled the macro",
+        "ran the",
+        "打开",
+        "点击",
+        "运行",
+        "诱导"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 真边): 把恶意文件伪装成合法程序(T1036 改名/改图标/仿客户端界面)→诱使用户打开执行(T1204)。伪装是为了让用户上当点击, 故伪装→用户执行。五元组: src父=T1036 且含 masquerad/named the exe/fake client/伪装成/伪造的客户端/命名为; dst父=T1204 且含 opened/clicked/induced to run/打开/点击/运行; present且未连即补。如 本案例 T1036(伪装成'慧眼行动申报客户端')→T1204(用户打开)。注意与通用 phish_skip_masquerade neg(钓鱼跳过伪装)互补: 那是删T1566→T1204, 这是补中间的T1036→T1204。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_phish_to_sched_or_exec_missing",
+      "src": [
+        "T1566"
+      ],
+      "dst": [
+        "T1053",
+        "T1059"
+      ],
+      "src_kw": [
+        "spear-phishing",
+        "spearphish",
+        "phishing email",
+        "malicious word",
+        "weaponized",
+        "malicious attachment",
+        "malicious macro",
+        "trojanized",
+        "钓鱼",
+        "邮件",
+        "附件"
+      ],
+      "dst_kw": [
+        "scheduled task",
+        "vbscript loader",
+        "googleupdate",
+        "schtasks",
+        "powershell",
+        "cobalt strike beacon",
+        "executed",
+        "macro's script",
+        "obfuscated powershell",
+        "beacon",
+        "计划任务",
+        "执行"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 本篇真边): 钓鱼投递的武器化文档(T1566)宏直接创建计划任务(T1053)或执行PowerShell beacon(T1059)——无中间伪装/模板时钓鱼直达执行。五元组: src父=T1566 且含 spear-phishing/malicious word/weaponized/malicious macro/钓鱼/附件; dst父∈{T1053,T1059} 且含 scheduled task/vbscript loader/googleupdate/powershell/beacon/cobalt strike/执行/计划任务; present且未连即补。如 本案例 武器化Word宏→T1053(计划任务)/T1059(PowerShell beacon)。★注意 T1566→T1204(钓鱼→用户执行)在本案例/本案例是FP(中间有伪装), 故本规则dst不含T1204; 本案例的T1566→T1204是真边由专属case补。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_exploit_or_sideload_to_obfuscated_payload_missing",
+      "src": [
+        "T1574",
+        "T1203"
+      ],
+      "dst": [
+        "T1027"
+      ],
+      "src_kw": [
+        "sideload",
+        "side loading",
+        "side-loading",
+        "ffmpeg dll",
+        "compromised dll",
+        "loaded the malicious dll",
+        "exploited",
+        "cve",
+        "vulnerability",
+        "侧加载",
+        "劫持加载"
+      ],
+      "dst_kw": [],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 真边): DLL侧加载(T1574 sideload ffmpeg/恶意DLL)或漏洞利用(T1203 exploit CVE)→载入/释放的混淆载荷(T1027 含embedded shellcode/encrypted C2 strings/obfuscated payload)。被加载的DLL本身就携带混淆载荷。五元组: src父∈{T1574,T1203} 且含 sideload/side loading/ffmpeg dll/exploited/cve/侧加载; dst父=T1027(混淆载荷)——dst_kw留空因这些篇T1027节点object常缺失(空文本), 靠src端族词锚定+结构(present未连)即补(either下dst空kw不阻挡)。如 本案例 T1574(侧加载ffmpeg)→T1027 / 本案例 T1203(CVE利用)→T1027。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    },
+    {
+      "id": "R_earlystage_discovery_to_persistence_missing",
+      "src": [
+        "T1082",
+        "T1016",
+        "T1083"
+      ],
+      "dst": [
+        "T1053",
+        "T1547"
+      ],
+      "src_kw": [
+        "read hostname",
+        "collected host",
+        "system information",
+        "os version",
+        "host information",
+        "gathered the os",
+        "hostname, username",
+        "系统信息",
+        "主机信息",
+        "读取主机"
+      ],
+      "dst_kw": [
+        "scheduled task",
+        "schtasks",
+        "run registry",
+        "hkcu",
+        "currentversion",
+        "startup folder",
+        "shortcut to the startup",
+        "lnk",
+        "onenoteauth",
+        "registry run",
+        "计划任务",
+        "启动文件夹",
+        "启动目录",
+        "注册表"
+      ],
+      "kw_mode": "either",
+      "hint": "该补(找漏, 本篇真边): 同一载荷采集主机信息(T1082/T1016)后, 紧接着建立持久化——计划任务(T1053)或写启动项/Run键(T1547)。采集与建持久由同一程序顺序执行。五元组: src父∈{T1082,T1016,T1083} 且含 read hostname/system information/os version/collected host/系统信息/主机信息; dst父∈{T1053,T1547} 且含 scheduled task/run registry/startup folder/lnk/计划任务/启动目录; present且未连即补。如 本案例T1082(读hostname/OS/AV)→T1053(计划任务)/T1547(startup写OneNoteAuth.lnk)。",
+      "applies_to": [],
+      "tier": "explicit_rule",
+      "polarity": "pos"
+    }
+  ]
+}
