@@ -1,10 +1,8 @@
-<div align="center">
+<h1 align="center">GLANCE</h1>
 
-# GLANCE
+<p align="center"><b>Operationalizing Cyber Threat Intelligence: Evidence-Grounded Attack Process Reconstruction with Multi-Agent LLMs</b></p>
 
-### Operationalizing Cyber Threat Intelligence: Evidence-Grounded Attack Process Reconstruction with Multi-Agent LLMs
-
-*An evidence-driven multi-agent framework that reconstructs the attack process inside a CTI report into a machine-actionable ATT&CK attack-process graph.*
+<p align="center"><em>An evidence-driven multi-agent framework that reconstructs the attack process inside a CTI report into a machine-actionable ATT&amp;CK attack-process graph.</em></p>
 
 
 
