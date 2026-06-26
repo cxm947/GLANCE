@@ -670,6 +670,105 @@ def fixed_mapping_mcis_size(pred_graph: dict, gold_graph: dict, pred_to_gold: di
     expand((1 << node_count) - 1, 0)
     return best
 
+# --- structural metrics (global perspective): make the failures that edge_parent_f1
+#     cannot see — isolated nodes, lost/spurious start nodes, graph fragmentation —
+#     measurable. All computed per-graph in parent-technique space, so they include
+#     unmatched/isolated nodes that the node-matching metrics quietly drop.
+
+def _degrees(graph: dict):
+    ids = node_ids(graph)
+    indeg = {nid: 0 for nid in ids}
+    outdeg = {nid: 0 for nid in ids}
+    for src, dst in graph_edges(graph):
+        outdeg[src] = outdeg.get(src, 0) + 1
+        indeg[dst] = indeg.get(dst, 0) + 1
+    return ids, indeg, outdeg
+
+def weak_component_count(graph: dict) -> int:
+    ids = node_ids(graph)
+    parent = {nid: nid for nid in ids}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    for src, dst in graph_edges(graph):
+        if src in parent and dst in parent:
+            parent[find(src)] = find(dst)
+    return len({find(nid) for nid in ids})
+
+def isolated_node_count(graph: dict) -> int:
+    _, indeg, outdeg = _degrees(graph)
+    return sum(1 for nid in indeg if indeg[nid] == 0 and outdeg[nid] == 0)
+
+def _role_techs(graph: dict, role: str) -> set[str]:
+    ids, indeg, outdeg = _degrees(graph)
+    nodes = graph.get("nodes", [])
+    out: set[str] = set()
+    for i, nid in enumerate(ids):
+        is_root = indeg[nid] == 0 and outdeg[nid] > 0
+        is_sink = outdeg[nid] == 0 and indeg[nid] > 0
+        if (role == "root" and is_root) or (role == "sink" and is_sink):
+            t = normalize_tech_id(technique_id(nodes[i]))
+            if t:
+                out.add(t)
+    return out
+
+def _reachability_parent_pairs(graph: dict) -> set[tuple[str, str]]:
+    ids = node_ids(graph)
+    nodes = graph.get("nodes", [])
+    par = {ids[i]: normalize_tech_id(technique_id(nodes[i])) for i in range(len(ids))}
+    pairs: set[tuple[str, str]] = set()
+    for src, dst in transitive_closure(ids, graph_edges(graph)):
+        ps, pd = par.get(src), par.get(dst)
+        if ps and pd and ps != pd:
+            pairs.add((ps, pd))
+    return pairs
+
+def _subtechnique_fraction(graph: dict) -> float:
+    techs = [technique_id(n) for n in graph.get("nodes", [])]
+    techs = [t for t in techs if t]
+    if not techs:
+        return 0.0
+    return round(sum(1 for t in techs if "." in t) / len(techs), 4)
+
+def structural_metrics(pred_graph: dict, gold_graph: dict) -> dict:
+    p_iso = isolated_node_count(pred_graph)
+    g_iso = isolated_node_count(gold_graph)
+    p_comp = weak_component_count(pred_graph)
+    g_comp = weak_component_count(gold_graph)
+
+    pr, gr = _role_techs(pred_graph, "root"), _role_techs(gold_graph, "root")
+    root = component_prf(len(pr & gr), len(pr - gr), len(gr - pr))
+    ps, gs = _role_techs(pred_graph, "sink"), _role_techs(gold_graph, "sink")
+    sink = component_prf(len(ps & gs), len(ps - gs), len(gs - ps))
+    prp, grp = _reachability_parent_pairs(pred_graph), _reachability_parent_pairs(gold_graph)
+    reach = component_prf(len(prp & grp), len(prp - grp), len(grp - prp))
+
+    return {
+        "isolated_node_count": p_iso,
+        "gold_isolated_node_count": g_iso,
+        "connected_components": p_comp,
+        "gold_connected_components": g_comp,
+        "connected_components_match": p_comp == g_comp,
+        # a structurally sane reconstruction has no isolated nodes and is not more
+        # fragmented than the gold (an attack process is normally one component).
+        "structure_valid": bool(p_iso == 0 and p_comp <= max(1, g_comp)),
+        "root_set_precision": root["precision"],
+        "root_set_recall": root["recall"],
+        "root_set_f1": root["f1"],
+        "sink_set_precision": sink["precision"],
+        "sink_set_recall": sink["recall"],
+        "sink_set_f1": sink["f1"],
+        "reachability_parent_precision": reach["precision"],
+        "reachability_parent_recall": reach["recall"],
+        "reachability_parent_f1": reach["f1"],
+        "subtechnique_fraction": _subtechnique_fraction(pred_graph),
+        "gold_subtechnique_fraction": _subtechnique_fraction(gold_graph),
+    }
+
 def evaluate(
     pred_graph: dict,
     gold_graph: dict,
@@ -798,6 +897,7 @@ def evaluate_required(
         "gold_nodes_count": len(gold_nodes),
         "pred_edges_count": len(pred_graph.get("edges", [])),
         "gold_edges_count": len(gold_graph.get("edges", [])),
+        **structural_metrics(pred_graph, gold_graph),
     }
 
 def main():

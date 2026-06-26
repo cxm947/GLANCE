@@ -44,6 +44,10 @@ def main():
         m["edge_parent_tp"], m["edge_parent_fp"], m["edge_parent_fn"]), flush=True)
     print("  ttp_f1=%.4f  node_f1=%.4f  edge_f1=%.4f" % (
         m["ttp_f1"], m["node_f1"], m.get("edge_f1", 0.0)), flush=True)
+    print("  [structure] isolated=%d  components=%d/%d  root_f1=%.4f  reach_parent_f1=%.4f  valid=%s" % (
+        m.get("isolated_node_count", -1), m.get("connected_components", -1),
+        m.get("gold_connected_components", -1), m.get("root_set_f1", 0.0),
+        m.get("reachability_parent_f1", 0.0), m.get("structure_valid")), flush=True)
     print("  tokens=%s" % (pipe.llm.usage_stats,), flush=True)
 
 if __name__ == "__main__":
