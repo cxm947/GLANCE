@@ -1040,12 +1040,16 @@ class CleanPipeline:
         return graph
 
     def _drop_residual_isolated(self, nodes: list[dict], edges: list[dict]):
-        """Deterministic safety net: after structure repair + normalization, any node
-        still isolated (in=out=0) is dropped — an isolated node cannot belong to an
-        attack process and Agent C already had its chance to reconnect it. Never drops
-        the sole node of a single-node graph."""
+        """Deterministic safety net after structure repair + normalization. A node left
+        isolated (in=out=0) is dropped ONLY when it is clearly redundant — a same-parent
+        duplicate of another node, or a spurious auto-added late-tactic node (the
+        `step_*_add_T####` pattern, e.g. the obfuscation T1027 bug). A *unique,
+        legitimate* isolated node is kept (no fabricated edges, no lost technique) and is
+        surfaced honestly by structure_valid. Never touches a single-node graph."""
         if not self.structure_drop_isolated or len(nodes) <= 1:
             return nodes, edges
+        import re
+        from collections import Counter
         node_ids = {n["node_id"] for n in nodes if n.get("node_id")}
         indeg = {nid: 0 for nid in node_ids}
         outdeg = {nid: 0 for nid in node_ids}
@@ -1058,12 +1062,32 @@ class CleanPipeline:
         iso = [nid for nid in node_ids if indeg[nid] == 0 and outdeg[nid] == 0]
         if not iso:
             return nodes, edges
-        iso_set = set(iso)
-        kept_nodes = [n for n in nodes if n.get("node_id") not in iso_set]
+
+        def _par(t):
+            m = re.search(r"T\d{4}", str(t or ""))
+            return m.group(0) if m else ""
+
+        tech_of = {n["node_id"]: (n.get("technique_id") or n.get("attack_id"))
+                   for n in nodes if n.get("node_id")}
+        par_count = Counter(_par(t) for t in tech_of.values())
+        drop = set()
+        for nid in iso:
+            p = _par(tech_of.get(nid))
+            phase = get_phase_index(get_tactic_id(p)) if p else 99
+            is_dup = par_count.get(p, 0) > 1
+            is_spurious_add = ("_add_" in str(nid)) and phase >= self.root_late_phase
+            if is_dup or is_spurious_add:
+                drop.add(nid)
+        if not drop:
+            logger.info("  [structure] 安全网: %d 个孤立节点均为唯一合法节点, 保留(不删不造边)", len(iso))
+            return nodes, edges
+        kept_nodes = [n for n in nodes if n.get("node_id") not in drop]
         kept_ids = {n["node_id"] for n in kept_nodes if n.get("node_id")}
         kept_edges = [e for e in edges
                       if str(e.get("src")) in kept_ids and str(e.get("dst")) in kept_ids]
-        logger.info("  [structure] 安全网: 删 %d 个残留孤立节点 %s", len(iso), iso)
+        logger.info("  [structure] 安全网: 删 %d 个孤立的重复/幻觉节点 %s%s",
+                    len(drop), sorted(drop),
+                    (" (保留%d个唯一孤立)" % (len(iso) - len(drop))) if len(iso) > len(drop) else "")
         return kept_nodes, kept_edges
 
     @staticmethod

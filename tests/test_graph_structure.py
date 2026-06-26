@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.join(_PROJECT, "src"))
 from graph_structure import analyze_structure, weakly_connected_components  # noqa: E402
 from pipeline_clean import CleanPipeline  # noqa: E402
 from schema import GraphDocument, GraphNode, GraphEdge  # noqa: E402
+from agents.verifier_clean import CleanVerifier  # noqa: E402
 
 def _n(nid, tech, sid=None):
     return {"node_id": nid, "technique_id": tech,
@@ -86,18 +87,27 @@ def test_apply_structure_stage_add_remove_replace():
     assert tech_c == "T1059"
 
 def test_drop_residual_isolated_safety_net():
-    dummy = SimpleNamespace(structure_drop_isolated=True)
-    nodes = [_n("a", "T1566.002"), _n("b", "T1059.001"), _n("c", "T1027")]
-    edges = [_e("a", "b")]
-    kn, ke = CleanPipeline._drop_residual_isolated(dummy, nodes, edges)
-    assert {n["node_id"] for n in kn} == {"a", "b"}     # isolated c dropped
+    dummy = SimpleNamespace(structure_drop_isolated=True, root_late_phase=6)
+    nodes = [
+        _n("step_0_T1566.002", "T1566.002"),       # main chain
+        _n("step_1_T1059.001", "T1059.001"),
+        _n("step_3_add_T1027", "T1027"),           # spurious add, late tactic -> drop
+        _n("step_4_T1059", "T1059"),               # same-parent duplicate of T1059.001 -> drop
+        _n("step_5_T1003", "T1003"),               # unique, legitimate isolated -> KEEP
+    ]
+    edges = [_e("step_0_T1566.002", "step_1_T1059.001")]
+    kn, _ = CleanPipeline._drop_residual_isolated(dummy, nodes, edges)
+    kept = {n["node_id"] for n in kn}
+    assert "step_3_add_T1027" not in kept           # spurious auto-added late-tactic node dropped
+    assert "step_4_T1059" not in kept               # same-parent duplicate dropped
+    assert "step_5_T1003" in kept                   # unique legitimate isolated node kept
     # never drops the sole node of a single-node graph
     kn1, _ = CleanPipeline._drop_residual_isolated(dummy, [_n("only", "T1027")], [])
     assert len(kn1) == 1
     # respects the off switch
-    off = SimpleNamespace(structure_drop_isolated=False)
+    off = SimpleNamespace(structure_drop_isolated=False, root_late_phase=6)
     kn2, _ = CleanPipeline._drop_residual_isolated(off, nodes, edges)
-    assert len(kn2) == 3
+    assert len(kn2) == len(nodes)
 
 def test_schema_validate_flags_global_structure():
     nodes = [GraphNode(node_id="a", mention="x", node_type="action", attack_id="T1566.002"),
@@ -111,6 +121,22 @@ def test_schema_validate_flags_global_structure():
     doc2 = GraphDocument(doc_id="d", source_dataset="s", source_path="p",
                          nodes=nodes[:2], edges=edges)
     assert not [x for x in doc2.validate() if "Isolated" in x or "disconnected" in x]
+
+def test_coerce_node_ops_keeps_node_removal():
+    # LLM mis-typed a node removal as an edge op (type=ODD); coercion must let it apply
+    valid_ids = {"step_3_add_T1027"}
+    raw = [{"action": "remove", "type": "ODD", "target": "step_3_add_T1027",
+            "evidence_span": {"sentence_id": 0}}]
+    # without coercion -> treated as edge op -> dropped
+    dropped = CleanVerifier._normalize_findings([dict(raw[0])], valid_ids, set(), set(), ["x"])
+    assert dropped == []
+    # with coercion -> node op -> kept and applicable
+    coerced = CleanVerifier._coerce_node_ops([dict(raw[0])], valid_ids)
+    kept = CleanVerifier._normalize_findings(coerced, valid_ids, set(), set(), ["x"])
+    assert len(kept) == 1 and kept[0]["action"] == "remove" and kept[0]["target"] == "step_3_add_T1027"
+    # an edge-target op (has '->') is left untouched by coercion
+    edge_raw = [{"action": "remove", "type": "ODD", "target": "a->b", "evidence_span": {"sentence_id": 0}}]
+    assert CleanVerifier._coerce_node_ops(edge_raw, valid_ids)[0]["type"] == "ODD"
 
 def test_on_shipped_output_graph():
     g = json.load(open(os.path.join(_PROJECT, "data", "casestudy", "output",

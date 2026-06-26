@@ -39,6 +39,7 @@ class StructuralReport:
     isolated: list = field(default_factory=list)       # in==0 & out==0
     components: list = field(default_factory=list)      # list[set[node_id]], largest first
     findings: list = field(default_factory=list)        # [{kind, node_id, technique_id, tactic, tactic_name, detail}]
+    node_meta: dict = field(default_factory=dict)       # {node_id: {tech, tactic, tactic_name, phase}}
 
     def has_anomalies(self) -> bool:
         return bool(self.findings)
@@ -58,6 +59,7 @@ class StructuralReport:
             "isolated": list(self.isolated),
             "components": [sorted(c) for c in self.components],
             "findings": list(self.findings),
+            "node_meta": self.node_meta,
         }
 
 def weakly_connected_components(node_ids: list[str], edges: list[dict]) -> list[set]:
@@ -102,6 +104,16 @@ def analyze_structure(nodes: list[dict], edges: list[dict],
     components = weakly_connected_components(node_ids, edges or [])
     isolated_set = set(isolated)
 
+    node_meta: dict[str, dict] = {}
+    for nid in node_ids:
+        tech = tech_by_id.get(nid, "")
+        tac = get_tactic_id(_parent(tech)) if tech else None
+        node_meta[nid] = {
+            "tech": tech, "tactic": tac,
+            "tactic_name": get_tactic_name(tac) if tac else "",
+            "phase": technique_phase(_parent(tech)) if tech else 99,
+        }
+
     findings: list[dict] = []
 
     def _finding(kind: str, nid: str, detail: str) -> dict:
@@ -140,5 +152,5 @@ def analyze_structure(nodes: list[dict], edges: list[dict],
         n_nodes=len(node_ids), n_edges=len(edges or []),
         in_degree=in_deg, out_degree=out_deg,
         roots=roots, sinks=sinks, isolated=isolated,
-        components=components, findings=findings,
+        components=components, findings=findings, node_meta=node_meta,
     )

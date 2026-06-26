@@ -145,9 +145,24 @@ class CleanVerifier:
         except Exception as exc:
             logger.warning("[CleanVerifier] structure_check failed for %s: %s", doc_id, exc)
             return []
-        f = self._normalize_findings(r.get("findings") if isinstance(r, dict) else None,
-                                     valid_ids, valid_edges, valid_parents, sentences)
+        raw = self._coerce_node_ops(r.get("findings") if isinstance(r, dict) else None, valid_ids)
+        f = self._normalize_findings(raw, valid_ids, valid_edges, valid_parents, sentences)
         return [x for x in f if x["action"] in ("add_edge", "remove", "replace")]
+
+    @staticmethod
+    def _coerce_node_ops(raw, valid_node_ids):
+        """A remove/replace whose target is a bare node id (no '->') is a node-scope op.
+        Force its type to a node type ('IND') so _normalize_findings doesn't misread it as
+        an edge op and silently drop it — which would discard Agent C's decision to drop a
+        unique unsupported node (the conservative safety net only handles dupes/auto-adds)."""
+        if not isinstance(raw, list):
+            return raw
+        for it in raw:
+            if (isinstance(it, dict) and str(it.get("action") or "").lower() in ("remove", "replace")
+                    and "->" not in str(it.get("target") or "")
+                    and str(it.get("target") or "") in valid_node_ids):
+                it["type"] = "IND"
+        return raw
 
     def _build_structure_check_prompt(self, doc_id, sentences, nodes, edges,
                                       rewritten_sentences, structural_report, structural_experiences):
@@ -189,6 +204,17 @@ class CleanVerifier:
                 f.get("kind"), f.get("node_id"), f.get("technique_id"),
                 f.get("tactic_name") or f.get("tactic") or "?", f.get("detail", "")))
         parts.append("")
+        comps = rep.get("components") or []
+        meta = rep.get("node_meta") or {}
+        if len(comps) > 1:
+            parts.append(t['sec_comp'])
+            for ci, comp in enumerate(sorted(comps, key=lambda c: -len(c))):
+                tag = "主分量(保持)" if ci == 0 else "断裂子图%d(需接回主链)" % ci
+                ordered = sorted(comp, key=lambda nid: meta.get(nid, {}).get("phase", 99))
+                parts.append("- %s [%d节点]: %s" % (tag, len(comp), " | ".join(
+                    "%s(%s,%s)" % (nid, meta.get(nid, {}).get("tech", ""),
+                                   meta.get(nid, {}).get("tactic_name", "")) for nid in ordered)))
+            parts.append("")
         if structural_experiences:
             parts.append(t['sec_exp'])
             for x in structural_experiences:
