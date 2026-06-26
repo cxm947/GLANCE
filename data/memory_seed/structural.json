@@ -1,0 +1,41 @@
+{
+  "_README": "Structural experiences (scope=structural). Retrieved by graph_structure anomaly `kind` via trigger.kinds, and injected into Agent C's graph-level structure-repair stage. To add one: append a record with trigger.kinds + a hint; no code change. structural_condition is descriptive metadata for humans; the deterministic detector owns the actual thresholds (see configs/default.yaml).",
+  "experiences": [
+    {
+      "id": "struct_isolated_node",
+      "scope": "structural",
+      "polarity": "flag",
+      "action": "reconnect_or_drop",
+      "trigger": {
+        "kinds": ["isolated"],
+        "structural_condition": {"degree": "isolated", "in_degree": 0, "out_degree": 0}
+      },
+      "confidence": 0.9,
+      "hint": "孤立节点(入度=出度=0)与攻击链脱节, 在攻击过程图里几乎总是异常。按原文证据二选一: (a) 若该技术确有独立的攻击动作, 找到它在叙事上的前驱/后继并补连边(add_edge, 通常接到证据句相邻、战术阶段在它之前的节点); (b) 若该技术在原文里只是修饰/无独立支撑(常见于被补进来却无承接的节点), 判为冗余并删除(remove)。"
+    },
+    {
+      "id": "struct_no_root_late_tactic",
+      "scope": "structural",
+      "polarity": "flag",
+      "action": "reconnect_or_remap",
+      "trigger": {
+        "kinds": ["illegitimate_root"],
+        "structural_condition": {"role": "root", "tactic_phase_min": "TA0005"}
+      },
+      "confidence": 0.85,
+      "hint": "非法起点: 防御规避/凭据访问/发现/横向移动/采集/C2/外传/影响等中后期战术不应作为攻击的起点(入度=0)。真正的起点通常是侦察/资源开发/初始访问/执行。处理优先级: (a) 按原文补出它真实的前驱(投递→执行→侧加载/解码等)并连边; (b) 确无前驱且证据句其实描述的是别的技术→retag 重映射; (c) 仍无支撑则删除。"
+    },
+    {
+      "id": "struct_disconnected_component",
+      "scope": "structural",
+      "polarity": "flag",
+      "action": "reconnect",
+      "trigger": {
+        "kinds": ["disconnected_component"],
+        "structural_condition": {"weakly_connected_components_gt": 1}
+      },
+      "confidence": 0.7,
+      "hint": "图分裂成多个互不连通的子图: 同一份报告的攻击步骤通常属于同一条攻击过程, 多分量往往意味着漏了衔接边。请回原文核对各子图的边界节点之间是否缺投递→执行、执行→后续等承接边; 注意合法例外——报告确实记述了两条独立初始访问向量(如两种钓鱼投递)时, 它们可以各自起一条链, 直到在某共同节点汇合。"
+    }
+  ]
+}

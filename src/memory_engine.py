@@ -8,6 +8,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Iterable
 
+from experience import Experience
+
 logger = logging.getLogger(__name__)
 
 LAMBDA_PENALTY = 1.0
@@ -961,6 +963,90 @@ class MemoryEngine:
 
     def get_working(self, key: str, default: Any = None) -> Any:
         return self.working.get(key, default)
+
+    # ===================================================================
+    # Unified experience layer (additive — existing get_* call sites are
+    # untouched). One typed `Experience` view over the heterogeneous seed
+    # stores, plus the new `structural` scope consumed by Agent C.
+    # ===================================================================
+    def _load_cases(self) -> list[dict]:
+        path = os.path.join(self.memory_dir, "cases.json")
+        try:
+            return (json.load(open(path, encoding="utf-8")) or {}).get("cases", []) or []
+        except Exception:
+            return []
+
+    def _load_structural(self) -> list[dict]:
+        path = os.path.join(self.memory_dir, "structural.json")
+        try:
+            return (json.load(open(path, encoding="utf-8")) or {}).get("experiences", []) or []
+        except Exception:
+            return []
+
+    def match_experiences(self, nodes: list[dict], edges: list[dict],
+                          scope: str | None = None, full_text: str = "") -> list[Experience]:
+        """Unified, typed view over the seed stores as `Experience` objects.
+
+        Reuses the existing, tested matchers (`get_node_memory` / `get_edge_memory`
+        / `get_explicit_rules` / `get_implicit_rules`) and wraps their hits into one
+        schema. Additive — does not change any existing behaviour.
+        """
+        nodes = nodes or []
+        out: list[Experience] = []
+        if scope in (None, "node"):
+            tech_ids = [n.get("technique_id") for n in nodes]
+            act = " ".join("%s %s" % ((n.get("procedure") or {}).get("action", ""),
+                                      (n.get("procedure") or {}).get("object", "")) for n in nodes)
+            for d in self.get_node_memory(tech_ids, act, full_text):
+                e = Experience.from_node_memory(d)
+                if d.get("find_node"):
+                    e.hit = {"find_node": True, "tech": d.get("tech", [])}
+                out.append(e)
+        if scope in (None, "edge"):
+            em = self.get_edge_memory(nodes, edges)
+            for pol in ("wrong", "missing", "review"):
+                for d in em.get(pol, []) or []:
+                    e = Experience.from_case({**d, "polarity": pol})
+                    e.hit = {"hit_edges": d.get("hit_edges", [])}
+                    out.append(e)
+            for d in self.get_explicit_rules(nodes) + self.get_implicit_rules(nodes):
+                e = Experience.from_rule(d)
+                e.hit = {"hit_pairs": d.get("hit_pairs", [])}
+                out.append(e)
+        return out
+
+    def get_structural_experiences(self, nodes: list[dict], edges: list[dict],
+                                   structural_report: Any) -> list[dict]:
+        """Structural experiences whose ``trigger.kinds`` intersect the detected
+        anomaly kinds. Returns prompt-ready dicts. Extensible: add a record to
+        ``structural.json`` with ``trigger.kinds`` + ``hint`` — no code change.
+        """
+        findings = (structural_report.get("findings") if isinstance(structural_report, dict)
+                    else getattr(structural_report, "findings", [])) or []
+        detected = {str(f.get("kind")) for f in findings if isinstance(f, dict)}
+        if not detected:
+            return []
+        out: list[dict] = []
+        for d in self._load_structural():
+            e = Experience.from_structural(d)
+            kinds = {str(k) for k in (e.trigger.get("kinds") or [])}
+            if kinds & detected:
+                out.append({"id": e.id, "hint": e.hint, "action": e.action,
+                            "kinds": sorted(kinds & detected), "confidence": e.confidence})
+        return out
+
+    def experience_index(self) -> list[dict]:
+        """One scannable row per known experience — the harness ``MEMORY.md`` analogue."""
+        rows: list[dict] = []
+        for d in (self._load_verifier_memory().get("node", []) or []):
+            rows.append(Experience.from_node_memory(d).index_entry())
+        for d in self._load_rules():
+            rows.append(Experience.from_rule(d).index_entry())
+        for d in self._load_cases():
+            rows.append(Experience.from_case(d).index_entry())
+        for d in self._load_structural():
+            rows.append(Experience.from_structural(d).index_entry())
+        return rows
 
 def _is_generic_error_record(record: ErrorRecord) -> bool:
     doc_id = str(getattr(record, "doc_id", "") or "").lower()
