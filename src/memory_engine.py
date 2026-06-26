@@ -16,6 +16,10 @@ LAMBDA_PENALTY = 1.0
 DELTA_SMOOTH = 0.01
 MAX_ERROR_ENTRIES = 500
 MAX_KB_PAIRS = 10000
+MAX_BLACKBOARD = 2000     # bound the per-report event log (was unbounded)
+MAX_LEARNED = 5000        # bound the cross-report learned-experience store
+GATE_MIN_COUNT = 2        # Memory Gate: confirmations before a learned experience is usable
+GATE_MIN_CONFIDENCE = 0.6
 
 CONTEXT_REQUIRED_TARGET_CUES: dict[str, tuple[str, ...]] = {
 
@@ -144,6 +148,7 @@ class ErrorRecord:
     reason: str
     doc_id: str
     timestamp: str = ""
+    count: int = 1
 
     def to_dict(self) -> dict:
         return {
@@ -156,6 +161,7 @@ class ErrorRecord:
             "reason": self.reason,
             "doc_id": self.doc_id,
             "timestamp": self.timestamp,
+            "count": self.count,
         }
 
     @staticmethod
@@ -170,6 +176,8 @@ class MemoryEngine:
 
         self.kb_path = os.path.join(memory_dir, "transition_kb.json")
         self.error_path = os.path.join(memory_dir, "error_memory.json")
+        self.learned_path = os.path.join(memory_dir, "learned_experiences.json")
+        self.index_path = os.path.join(memory_dir, "experience_index.json")
 
         self.transition_kb: dict[str, dict[str, TransitionEntry]] = {}
 
@@ -180,6 +188,13 @@ class MemoryEngine:
         self.blackboard: list[dict[str, Any]] = []
 
         self.excluded_doc_ids: set[str] = set()
+
+        # cross-report learned experiences (deduped, confidence/provenance-tracked,
+        # promoted by a Memory Gate). Distinct from the curated, frozen seed stores.
+        self.learned_experiences: list[Experience] = []
+        self._learned_index: dict[tuple, Experience] = {}
+        self.gate_min_count = GATE_MIN_COUNT
+        self.gate_min_confidence = GATE_MIN_CONFIDENCE
 
         self._load()
 
@@ -201,17 +216,44 @@ class MemoryEngine:
             self.error_memory = [ErrorRecord.from_dict(e) for e in data.get("errors", [])]
             logger.info("Loaded error memory: %d records", len(self.error_memory))
 
+        if os.path.exists(self.learned_path):
+            try:
+                data = json.load(open(self.learned_path, encoding="utf-8")) or {}
+                self.learned_experiences = [Experience.from_dict(d) for d in data.get("experiences", [])]
+                self._learned_index = {e.dedup_key(): e for e in self.learned_experiences}
+                logger.info("Loaded learned experiences: %d", len(self.learned_experiences))
+            except Exception as exc:
+                logger.warning("learned_experiences load failed: %s", exc)
+
     def save(self):
+        now = datetime.now(timezone.utc).isoformat()
+        # Always-written lifecycle artifacts: the learned-experience store and the
+        # scannable experience index (the harness MEMORY.md analogue).
+        idx = self.experience_index()
+        try:
+            with open(self.learned_path, "w", encoding="utf-8") as f:
+                json.dump({"updated": now, "n": len(self.learned_experiences),
+                           "experiences": [e.to_dict() for e in self.learned_experiences]},
+                          f, indent=2, ensure_ascii=False)
+            with open(self.index_path, "w", encoding="utf-8") as f:
+                json.dump({"updated": now, "n": len(idx), "experiences": idx},
+                          f, indent=2, ensure_ascii=False)
+        except Exception as exc:
+            logger.warning("experience index/learned save failed: %s", exc)
+        # Legacy error memory (unchanged behaviour, still guarded on memory.json).
         mem_path = os.path.join(self.memory_dir, "memory.json")
         if not os.path.exists(mem_path):
+            logger.info("Memory saved: learned_exp=%d, index=%d (no memory.json)",
+                        len(self.learned_experiences), len(idx))
             return
         m = json.load(open(mem_path, encoding="utf-8")) or {}
         m.setdefault("node", {})["error"] = [e.to_dict() for e in self.error_memory[-MAX_ERROR_ENTRIES:]]
-        m["updated"] = datetime.now(timezone.utc).isoformat()
+        m["updated"] = now
         with open(mem_path, "w", encoding="utf-8") as f:
             json.dump(m, f, indent=2, ensure_ascii=False)
-        logger.info("Memory saved(memory.json): node.error=%d, KB=%d(csv只读)",
-                     len(self.error_memory), len(self.transition_kb))
+        logger.info("Memory saved: node.error=%d, learned_exp=%d, index=%d, KB=%d(csv只读)",
+                     len(self.error_memory), len(self.learned_experiences), len(idx),
+                     len(self.transition_kb))
 
     def _load_confirmed(self) -> dict:
         if getattr(self, "_confirmed", None) is not None:
@@ -908,9 +950,23 @@ class MemoryEngine:
             return self.error_memory
         return [record for record in self.error_memory if record.doc_id not in excluded]
 
+    @staticmethod
+    def _error_key(error_type: str, technique_id: str, corrected: str) -> tuple:
+        return (str(error_type or "").strip().lower(),
+                str(technique_id or "").strip().lower(),
+                re.sub(r"\s+", " ", str(corrected or "").strip().lower())[:80])
+
     def add_error_record(self, error_type: str, technique_id: str,
                          action_verbs: list[str], original: str, corrected: str,
                          reason: str, doc_id: str):
+        # De-dup before appending (mirror the harness 'is there already a record
+        # covering this?' discipline): a repeat bumps count rather than piling up.
+        key = self._error_key(error_type, technique_id, corrected)
+        for rec in self.error_memory:
+            if self._error_key(rec.error_type, rec.technique_id, rec.corrected_value) == key:
+                rec.count += 1
+                rec.timestamp = datetime.now(timezone.utc).isoformat()
+                return
         record = ErrorRecord(
             error_id=f"err_{len(self.error_memory):04d}",
             error_type=error_type,
@@ -946,6 +1002,8 @@ class MemoryEngine:
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
         self.blackboard.append(record)
+        if len(self.blackboard) > MAX_BLACKBOARD:  # ring buffer: drop oldest
+            del self.blackboard[:-MAX_BLACKBOARD]
         return deepcopy(record)
 
     def get_blackboard(self, kind: str | None = None) -> list[dict[str, Any]]:
@@ -1033,10 +1091,19 @@ class MemoryEngine:
             if kinds & detected:
                 out.append({"id": e.id, "hint": e.hint, "action": e.action,
                             "kinds": sorted(kinds & detected), "confidence": e.confidence})
+        # promoted (Memory Gate) learned structural experiences — empty on a fresh
+        # seed, so single-run behaviour is unchanged; they accrue across --keep-mem runs.
+        for e in self.promote_experiences(scope="structural"):
+            kinds = {str(k) for k in (e.trigger.get("kinds") or [])}
+            if kinds & detected:
+                out.append({"id": e.id, "hint": e.hint, "action": e.action,
+                            "kinds": sorted(kinds & detected), "confidence": e.confidence,
+                            "source": "learned", "count": int(e.provenance.get("count", 1))})
         return out
 
     def experience_index(self) -> list[dict]:
-        """One scannable row per known experience — the harness ``MEMORY.md`` analogue."""
+        """One scannable row per known experience — the harness ``MEMORY.md`` analogue.
+        Spans the curated seed stores plus the cross-report learned experiences."""
         rows: list[dict] = []
         for d in (self._load_verifier_memory().get("node", []) or []):
             rows.append(Experience.from_node_memory(d).index_entry())
@@ -1046,7 +1113,49 @@ class MemoryEngine:
             rows.append(Experience.from_case(d).index_entry())
         for d in self._load_structural():
             rows.append(Experience.from_structural(d).index_entry())
+        for e in self.learned_experiences:
+            rows.append(e.index_entry())
         return rows
+
+    def learn_experience(self, exp: Experience) -> Experience:
+        """Record a cross-report experience. De-dups by content key: a repeat bumps
+        ``provenance.count`` and nudges confidence up (recency-stamped) instead of
+        piling on duplicates. New entries are stamped source=learned."""
+        key = exp.dedup_key()
+        now = datetime.now(timezone.utc).isoformat()
+        cur = self._learned_index.get(key)
+        if cur is not None:
+            cur.provenance["count"] = int(cur.provenance.get("count", 1)) + 1
+            cur.provenance["ts"] = now
+            cur.confidence = round(min(0.99, max(float(cur.confidence or 0.0),
+                                                 float(exp.confidence or 0.0)) + 0.05), 3)
+            return cur
+        prov = dict(exp.provenance or {})
+        prov.setdefault("source", "learned")
+        prov["count"] = 1
+        prov["ts"] = now
+        exp.provenance = prov
+        self.learned_experiences.append(exp)
+        self._learned_index[key] = exp
+        if len(self.learned_experiences) > MAX_LEARNED:  # bound the store, keep newest
+            self.learned_experiences = self.learned_experiences[-MAX_LEARNED:]
+            self._learned_index = {e.dedup_key(): e for e in self.learned_experiences}
+        return exp
+
+    def promote_experiences(self, min_count: int | None = None,
+                            min_confidence: float | None = None,
+                            scope: str | None = None) -> list[Experience]:
+        """Memory Gate: learned experiences that have cleared the count + confidence
+        thresholds and are therefore safe to surface as soft priors."""
+        mc = self.gate_min_count if min_count is None else min_count
+        mcf = self.gate_min_confidence if min_confidence is None else min_confidence
+        out: list[Experience] = []
+        for e in self.learned_experiences:
+            if scope and e.scope != scope:
+                continue
+            if int(e.provenance.get("count", 1)) >= mc and float(e.confidence or 0.0) >= mcf:
+                out.append(e)
+        return out
 
 def _is_generic_error_record(record: ErrorRecord) -> bool:
     doc_id = str(getattr(record, "doc_id", "") or "").lower()

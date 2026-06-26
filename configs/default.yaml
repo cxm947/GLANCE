@@ -25,3 +25,8 @@ enable_memory: true
 enable_structure_repair: true
 root_late_tactic_cutoff: "TA0005"          # a root at this tactic phase or later is illegitimate
 structure_drop_unsupported_isolated: true   # deterministic safety net: drop nodes left isolated
+
+# memory lifecycle (cross-report learning, gated by a Memory Gate)
+enable_learning: true
+memory_gate_min_count: 2                    # confirmations before a learned experience is usable
+memory_gate_min_confidence: 0.6

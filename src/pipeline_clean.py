@@ -84,6 +84,12 @@ class CleanPipeline:
                                 else int(_cutoff))
         self.structure_drop_isolated = bool(config.get("structure_drop_unsupported_isolated", True))
 
+        # memory lifecycle: cross-report learning + Memory Gate thresholds
+        self.enable_learning = bool(config.get("enable_learning", True))
+        self.memory.gate_min_count = int(config.get("memory_gate_min_count", self.memory.gate_min_count))
+        self.memory.gate_min_confidence = float(
+            config.get("memory_gate_min_confidence", self.memory.gate_min_confidence))
+
         self.pos_examples = self._load_positive_examples(config.get("memory_dir", "data/memory"))
 
         self.output_dir = config.get("output_dir", "outputs")
@@ -625,6 +631,8 @@ class CleanPipeline:
         findings = self.verifier.check_structure(doc_id, sentences, gnodes, gedges,
                                                  rwsents, report, struct_exps)
         graph2 = self._apply_structure_stage(graph, findings)
+        if self.enable_learning and self.enable_memory:
+            self._learn_from_structure(doc_id, report, findings)
         self._save(os.path.join(self.output_dir, "verify_results", f"{safe}_structure.json"), {
             "doc_id": doc_id, "report": report.to_dict(),
             "experiences": struct_exps, "findings": findings,
@@ -633,6 +641,37 @@ class CleanPipeline:
             "edges_after": len(graph2.get("edges", []) or []),
         })
         return graph2
+
+    def _learn_from_structure(self, doc_id: str, report, findings: list[dict]) -> None:
+        """Sediment each structural correction into cross-report learned memory
+        (deduped + gated). Write-only — never changes the current run's output; it
+        surfaces as a soft prior on later --keep-mem runs once the Memory Gate clears."""
+        import re
+        from experience import Experience
+        by_node = {f.get("node_id"): f for f in report.findings}
+        for f in findings or []:
+            action = str(f.get("action") or "")
+            if action not in ("remove", "replace"):
+                continue
+            rep_f = by_node.get(str(f.get("target") or "")) or {}
+            tech = str(rep_f.get("technique_id") or "")
+            kind = str(rep_f.get("kind") or "")
+            m = re.search(r"T\d{4}", tech)
+            par = m.group(0) if m else "x"
+            try:
+                conf = float(f.get("confidence"))
+            except (TypeError, ValueError):
+                conf = 0.6
+            self.memory.learn_experience(Experience(
+                id="learned_struct_%s_%s" % (kind or "x", par),
+                scope="structural", polarity="flag",
+                trigger={"kinds": [kind] if kind else [], "techniques_src": [tech] if tech else []},
+                action="drop_node" if action == "remove" else "remap",
+                hint="结构修复经验: 技术 %s 在结构异常(%s)下被%s" % (
+                    tech or "?", kind or "?", "删除" if action == "remove" else "重映射"),
+                confidence=conf,
+                provenance={"source": "learned", "doc_id": doc_id},
+            ))
 
     @staticmethod
     def _apply_structure_stage(graph: dict, findings: list[dict]) -> dict:
