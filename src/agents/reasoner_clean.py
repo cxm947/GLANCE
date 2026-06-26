@@ -100,43 +100,28 @@ class CleanReasoner:
             key=lambda nid: (rho_by_id[nid], order_by_id[nid]),
         )
 
+        # W3 — holistic whole-graph reasoning. A single DeepSeek call (per self-
+        # consistency run) reconstructs the entire connected dependency DAG from the
+        # full node list + report + transition priors, REPLACING the piecemeal
+        # explicit/implicit candidate machinery (_gen_candidates / _call_explicit /
+        # _call_implicit_*), which is kept defined but unused. This restores global
+        # coherence the pairwise path lost.
         k = self.self_consistency
-        runs: list[tuple[list, list]] = []
-        for _ in range(k):
-
-            explicit_edges = self._call_explicit(
-                doc_id, sentences, ordered, node_by_id, rho_by_id, neg_examples
-            )
-
-            hidden_deps = self._call_implicit_existence(
-                doc_id, sentences, ordered, node_by_id, rho_by_id, explicit_edges, neg_examples
-            )
-
-            new_inf_nodes, implicit_edges = self._call_implicit_intermediate(
-                doc_id, sentences, node_by_id, rho_by_id, hidden_deps, transition_priors
-            )
-            runs.append((list(new_inf_nodes), list(explicit_edges) + list(implicit_edges)))
-
+        edge_runs: list[list[dict]] = [
+            self._call_holistic(doc_id, sentences, ordered, node_by_id, rho_by_id, transition_priors)
+            for _ in range(k)
+        ]
         if k == 1:
-            new_inf_nodes, all_edges = runs[0]
+            all_edges = edge_runs[0]
         else:
-            new_inf_nodes, all_edges = self._majority_vote(runs, k)
+            all_edges = self._majority_vote_edges(edge_runs, k)
             logger.info(
-                "[Reasoner] self-consistency k=%d -> %d edge(s) kept by majority", k, len(all_edges)
+                "[Reasoner] holistic self-consistency k=%d -> %d edge(s) kept by majority (>=%d/%d)",
+                k, len(all_edges), (k + 1) // 2, k,
             )
 
-        if self.reattach_hub:
-            all_inf_by_id = {str(n.get("node_id")): n for n in new_inf_nodes}
-            hub_lookup = dict(node_by_id)
-            hub_lookup.update(all_inf_by_id)
-            hub_rho = dict(rho_by_id)
-            for nid, n in all_inf_by_id.items():
-                ints = [int(s) for s in (n.get("evidence_sentence_ids") or []) if _is_int(s)]
-                hub_rho[nid] = min(ints) if ints else _BIG
-            all_edges = self._reattach_to_hub(all_edges, hub_lookup, hub_rho, ordered)
-
-        all_nodes = list(nodes) + list(new_inf_nodes)
-
+        # Holistic reasoning does not synthesize intermediate (inf) nodes — node passthrough.
+        all_nodes = list(nodes)
         main_path = [
             nid
             for nid in ordered
@@ -199,6 +184,131 @@ class CleanReasoner:
             ref_ids.add(str(e.get("dst")))
         kept_inf = [n for nid, n in inf_by_id.items() if nid in ref_ids]
         return kept_inf, kept_edges
+
+    @staticmethod
+    def _majority_vote_edges(runs: list[list[dict]], k: int) -> list[dict]:
+        """Keep edges that appear in at least (k+1)//2 of the k holistic runs."""
+        threshold = (k + 1) // 2
+        count: dict[tuple[str, str], int] = {}
+        repr_: dict[tuple[str, str], dict] = {}
+        for edges in runs:
+            seen_in_run: set[tuple[str, str]] = set()
+            for e in edges:
+                key = (str(e.get("src")), str(e.get("dst")))
+                if key in seen_in_run:
+                    continue
+                seen_in_run.add(key)
+                count[key] = count.get(key, 0) + 1
+                repr_.setdefault(key, e)
+        return [repr_[key] for key, c in count.items() if c >= threshold]
+
+    def _call_holistic(
+        self,
+        doc_id: str,
+        sentences: list[str],
+        ordered: list[str],
+        node_by_id: dict[str, dict],
+        rho_by_id: dict[str, int],
+        transition_priors: dict,
+    ) -> list[dict]:
+        """One whole-graph DeepSeek call: given every step (in narrative order), the
+        full report and the transition priors, return the directed dependency edges
+        that together form one coherent, connected attack process. Each returned edge
+        is validated: src/dst must be existing node_ids, src != dst, duplicates dropped,
+        and backward edges (src sentence > dst sentence) dropped."""
+        if not ordered:
+            return []
+        t = load_template('reasoner/holistic')
+        user_prompt = self._holistic_user(
+            doc_id, sentences, ordered, node_by_id, rho_by_id, transition_priors)
+        try:
+            result = self.llm.chat(
+                t['system'], user_prompt,
+                temperature=self.temperature, max_tokens=8192,
+                extra_body=self.extra_body, agent="reasoner_holistic",
+            )
+        except Exception as exc:
+            logger.warning("[Reasoner] holistic call failed: %s", exc)
+            return []
+        raw = self._rget(result, "edges")
+        edges: list[dict] = []
+        seen: set[tuple[str, str]] = set()
+        n_bad = n_back = 0
+        for e in raw:
+            if not isinstance(e, dict):
+                continue
+            src, dst = e.get("src"), e.get("dst")
+            if src not in node_by_id or dst not in node_by_id or src == dst:
+                n_bad += 1
+                continue
+            if (src, dst) in seen:
+                continue
+            # prefer src sentence <= dst sentence; drop backward edges
+            if rho_by_id.get(src, _BIG) > rho_by_id.get(dst, _BIG):
+                n_back += 1
+                continue
+            seen.add((src, dst))
+            relation = e.get("relation") or "enables"
+            if relation not in _LEGAL_RELATIONS:
+                relation = "enables"
+            sid = e.get("evidence_sentence_id")
+            # Carry endpoint evidence onto the edge (mirrors the old explicit path via
+            # _merge_sids/_join_evidence) so the AS-IS Verifier — whose _structural_profile
+            # flags any evidence_text-less edge spanning >=5 sentences as a "weak edge" —
+            # does not systematically penalise legitimate long-range edges (e.g. the
+            # Collection->Exfiltration fan-in).
+            sids = self._merge_sids(
+                [int(sid)] if _is_int(sid) else [],
+                node_by_id[src].get("evidence_sentence_ids"),
+                node_by_id[dst].get("evidence_sentence_ids"),
+            )
+            edges.append({
+                "src": src,
+                "dst": dst,
+                "relation": relation,
+                "evidence_type": "explicit",
+                "confidence": 0.85,
+                "evidence_sentence_ids": sids,
+                "evidence_text": self._join_evidence(
+                    node_by_id[src].get("evidence_text"),
+                    node_by_id[dst].get("evidence_text"),
+                ),
+            })
+        logger.info(
+            "[Reasoner] holistic: %d raw -> %d edge(s) over %d node(s) (drop %d invalid, %d backward)",
+            len(raw), len(edges), len(ordered), n_bad, n_back,
+        )
+        return edges
+
+    def _holistic_user(
+        self,
+        doc_id: str,
+        sentences: list[str],
+        ordered: list[str],
+        node_by_id: dict[str, dict],
+        rho_by_id: dict[str, int],
+        transition_priors: dict,
+    ) -> str:
+        t = load_template('reasoner/holistic')
+        node_lines: list[str] = []
+        for nid in ordered:
+            n = node_by_id[nid]
+            proc = n.get("procedure") if isinstance(n.get("procedure"), dict) else {}
+            rho = rho_by_id.get(nid)
+            sid_str = "?" if rho is None or rho >= _BIG else str(rho)
+            node_lines.append(
+                "%s | %s | %s | sent[%s] | action=%s object=%s" % (
+                    nid, n.get("technique_id", ""), n.get("tactic", "") or "",
+                    sid_str, proc.get("action", ""), proc.get("object", ""))
+            )
+        sent_lines = ["[%d] %s" % (i, s) for i, s in enumerate(sentences)]
+        prior_lines = self._render_priors_top3(ordered, node_by_id, transition_priors)
+        priors_block = "\n".join(prior_lines) if prior_lines else "(无先验)"
+        return (t["user"]
+                .replace("{{DOC_ID}}", str(doc_id))
+                .replace("{{NODES}}", "\n".join(node_lines))
+                .replace("{{SENTENCES}}", "\n".join(sent_lines))
+                .replace("{{PRIORS}}", priors_block))
 
     @staticmethod
     def _is_hub(n: dict) -> bool:
