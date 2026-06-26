@@ -253,8 +253,6 @@ class CleanPipeline:
         self._save(os.path.join(self.output_dir, "verify_results", f"{safe}.json"),
                    {"doc_id": doc_id, **verify_record})
 
-        graph = self._correct_misattribution(graph)
-
         graph = self._clean_normalize(graph)
         graph_doc = self._assemble(doc, graph)
         graph_doc.to_json(os.path.join(self.output_dir, "graphs", f"{safe}.json"))
