@@ -137,12 +137,151 @@ class CleanReasoner:
 
         all_nodes = list(nodes) + list(new_inf_nodes)
 
+        # W4: final holistic completion/repair pass over the WHOLE graph. Additive —
+        # it starts from the existing all_edges and returns a revised COMPLETE edge set
+        # that REPLACES them, unless the call looks like a failure (guarded below).
+        all_edges = self._holistic_complete(
+            doc_id, sentences, all_nodes, all_edges, transition_priors
+        )
+        # The holistic pass REPLACES the edge set, so an inferred bridge node it chose
+        # not to re-link would be left orphaned. Drop only such orphaned INFERRED nodes
+        # (observed/real-technique nodes are always kept) to honor the "no orphans" goal.
+        all_nodes = self._prune_orphan_inferred(all_nodes, all_edges)
+
         main_path = [
             nid
             for nid in ordered
             if (node_by_id[nid].get("node_type") or "obs") == "obs"
         ]
         return {"nodes": all_nodes, "edges": all_edges, "main_path": main_path}
+
+    @staticmethod
+    def _prune_orphan_inferred(all_nodes: list[dict], all_edges: list[dict]) -> list[dict]:
+        """Drop INFERRED nodes (node_type != 'obs') left with degree 0 after the holistic
+        edge replacement. An inferred node exists solely to bridge a dependency; an
+        unconnected one is redundant and would otherwise surface as an isolated node. If
+        the holistic guard kept the original edges, inferred bridges keep their s->inf->d
+        edges and nothing is pruned. Observed nodes are never touched here."""
+        deg: dict[str, int] = {}
+        for e in all_edges:
+            deg[str(e.get("src"))] = deg.get(str(e.get("src")), 0) + 1
+            deg[str(e.get("dst"))] = deg.get(str(e.get("dst")), 0) + 1
+        kept, dropped = [], 0
+        for n in all_nodes:
+            inferred = (n.get("node_type") or "obs") != "obs"
+            if inferred and deg.get(str(n.get("node_id")), 0) == 0:
+                dropped += 1
+                continue
+            kept.append(n)
+        if dropped:
+            logger.info("[Reasoner] holistic: 丢弃 %d 个全图修订后未被连接的孤立推断桥接节点", dropped)
+        return kept
+
+    def _holistic_complete(
+        self,
+        doc_id: str,
+        sentences: list[str],
+        all_nodes: list[dict],
+        all_edges: list[dict],
+        transition_priors: dict,
+    ) -> list[dict]:
+        """W4 holistic completion: one whole-graph DeepSeek pass that COMPLETES and
+        REPAIRS the current edge set into a single coherent connected DAG. Returns the
+        revised COMPLETE edge set (it REPLACES all_edges in reason()). Run exactly ONCE
+        regardless of self_consistency k — a single whole-graph revision over the
+        already-(vote-)settled base edges keeps cost bounded and is deterministic at
+        temperature 0.0. Guard: if the validated result has <50% as many edges as the
+        input (a likely truncation / parse failure), the ORIGINAL edges are kept."""
+        node_by_id = {str(n.get("node_id")): n for n in all_nodes if n.get("node_id")}
+        if len(node_by_id) < 2:
+            return all_edges
+
+        def _rho(n: dict) -> int:
+            ints = [int(s) for s in (n.get("evidence_sentence_ids") or []) if _is_int(s)]
+            return min(ints) if ints else _BIG
+
+        rho_by_id = {nid: _rho(n) for nid, n in node_by_id.items()}
+        ordered = sorted(node_by_id, key=lambda nid: (rho_by_id[nid], nid))
+
+        try:
+            t = load_template('reasoner/holistic')
+        except Exception as exc:
+            logger.warning("[Reasoner] holistic template load failed: %s; keep original edges", exc)
+            return all_edges
+
+        node_lines: list[str] = []
+        for nid in ordered:
+            n = node_by_id[nid]
+            proc = n.get("procedure") if isinstance(n.get("procedure"), dict) else {}
+            ao = ("%s %s" % (proc.get("action", ""), proc.get("object", ""))).strip()
+            rho = rho_by_id[nid]
+            sid_str = str(rho) if rho < _BIG else "?"
+            node_lines.append("%s | %s | %s | sent[%s] | %s" % (
+                nid, n.get("technique_id", ""), n.get("tactic", ""), sid_str, ao))
+        sent_lines = ["[%d] %s" % (i, s) for i, s in enumerate(sentences)]
+        prior_lines = self._render_priors_top3(ordered, node_by_id, transition_priors or {})
+        edge_lines = ["%s -> %s" % (str(e.get("src")), str(e.get("dst"))) for e in all_edges]
+
+        user_prompt = (t["user"]
+                       .replace("{{DOC_ID}}", doc_id)
+                       .replace("{{NODES}}", "\n".join(node_lines))
+                       .replace("{{SENTENCES}}", "\n".join(sent_lines))
+                       .replace("{{PRIORS}}", "\n".join(prior_lines) or "(无)")
+                       .replace("{{CURRENT_EDGES}}", "\n".join(edge_lines) or "(空)"))
+        try:
+            result = self.llm.chat(
+                t["system"], user_prompt, temperature=self.temperature,
+                max_tokens=8192, extra_body=self.extra_body, agent="reasoner_holistic")
+        except Exception as exc:
+            logger.warning("[Reasoner] holistic completion call failed: %s; keep original edges", exc)
+            return all_edges
+
+        n_sent = len(sentences)
+        validated: list[dict] = []
+        seen: set[tuple[str, str]] = set()
+        for e in self._rget(result, "edges"):
+            if not isinstance(e, dict):
+                continue
+            s, d = str(e.get("src") or ""), str(e.get("dst") or "")
+            if s not in node_by_id or d not in node_by_id or s == d:
+                continue
+            # prefer src sentence <= dst sentence: orient each edge along the narrative
+            # (92% of gold deps are forward, local), consistent with the base stages.
+            if rho_by_id.get(s, _BIG) > rho_by_id.get(d, _BIG):
+                s, d = d, s
+            if (s, d) in seen:
+                continue
+            seen.add((s, d))
+            relation = e.get("relation")
+            if relation not in _LEGAL_RELATIONS:
+                relation = "enables"
+            sid = e.get("evidence_sentence_id")
+            if _is_int(sid) and 0 <= int(sid) < n_sent:
+                sids = [int(sid)]
+            else:
+                sids = self._merge_sids(node_by_id[s].get("evidence_sentence_ids"),
+                                        node_by_id[d].get("evidence_sentence_ids"))
+            validated.append({
+                "src": s,
+                "dst": d,
+                "relation": relation,
+                "evidence_type": "implicit",
+                "confidence": 0.8,
+                "evidence_sentence_ids": sids,
+                "evidence_text": self._join_evidence(
+                    node_by_id[s].get("evidence_text"), node_by_id[d].get("evidence_text")),
+                "reason": str(e.get("reason") or ""),
+            })
+
+        if len(validated) < 0.5 * len(all_edges):
+            logger.info(
+                "[Reasoner] holistic: 返回 %d 条 < 输入 %d 的 50%%, 视为失败, 保留原边集",
+                len(validated), len(all_edges))
+            return all_edges
+        logger.info(
+            "[Reasoner] holistic completion: 输入 %d 边 -> 输出 %d 边 (全图修订+补全)",
+            len(all_edges), len(validated))
+        return validated
 
     def _simple_reason(self, doc_id: str, sentences: list[str], nodes: list[dict]) -> dict:
         nodes = list(nodes or [])

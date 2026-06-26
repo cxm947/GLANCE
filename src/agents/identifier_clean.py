@@ -127,10 +127,12 @@ class CleanIdentifier:
             nodes.append(node)
 
         n_before = len(nodes)
-        nodes = self._filter_auto_user_exec(nodes)
+        # NOTE: _filter_auto_user_exec is intentionally NOT applied — dropping auto
+        # T1204 User-Execution nodes severed bridging chains (T1566→T1204→T1105/T1053).
+        # The method is kept defined for reference / possible future gated use.
         nodes = self._dedup_same_sentence(nodes)
         logger.info(
-            "[%s] CleanIdentifier: %d attack sentences -> %d nodes (滤自动T1204+同句去重 %d->%d).",
+            "[%s] CleanIdentifier: %d attack sentences -> %d nodes (同句保守去重 %d->%d).",
             doc_id, len(attack_ids), len(nodes), n_before, len(nodes),
         )
         return nodes
@@ -161,12 +163,21 @@ class CleanIdentifier:
 
     @staticmethod
     def _dedup_same_sentence(nodes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Conservative same-sentence dedup. Only collapse nodes that share the same
+        (sentence, parent-technique) AND whose procedure action+object are essentially
+        identical (lowercase + strip). Genuinely distinct steps in the same sentence
+        (different action/object) are KEPT, so bridging steps are no longer over-merged.
+        Surviving representatives are re-id'd step_{i}_{tid} in first-appearance order."""
+        def _norm(v: Any) -> str:
+            return str(v or "").strip().lower()
+
         groups: Dict[tuple, List[Dict[str, Any]]] = {}
         order: List[tuple] = []
         for n in nodes:
             sid = (n.get("evidence_sentence_ids") or [None])[0]
             parent = (n.get("technique_id") or "").strip().upper().split(".")[0]
-            key = (sid, parent)
+            proc = n.get("procedure") if isinstance(n.get("procedure"), dict) else {}
+            key = (sid, parent, _norm(proc.get("action")), _norm(proc.get("object")))
             if key not in groups:
                 groups[key] = []
                 order.append(key)
