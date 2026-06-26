@@ -127,10 +127,12 @@ class CleanIdentifier:
             nodes.append(node)
 
         n_before = len(nodes)
-        nodes = self._filter_auto_user_exec(nodes)
+        # NOTE: _filter_auto_user_exec is intentionally NOT called here — dropping
+        # auto-T1204 was deleting the User-Execution bridge (T1566→T1204→T1105/T1053)
+        # and breaking the delivery chain. The method is kept defined but unused.
         nodes = self._dedup_same_sentence(nodes)
         logger.info(
-            "[%s] CleanIdentifier: %d attack sentences -> %d nodes (滤自动T1204+同句去重 %d->%d).",
+            "[%s] CleanIdentifier: %d attack sentences -> %d nodes (保守同句去重 %d->%d).",
             doc_id, len(attack_ids), len(nodes), n_before, len(nodes),
         )
         return nodes
@@ -161,31 +163,39 @@ class CleanIdentifier:
 
     @staticmethod
     def _dedup_same_sentence(nodes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        groups: Dict[tuple, List[Dict[str, Any]]] = {}
+        """Conservative same-sentence dedup. Within one (sentence, parent-technique)
+        group, only collapse nodes whose procedure action+object are essentially
+        identical (lowercase+strip) — those are genuine restatements of the same step.
+        Distinct steps (different action or object) are KEPT, even if they share the
+        sentence and parent technique. When an identical step recurs, the more specific
+        (sub-technique) representative is preferred so TTP granularity is not lost.
+        Surviving nodes are re-id'd step_{i}_{tid} in first-seen order."""
+        def _ao(n: Dict[str, Any]) -> tuple:
+            proc = n.get("procedure") if isinstance(n.get("procedure"), dict) else {}
+            action = str(proc.get("action") or "").strip().lower()
+            obj = str(proc.get("object") or "").strip().lower()
+            return (action, obj)
+
+        # buckets[(sid, parent)][ao] = representative node; order preserves first sight
+        buckets: Dict[tuple, Dict[tuple, Dict[str, Any]]] = {}
         order: List[tuple] = []
         for n in nodes:
             sid = (n.get("evidence_sentence_ids") or [None])[0]
             parent = (n.get("technique_id") or "").strip().upper().split(".")[0]
             key = (sid, parent)
-            if key not in groups:
-                groups[key] = []
-                order.append(key)
-            groups[key].append(n)
-        out: List[Dict[str, Any]] = []
-        for i, key in enumerate(order):
-            grp = groups[key]
-            if len(grp) == 1:
-                rep = grp[0]
+            ao = _ao(n)
+            sub = buckets.setdefault(key, {})
+            if ao not in sub:
+                sub[ao] = n
+                order.append((key, ao))
             else:
-                rep = sorted(
-                    grp,
-                    key=lambda x: (
-                        "." in (x.get("technique_id") or ""),
-                        len(((x.get("procedure") or {}).get("action") or "")),
-                    ),
-                    reverse=True,
-                )[0]
-            node = dict(rep)
+                # identical step already kept — prefer the sub-technique mention
+                prev = sub[ao]
+                if "." in str(n.get("technique_id") or "") and "." not in str(prev.get("technique_id") or ""):
+                    sub[ao] = n
+        out: List[Dict[str, Any]] = []
+        for i, (key, ao) in enumerate(order):
+            node = dict(buckets[key][ao])
             node["node_id"] = f"step_{i}_{node.get('technique_id')}"
             out.append(node)
         return out
