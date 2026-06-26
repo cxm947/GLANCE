@@ -10,7 +10,8 @@ from typing import Any
 from schema import StandardizedInputDocument, GraphDocument, GraphNode, GraphEdge, GraphPath
 from llm_client import LLMClient
 from memory_engine import MemoryEngine
-from knowledge import get_tactic_id, get_tactic_name
+from knowledge import get_tactic_id, get_tactic_name, get_phase_index
+from graph_structure import analyze_structure
 from prompt_loader import load_template
 from agents.identifier_clean import CleanIdentifier
 from agents.reasoner_clean import CleanReasoner
@@ -73,6 +74,15 @@ class CleanPipeline:
 
         self.transitive_reduction = bool(config.get("transitive_reduction", True))
         self.enable_memory = config.get("enable_memory", True)
+
+        # ④ graph-level structure repair (global perspective): detect + repair
+        # isolated nodes / illegitimate roots / disconnected components.
+        self.enable_structure_repair = bool(config.get("enable_structure_repair", True))
+        _cutoff = config.get("root_late_tactic_cutoff", "TA0005")
+        self.root_late_phase = (get_phase_index(_cutoff)
+                                if isinstance(_cutoff, str) and _cutoff.upper().startswith("TA")
+                                else int(_cutoff))
+        self.structure_drop_isolated = bool(config.get("structure_drop_unsupported_isolated", True))
 
         self.pos_examples = self._load_positive_examples(config.get("memory_dir", "data/memory"))
 
@@ -223,6 +233,10 @@ class CleanPipeline:
             all_findings += missing_findings
             if self.enable_route_back and self.apply_missing_edges:
                 graph = self._apply_missing_stage(graph, missing_findings, sentences, edge_rules=missing_mem)
+                graph = self._backfill_graph(graph, sentences)
+
+            if self.enable_route_back and self.enable_structure_repair:
+                graph = self._structure_repair_stage(doc_id, sentences, graph, rwsents, safe)
                 graph = self._backfill_graph(graph, sentences)
 
             verify_record.update({
@@ -592,6 +606,80 @@ class CleanPipeline:
         logger.info("    找漏/边记忆补: %d 条(obj_link承接命中)", len(added))
         return self._apply_add_edges(graph, added, self.missing_edge_conf_floor)
 
+    def _structure_repair_stage(self, doc_id, sentences, graph, rwsents, safe) -> dict:
+        """③d Agent C graph-level repair: detect global structural anomalies and
+        repair each in place (reconnect / drop / retag) under memory guidance,
+        freezing the rest of the graph."""
+        gnodes = graph.get("nodes", []) or []
+        gedges = graph.get("edges", []) or []
+        report = analyze_structure(gnodes, gedges, root_late_phase=self.root_late_phase)
+        if not report.has_anomalies():
+            return graph
+        kc = {k: sum(1 for f in report.findings if f["kind"] == k)
+              for k in ("isolated", "illegitimate_root", "disconnected_component")}
+        logger.info("  ③d 图级结构: %d 异常 (孤立%d/非法起点%d/断裂%d)",
+                    len(report.findings), kc["isolated"], kc["illegitimate_root"],
+                    kc["disconnected_component"])
+        struct_exps = (self.memory.get_structural_experiences(gnodes, gedges, report)
+                       if self.enable_memory else [])
+        findings = self.verifier.check_structure(doc_id, sentences, gnodes, gedges,
+                                                 rwsents, report, struct_exps)
+        graph2 = self._apply_structure_stage(graph, findings)
+        self._save(os.path.join(self.output_dir, "verify_results", f"{safe}_structure.json"), {
+            "doc_id": doc_id, "report": report.to_dict(),
+            "experiences": struct_exps, "findings": findings,
+            "nodes_before": len(gnodes), "edges_before": len(gedges),
+            "nodes_after": len(graph2.get("nodes", []) or []),
+            "edges_after": len(graph2.get("edges", []) or []),
+        })
+        return graph2
+
+    @staticmethod
+    def _apply_structure_stage(graph: dict, findings: list[dict]) -> dict:
+        import re
+        nodes = list(graph.get("nodes") or [])
+        edges = list(graph.get("edges") or [])
+        node_by_id = {str(n.get("node_id")): n for n in nodes}
+        valid = set(node_by_id)
+        present = {(str(e.get("src")), str(e.get("dst"))) for e in edges}
+        del_nodes: set[str] = set()
+        retag: dict[str, str] = {}
+        added = 0
+        for f in findings or []:
+            action = str(f.get("action") or "")
+            tgt = str(f.get("target") or "")
+            if action == "add_edge" and "->" in tgt:
+                s, d = (x.strip() for x in tgt.split("->", 1))
+                if s in valid and d in valid and s != d and (s, d) not in present:
+                    try:
+                        conf = float(f.get("confidence"))
+                    except (TypeError, ValueError):
+                        conf = 0.6
+                    edges.append({"src": s, "dst": d, "relation": str(f.get("relation") or "enables"),
+                                  "evidence_type": "implicit", "from_structure": True, "confidence": conf})
+                    present.add((s, d))
+                    added += 1
+            elif action == "remove" and tgt in node_by_id:
+                del_nodes.add(tgt)
+            elif action == "replace" and tgt in node_by_id:
+                m = re.search(r"T\d{4}(?:\.\d{3})?", str(f.get("reason") or ""))
+                if m:
+                    retag[tgt] = m.group(0)
+        for nid, tid in retag.items():
+            node_by_id[nid]["technique_id"] = tid
+            node_by_id[nid]["technique_name"] = ""
+        new_nodes = [n for n in nodes if str(n.get("node_id")) not in del_nodes]
+        new_edges = [e for e in edges
+                     if str(e.get("src")) not in del_nodes and str(e.get("dst")) not in del_nodes]
+        if added or del_nodes or retag:
+            logger.info("    结构修复应用: +%d 边, -%d 节点, ~%d 重映射",
+                        added, len(del_nodes), len(retag))
+        g = dict(graph)
+        g["nodes"] = new_nodes
+        g["edges"] = new_edges
+        g.setdefault("main_path", graph.get("main_path", []))
+        return g
+
     @staticmethod
     def _apply_adjudication(graph: dict, node_verdicts: list[dict], edge_verdicts: list[dict],
                             protect_main: bool = False, sentences: list[str] | None = None) -> dict:
@@ -906,10 +994,38 @@ class CleanPipeline:
         edges = self._break_cycles(edges)
         if self.transitive_reduction:
             edges = self._transitive_reduction(edges)
+        nodes, edges = self._drop_residual_isolated(nodes, edges)
         graph["nodes"] = nodes
         graph["edges"] = edges
         graph["main_path"] = self._main_path(nodes, edges)
         return graph
+
+    def _drop_residual_isolated(self, nodes: list[dict], edges: list[dict]):
+        """Deterministic safety net: after structure repair + normalization, any node
+        still isolated (in=out=0) is dropped — an isolated node cannot belong to an
+        attack process and Agent C already had its chance to reconnect it. Never drops
+        the sole node of a single-node graph."""
+        if not self.structure_drop_isolated or len(nodes) <= 1:
+            return nodes, edges
+        node_ids = {n["node_id"] for n in nodes if n.get("node_id")}
+        indeg = {nid: 0 for nid in node_ids}
+        outdeg = {nid: 0 for nid in node_ids}
+        for e in edges:
+            s, d = str(e.get("src")), str(e.get("dst"))
+            if s in outdeg:
+                outdeg[s] += 1
+            if d in indeg:
+                indeg[d] += 1
+        iso = [nid for nid in node_ids if indeg[nid] == 0 and outdeg[nid] == 0]
+        if not iso:
+            return nodes, edges
+        iso_set = set(iso)
+        kept_nodes = [n for n in nodes if n.get("node_id") not in iso_set]
+        kept_ids = {n["node_id"] for n in kept_nodes if n.get("node_id")}
+        kept_edges = [e for e in edges
+                      if str(e.get("src")) in kept_ids and str(e.get("dst")) in kept_ids]
+        logger.info("  [structure] 安全网: 删 %d 个残留孤立节点 %s", len(iso), iso)
+        return kept_nodes, kept_edges
 
     @staticmethod
     def _transitive_reduction(edges: list[dict]) -> list[dict]:
@@ -978,10 +1094,27 @@ class CleanPipeline:
     def _main_path(nodes: list[dict], edges: list[dict]) -> list[str]:
         adj: dict[str, list[str]] = {}
         indeg: dict[str, int] = {n["node_id"]: 0 for n in nodes}
+        outdeg: dict[str, int] = {n["node_id"]: 0 for n in nodes}
+        sid_of: dict[str, int] = {}
+        tech_of: dict[str, str] = {}
+        for n in nodes:
+            nid = n["node_id"]
+            sids = [int(s) for s in (n.get("evidence_sentence_ids") or []) if isinstance(s, int)]
+            sid_of[nid] = min(sids) if sids else 10 ** 9
+            tech_of[nid] = str(n.get("technique_id") or n.get("attack_id") or "")
         for e in edges:
             adj.setdefault(e["src"], []).append(e["dst"])
             indeg[e["dst"]] = indeg.get(e["dst"], 0) + 1
-        roots = [nid for nid, d in indeg.items() if d == 0] or [n["node_id"] for n in nodes[:1]]
+            outdeg[e["src"]] = outdeg.get(e["src"], 0) + 1
+        # roots = in==0 AND out>0 (exclude isolated nodes — a degree-0 node is not a
+        # legitimate start), ordered by (tactic phase, evidence sentence) so the main
+        # path begins at a semantically-early entry rather than an arbitrary node.
+        roots = [nid for nid, d in indeg.items() if d == 0 and outdeg.get(nid, 0) > 0]
+        if not roots:
+            roots = ([nid for nid in indeg if outdeg.get(nid, 0) > 0][:1]
+                     or [n["node_id"] for n in nodes[:1]])
+        roots.sort(key=lambda nid: (get_phase_index(get_tactic_id(tech_of.get(nid, ""))),
+                                    sid_of.get(nid, 10 ** 9)))
         best: list[str] = []
         for r in roots:
             stack = [(r, [r])]

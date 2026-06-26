@@ -167,7 +167,38 @@ class GraphDocument:
                     errors.append(f"Path '{p.path_id}' references unknown node '{nid}'")
             if len(p.node_ids) < 2:
                 errors.append(f"Path '{p.path_id}' has fewer than 2 nodes")
+        # global structure (validation must consider the whole graph, not just
+        # local edge/node legality): isolated nodes and disconnected components.
+        if len(self.nodes) > 1:
+            indeg = {nid: 0 for nid in node_ids}
+            outdeg = {nid: 0 for nid in node_ids}
+            for e in self.edges:
+                if e.src in outdeg:
+                    outdeg[e.src] += 1
+                if e.dst in indeg:
+                    indeg[e.dst] += 1
+            isolated = sorted(nid for nid in node_ids if indeg[nid] == 0 and outdeg[nid] == 0)
+            if isolated:
+                errors.append("Isolated node(s) (in=out=0): " + ", ".join(isolated))
+            if self._count_weak_components(node_ids) > 1:
+                errors.append("Graph has disconnected components (expected a single connected attack process)")
         return errors
+
+    def _count_weak_components(self, node_ids: set) -> int:
+        parent = {nid: nid for nid in node_ids}
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        for e in self.edges:
+            if e.src in parent and e.dst in parent:
+                rs, rd = find(e.src), find(e.dst)
+                if rs != rd:
+                    parent[rs] = rd
+        return len({find(nid) for nid in node_ids})
 
 @dataclass
 class ProcedureRecord:

@@ -20,3 +20,8 @@ route_back_mode: "adjudicate"
 route_back_conf_floor: 0.5
 apply_missing_edges: true
 enable_memory: true
+
+# ④ graph-level structure repair (global perspective)
+enable_structure_repair: true
+root_late_tactic_cutoff: "TA0005"          # a root at this tactic phase or later is illegitimate
+structure_drop_unsupported_isolated: true   # deterministic safety net: drop nodes left isolated

@@ -16,6 +16,7 @@ REWRITE_SYSTEM_PROMPT = load_template('verifier/rewrite')['system']
 
 NODE_CHECK_SYSTEM_PROMPT = load_template('verifier/node_check')['system']
 EDGE_CHECK_SYSTEM_PROMPT = load_template('verifier/edge_check')['system']
+STRUCTURE_CHECK_SYSTEM_PROMPT = load_template('verifier/structure_check')['system']
 
 class CleanVerifier:
 
@@ -121,6 +122,80 @@ class CleanVerifier:
         ind = [x for x in self._normalize_findings(raw, valid_ids, valid_edges, valid_parents, sentences)
                if x["type"] == "IND" and x["action"] == "insert_node"]
         return out + ind
+
+    def check_structure(self, doc_id: str, sentences: list[str], nodes: list[dict], edges: list[dict],
+                        rewritten_sentences: list[dict] | None,
+                        structural_report: Any, structural_experiences: list[dict] | None = None) -> list[dict]:
+        """Graph-level repair stage (Agent C ④): replay the *whole* graph and repair
+        each detected structural anomaly in place — reconnect an isolated / illegitimate
+        root to an evidence-supported neighbour, drop it if unsupported, or retag it.
+        Findings reuse the standard finding schema and flow through the normal apply path.
+        """
+        sentences = list(sentences or [])
+        prompt = self._build_structure_check_prompt(doc_id, sentences, nodes, edges,
+                                                    rewritten_sentences or [], structural_report,
+                                                    structural_experiences or [])
+        valid_ids = {str(n.get("node_id")) for n in nodes if n.get("node_id")}
+        valid_edges = {(str(e.get("src")), str(e.get("dst"))) for e in edges}
+        valid_parents = {self._parent_of(n.get("technique_id") or n.get("node_id")) for n in nodes}
+        valid_parents.discard(None)
+        try:
+            r = self.llm.chat(STRUCTURE_CHECK_SYSTEM_PROMPT, prompt, temperature=self.temperature,
+                              max_tokens=4096, extra_body=self.extra_body, agent="verifier_structure_check")
+        except Exception as exc:
+            logger.warning("[CleanVerifier] structure_check failed for %s: %s", doc_id, exc)
+            return []
+        f = self._normalize_findings(r.get("findings") if isinstance(r, dict) else None,
+                                     valid_ids, valid_edges, valid_parents, sentences)
+        return [x for x in f if x["action"] in ("add_edge", "remove", "replace")]
+
+    def _build_structure_check_prompt(self, doc_id, sentences, nodes, edges,
+                                      rewritten_sentences, structural_report, structural_experiences):
+        t = load_template('verifier/structure_check')
+        rep = (structural_report.to_dict() if hasattr(structural_report, "to_dict")
+               else dict(structural_report or {}))
+        in_deg = rep.get("in_degree") or {}
+        out_deg = rep.get("out_degree") or {}
+        tech_by_id = {str(n.get("node_id")): str(n.get("technique_id") or "") for n in nodes}
+        parts = [t['head'].replace("{{DOC_ID}}", doc_id), ""]
+        parts.append(t['sec_1'])
+        parts.extend([f"[{i}] {s}" for i, s in enumerate(sentences)] or ["(无原文句)"])
+        parts.append("")
+        parts.append(t['sec_2'])
+        if rewritten_sentences:
+            for rs in rewritten_sentences:
+                parts.append("[rid=%s] %s  (from_node_ids=%s)" % (
+                    rs.get("rid"), str(rs.get("text", ""))[:120], rs.get("from_node_ids", [])))
+        else:
+            parts.append("(还原报告为空)")
+        parts.append("")
+        parts.append(t['sec_3'])
+        for n in nodes:
+            nid = str(n.get("node_id"))
+            proc = n.get("procedure") or {}
+            act = ("action=%s object=%s" % (proc.get("action", ""), proc.get("object", ""))
+                   if isinstance(proc, dict) else "")
+            ev_ids = n.get("evidence_sentence_ids") or []
+            parts.append("- %s [in=%d,out=%d] | %s | %s | 证据句%s" % (
+                nid, int(in_deg.get(nid, 0)), int(out_deg.get(nid, 0)),
+                tech_by_id.get(nid, ""), act, ev_ids))
+        parts.append("  边:")
+        for e in (edges or []):
+            parts.append("    %s -> %s" % (e.get("src"), e.get("dst")))
+        parts.append("")
+        parts.append(t['sec_struct'])
+        for f in rep.get("findings", []) or []:
+            parts.append("- [%s] node=%s tech=%s tactic=%s | %s" % (
+                f.get("kind"), f.get("node_id"), f.get("technique_id"),
+                f.get("tactic_name") or f.get("tactic") or "?", f.get("detail", "")))
+        parts.append("")
+        if structural_experiences:
+            parts.append(t['sec_exp'])
+            for x in structural_experiences:
+                parts.append("- [%s] %s" % ("/".join(x.get("kinds", [])), str(x.get("hint", ""))[:240]))
+            parts.append("")
+        parts.append(t['tail'])
+        return "\n".join(parts)
 
     def _build_node_check_prompt(self, doc_id, sentences, nodes, edges, rewritten_sentences, node_mem):
         t = load_template('verifier/node_check')
@@ -432,9 +507,13 @@ class CleanVerifier:
                     if str(s).lstrip("-").isdigit()]
             rho[str(nd.get("node_id"))] = min(sids) if sids else 10 ** 9
         out_deg: dict[str, int] = {str(nd.get("node_id")): 0 for nd in nodes}
+        in_deg: dict[str, int] = {str(nd.get("node_id")): 0 for nd in nodes}
         for e in edges:
-            s = str(e.get("src"))
+            s, d = str(e.get("src")), str(e.get("dst"))
             out_deg[s] = out_deg.get(s, 0) + 1
+            in_deg[d] = in_deg.get(d, 0) + 1
+        isolated = sorted(nid for nid in out_deg
+                          if out_deg.get(nid, 0) == 0 and in_deg.get(nid, 0) == 0)
 
         degs = sorted(out_deg.values())
         if degs:
@@ -455,6 +534,8 @@ class CleanVerifier:
         return {
             "density": round(density, 3),
             "out_degree": out_deg,
+            "in_degree": in_deg,
+            "isolated": isolated,
             "hub_suspects": hub_suspects,
             "weak_edges": weak_edges,
             "sparse": density < 0.8,
